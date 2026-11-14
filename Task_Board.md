@@ -1,10 +1,10 @@
 # Task Board
 
 - 项目名称：FolderHub
-- 台账版本：2.2
-- 最后更新：2026-11-08
-- 当前阶段（引用 Project_Status）：P1_REQUIREMENT_COLLECTION / APPROVED
-- 活跃任务数：0
+- 台账版本：3.2
+- 最后更新：2026-11-14
+- 当前阶段（引用 Project_Status）：P2_REQUIREMENT_ANALYSIS / IN_PROGRESS
+- 活跃任务数：3
 - 阻塞任务数：0
 - 编号规则：TASK-001 起，全局递增，永不复用
 
@@ -17,12 +17,18 @@
 
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TASK-011 | P2 需求分解与 SRS 草案 | P2 | REQUIREMENTS | P1 | IN_PROGRESS | 建立并持续修订 SRS 草案，覆盖范围/非目标、场景、功能/非功能需求、界面、数据逻辑、异常、风险及 RAW 追踪矩阵；保持草案状态 | RAW-001～RAW-013；ADR-001～ADR-032；CR-001；RISK-001 | 助手 | 无 | SRS_FolderHub_v0.8.md（草案） | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-12 |
+| TASK-012 | P2 需求缺口澄清与 SRS 修订 | P2 | REQUIREMENTS | P1 | IN_PROGRESS | 处理 P2 关键交互默认值和数据边界问题；用户确认后同步 Q/CLQ/ADR 与 SRS；不得擅改已确认需求 | RAW-001/RAW-002/RAW-003/RAW-005/RAW-011；Q-022/Q-023/Q-024/Q-025（CLOSED）/Q-026（OPEN）/Q-029～Q-151（CLOSED）；ADR-005/013/015/017/027/028/029/030/032 | 助手/用户 | 继续处理其他 P2 需求缺口 | — | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-12 |
+| TASK-013 | P2 需求质量检查与阶段评审包 | P2 | DOCUMENTATION | P1 | TODO | 完成需求质量检查、追踪矩阵核验、风险/未决项披露并形成 P2 评审包；提交用户评审 | RAW-001～RAW-013；Q-022/Q-023/Q-024/Q-025（CLOSED）/Q-026（OPEN）/Q-029～Q-151（CLOSED）；ADR-001～ADR-032；CR-001；RISK-001 | 助手 | 依赖 TASK-011、TASK-012 | — | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-12 |
 
 ## 3. 任务状态历史（追加式）
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-10 | TASK-011 | — | TODO | 用户明确启动 P2；需将 P1 已确认需求结构化为 SRS | 用户原文：“启动P2” |
+| 2026-11-10 | TASK-011 | TODO | IN_PROGRESS | 已完成需求分解并建立 SRS v0.1 草案 | `/FolderHub/docs/01_Requirements/SRS_FolderHub_v0.1.md` |
+| 2026-11-10 | TASK-012 | — | TODO | P2 分析识别到主组件首次安装固定默认值尚未确认 | Q-022 / CLQ-020 |
+| 2026-11-10 | TASK-013 | — | TODO | SRS 草案形成后需执行质量检查和阶段评审 | P2 工作记录 / SRS v0.1 |
 | 2026-11-01 | TASK-001 | — | TODO | 按用户批准启动 V2.4 已有项目接管初始化 | 用户明确批准全部实施 |
 | 2026-11-01 | TASK-001 | TODO | DONE | V2.4 已有项目接管初始化任务完成；验收项见完成归档 | `/FolderHub/project.md`、`/FolderHub/Task_Board.md`、`/FolderHub/plans/done.md` 及初始化记录 |
 | 2026-11-01 | TASK-002 | — | TODO | 用户批准执行“澄清历史完整恢复 V1.0” | 本轮用户明确回复“批准” |
@@ -81,3 +87,35 @@
 | 扩展类型代码 | 定义 | 适用范围/使用边界 | 登记日期 |
 |---|---|---|---|
 
+
+| 2026-11-11 | TASK-012 | TODO | IN_PROGRESS | 用户已明确选择 Q-022 方案 A；完成 CLQ-020/Q-022/ADR-027/SRS v0.2 同步，继续处理其他 P2 需求缺口 | 用户原文：“FolderHub Q-022 我的选择：A。请按 P2 流程更新 CLQ-020、Q-022、必要的 ADR 和 SRS，并保留历史记录。” |
+
+| 2026-11-11 | TASK-012 | IN_PROGRESS | IN_PROGRESS | 完成 Q-022 后继续 P2 缺口分析，新增 Q-023/CLQ-021；等待用户确认重复路径处理规则 | SRS v0.3 草案；CLQ-021；Open_Issues Q-023 |
+
+
+| 2026-11-14 | TASK-011 | IN_PROGRESS | IN_PROGRESS | Q-023 已确认，SRS 修订为 v0.4，新增 FR-018；继续完善 P2 需求草案 | SRS_FolderHub_v0.4.md |
+| 2026-11-12 | TASK-012 | IN_PROGRESS | IN_PROGRESS | Q-023/CLQ-021 已关闭并新增 ADR-028；新增 Q-024/CLQ-022 处理搜索语义缺口 | 用户原文：“FolderHub Q-023 我的选择：A。请按 P2 流程更新相关台账和 SRS，保留历史记录，并继续后续需求分析。” |
+
+
+| 2026-11-14 | TASK-011 | IN_PROGRESS | IN_PROGRESS | Q-024 已确认，SRS 修订为 v0.5，FR-007 已细化；继续完善 P2 需求草案 | SRS_FolderHub_v0.5.md |
+| 2026-11-12 | TASK-012 | IN_PROGRESS | IN_PROGRESS | Q-024/CLQ-022 已关闭并新增 ADR-029；新增 Q-025/CLQ-023 处理搜索跨分类范围 | 用户原文：“FolderHub Q-024 我的选择：A。请按 P2 流程更新相关台账和 SRS，保留历史记录，并继续后续需求分析。” |
+
+
+| 2026-11-14 | TASK-011 | IN_PROGRESS | IN_PROGRESS | Q-025 已确认，SRS 修订为 v0.6，FR-007 明确跨分类搜索及结果去重；继续完善 P2 需求草案 | SRS_FolderHub_v0.6.md |
+| 2026-11-12 | TASK-012 | IN_PROGRESS | IN_PROGRESS | Q-025/CLQ-023 已关闭并新增 ADR-030；新增 Q-026/CLQ-024 处理多显示器/DPI/分辨率变化后的位置恢复 | 用户原文：“Q-025：A” |
+
+## 7. Q-151 澄清同步记录（2026-11-12）
+
+- TASK-011：保持 IN_PROGRESS；SRS 草案补充 Q-151 批量重试失败处理规则，当前草案版本 v0.7，尚未批准。
+- TASK-012：保持 IN_PROGRESS；Q-151 / CLQ-151 已 CLOSED / CONFIRMED，新增 ADR-031；后续 P2 需求缺口澄清继续。
+- TASK-013：保持 TODO；仍需在 P2 需求缺口收敛后执行质量检查及阶段评审包。
+- 阶段状态：P2_REQUIREMENT_ANALYSIS / IN_PROGRESS；需求基线 NOT_ESTABLISHED。
+
+
+## 8. 2026-11-14 历史澄清结论同步记录
+- TASK-011：继续 IN_PROGRESS；SRS 草案由 v0.7 更新为 v0.8，纳入 Q-029～Q-150 的 122 项确认规则；不建立需求基线。
+- TASK-012：继续 IN_PROGRESS；Q-029～Q-150 已按历史摘要补入 Open_Issues、问题澄清记录台账、ADR-032 和 CLQ-025～CLQ-146；Q-026 仍 OPEN。
+- TASK-013：保持 TODO；后续仍需执行 P2 完整质量检查与阶段评审准备。
+- `docs/README.md` 阶段状态已与 Project_Status 对齐。
+- 证据边界：Q-029～Q-150 原始逐字问答/完整选项缺失部分标记 RECONSTRUCTED/UNAVAILABLE。
+- P1 APPROVED；P2 IN_PROGRESS；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。

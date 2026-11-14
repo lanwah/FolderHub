@@ -1,57 +1,133 @@
 # FolderHub 文档索引
 
-本目录统一存放 FolderHub 项目研发过程文档。项目源代码、测试代码、脚本和配置与研发文档分离。项目管理入口 `project.md`、`Task_Board.md`、`plans/done.md` 按 V2.4.2 规范位于项目根目录及 plans。
+本目录统一存放 FolderHub 项目的研发过程文档。项目源代码、测试代码、脚本和配置与研发文档分离。项目管理入口 `project.md`、`Task_Board.md`、`plans/done.md` 位于项目根目录/ plans，是 V2.4 管理记录例外；正式研发文档仍统一归档于 `docs/`。
 
 ## 文档目录
-| 目录 | 用途 |
-|---|---|
-| `00_Project_Management/` | 项目章程、阶段状态、决策、变更、风险、澄清记录及一致性检查报告 |
-| `01_Requirements/` | 原始需求台账、未决问题台账；尚无正式 SRS |
-| `02_Architecture/` | 概要设计；当前未启动 |
-| `03_Detailed_Design/` | 详细设计；当前未启动 |
-| `04_Reviews/` | 阶段评审记录 |
-| `05_Development_Management/` | 开发过程管理 |
-| `06_Test_Management/` | 测试管理 |
-| `templates/` | 工作流模板副本 |
+| 目录 | 用途 | 当前内容 |
+|---|---|---|
+| `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md` |
+| `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.8.md`（当前 P2 草案；v0.7 保留为历史版本）、`P2_需求分析工作记录_v0.8.md` |
+| `02_Architecture/` | 概要架构与技术方案 | 当前尚无正式设计文档 |
+| `03_Detailed_Design/` | 详细设计 | 当前尚无正式设计文档 |
+| `04_Reviews/` | 阶段评审记录 | 当前尚无正式评审记录 |
+| `05_Development_Management/` | 开发过程管理 | 按阶段启用 |
+| `06_Test_Management/` | 测试过程管理 | 按阶段启用 |
+| `templates/` | 本项目使用的工作流模板副本 | 保留既有模板文件；本次未覆盖或替换历史模板 |
+| `_Archive/` | 历史或已替代文件 | 如存在，按原状保留 |
 
-## 权威管理入口
-- 阶段状态：`00_Project_Management/Project_Status.md`
-- 原始需求：`01_Requirements/Raw_Requirements.md`
-- 未决问题：`01_Requirements/Open_Issues.md`
-- 决策：`00_Project_Management/Decision_Log.md`
-- 变更：`00_Project_Management/Change_Log.md`
-- 风险：`00_Project_Management/Risk_Register.md`
-- 澄清索引：`00_Project_Management/问题澄清记录台账.md`
-- 澄清过程：`00_Project_Management/Clarifications/README.md`、`CLQ-001.md`～`CLQ-019.md`
+## V2.4 项目管理入口
+- 项目摘要看板：项目根目录 `project.md`（只读汇总）。
+- 任务台账：项目根目录 `Task_Board.md`（TASK 唯一权威源）。
+- 已完成任务归档：项目根目录 `plans/done.md`（追加式）。
+- 阶段状态权威源：`00_Project_Management/Project_Status.md`。
+- 风险权威源：`00_Project_Management/Risk_Register.md`。
+- 问题澄清索引：`00_Project_Management/问题澄清记录台账.md`。
+- 澄清逐题过程：`00_Project_Management/Clarifications/README.md` 及 CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151；其中 CLQ-025～CLQ-146 为历史摘要重建记录。
 
-## 本轮检查报告
-- `00_Project_Management/项目一致性检查报告-管理状态与目录清理V1.9.md`
-- `00_Project_Management/项目一致性检查报告-用户确认Q019-020V1.8.md`
-
-## 当前阶段
-- P1_REQUIREMENT_COLLECTION / APPROVED
-- 需求基线尚未建立；正式 SRS 未启动
-- Q-001～Q-014、Q-016～Q-020 已关闭；Q-015 留待 P3
-- ADR-001～ADR-026 已确认
-- CR-001 的 Windows Server 支持范围已获用户确认；RISK-001 剩余风险已 ACCEPTED；逐版本兼容性验证义务仍保留
-- TASK-001～TASK-010 已完成；任务完成不等于阶段批准
-
-## 当前 Windows 支持范围摘要
-- Windows 10（22H2）/Windows 11（x64）本地交互式桌面
-- Windows Server 2012 及以上版本的单用户交互式桌面
-- Server 2012/2012 R2：Server with a GUI；Server 2016 及以上：Desktop Experience
-- 不支持 Server Core；不承诺 RDS 多用户
-- 以上是目标支持范围，兼容性仍需逐版本验证
-
-## 目录与文件归档说明
-- 根目录项目管理入口为 `project.md`、`Task_Board.md`；根目录 `README.md` 和 `.gitignore` 按项目结构保留；完成任务归档位于 `plans/done.md`。
-- 正式研发文档、台账、澄清记录、评审报告和检查报告统一放在 `docs/` 对应阶段目录。
-- 2026-11-08 目录复核：用户已清理此前两份 RAW 历史同步副本；当前项目根目录不保留 `FH_SYNC_*` 同步副本。权威文件仅以本索引“权威管理入口”列出的路径为准。
-- `05_Development_Management/`、`06_Test_Management/` 为本项目既有目录命名，继续沿用；不因技能默认新项目目录名称不同而重命名，以免破坏已有路径和历史引用。
+## 当前研发阶段
+- 当前阶段：`P2_REQUIREMENT_ANALYSIS`
+- 阶段状态：`IN_PROGRESS`
+- P1 需求采集：`APPROVED`
+- 当前 SRS：`SRS_FolderHub_v0.8.md`（DRAFT，待用户评审）
+- 需求基线：尚未建立
+- P3 概要设计、P4 详细设计：`NOT_STARTED`
+- 当前未决项：Q-015（P3 技术设计）、Q-026（P2 待确认）
+- Q-029～Q-150：已依据历史摘要补录结论；逐字证据缺失项标记 RECONSTRUCTED / UNAVAILABLE。
 
 ## 管理规则
-1. 未经用户明确批准，不进入下一研发阶段。
-2. 不将助手建议当作用户需求或决策。
-3. 已确认需求和批准基线不得静默修改；变更必须登记并进行影响分析。
-4. 每次实质工作维护需求、问题、决策、变更、风险台账和阶段状态。
-5. 根目录 `README.md` 为用户维护文件，必须保留；本轮未修改。
+1. 所有正式研发文档统一放在项目根目录 `docs/` 下；V2.4 管理入口文件按技能规范放在根目录及 `plans/`。
+2. 不将助手建议当作用户确认的需求或决策。
+3. 未经用户明确批准，不进入下一研发阶段。
+4. 已确认需求和批准基线不得静默修改；变更必须登记并进行影响分析。
+5. 每次实质工作维护需求、问题、决策、变更、风险台账和项目阶段状态。
+6. 项目阶段以 `Project_Status.md` 为准；任务状态以根目录 `Task_Board.md` 为准。
+
+> **历史记录说明：**以下 V1.x 记录保留其发生时的项目状态（例如当时的 P1 IN_PROGRESS），仅作历史审计，不代表当前状态。当前阶段、当前 SRS 和未决项以上方“当前研发阶段”及 `Project_Status.md` 为准。
+
+> **历史状态说明：**以下 V1.x 章节按记录发生时的项目状态保留，仅作历史审计，不代表当前状态。当前阶段、SRS 版本和未决问题以上方“当前研发阶段”及 `Project_Status.md` 为准。
+
+## V1.1 澄清历史追加恢复
+- TASK-003 已完成；V1.0 原始记录保留，CLQ-001～CLQ-009 已追加历史摘要、新澄清选项/推荐及 V1.2 用户回答。
+- Q-001～Q-009 均已关闭；Q-010 保持 OPEN，留待设计阶段技术边界澄清。
+- P1 仍为 IN_PROGRESS；需求基线未建立，未启动 P2。
+
+
+## V1.3 用户补充确认
+- TASK-005 已完成；用户接受 Q-003/005/006/009 的推荐附加方案。
+- Q-001～Q-009 均已关闭，Q-010 保持 OPEN；P1 仍为 IN_PROGRESS，需求基线未建立，未启动 P2。
+
+
+## V1.4 用户确认登记（2026-11-02）
+- TASK-006 已完成；RAW-003～RAW-006 的推荐补充规则均获用户确认，新增 Q-011～Q-014、CLQ-011～CLQ-014 和 ADR-017～ADR-020。
+- Q-010 用户选择方案 C（退出时是否保留独立卡片可配置）；默认值及设置作用范围待确认，技术实现留待设计阶段。
+- P1 仍为 IN_PROGRESS；需求基线未建立，未启动 P2。
+
+## V1.5 Q-010 细节确认（2026-11-02）
+- TASK-007 已完成；Q-010 全局统一设置、默认开启，已关闭并新增 ADR-021。
+- Q-015 跟踪独立卡片在主程序退出后的技术生命周期实现，留待 P3 设计评估。
+- P1 仍为 IN_PROGRESS；需求基线尚未建立，未启动 P2。
+
+
+## V1.6 RAW-001 / RAW-002 完整性检查（2026-11-02）
+- 新增 Q-016～Q-018、CLQ-015～CLQ-017，分别澄清首版目标运行环境、分类层级和多分类文件夹排序范围。
+
+## V1.7 用户确认 Q-016～Q-018（2026-11-04）
+- Q-016～Q-018 已关闭；首版支持 Windows Server 单用户交互式桌面（不含 RDS 多用户），分类采用平级列表，各分类独立维护文件夹排序。
+- 新增 ADR-022～ADR-024；CR-001 记录并确认 Windows Server 单用户支持范围扩展；新增 RISK-001 跟踪兼容性验证。
+- 新增 Q-019/CLQ-018，等待用户确认具体 Windows Server 版本和 Desktop Experience 安装选项。
+- TASK-008 继续 IN_PROGRESS；P1 仍为 IN_PROGRESS，需求基线未建立，未进入 P2。
+
+
+
+## 2026-11-05 用户确认
+- Q-019 / CLQ-018：用户自定义选择 D，Windows Server 2012 及以上版本，CLOSED。
+- Q-020 / CLQ-019：用户选择 A；Server 2012/2012 R2 为 Server with a GUI，2016 及以上为 Desktop Experience，不支持 Server Core，CLOSED。
+- RISK-001 继续 OPEN，兼容性验证待执行；P1 未结束，需求基线未建立。
+
+
+## 2026-11-05 用户确认
+- Q-019 / CLQ-018：用户自定义选择 D，Windows Server 2012 及以上版本，CLOSED。
+- Q-020 / CLQ-019：用户选择 A；Server 2012/2012 R2 为 Server with a GUI，2016 及以上为 Desktop Experience，不支持 Server Core，CLOSED。
+- RISK-001 继续 OPEN，兼容性验证待执行；P1 未结束，需求基线未建立。
+
+
+## 2026-11-10 P2 需求分析澄清
+- 新增 `CLQ-020.md`，关联 Q-022：主组件首次安装时“固定到桌面”开关默认值。
+- Q-022 状态 OPEN / PENDING_CONFIRMATION；选项和助手推荐不代表用户决定。
+- P2 已启动；SRS v0.1 为草案，需求基线未建立。
+
+
+## 2026-11-11 Q-022 用户确认
+- 用户选择 A：首次安装时主组件“固定到桌面”默认关闭，用户可主动开启。
+- Q-022 / CLQ-020 已 CLOSED / CONFIRMED；新增 ADR-027；SRS 更新为 v0.2 草案。
+- 历史选项、助手推荐和原待答状态均保留在 `CLQ-020.md` 的追加式修订记录中。
+
+
+## 2026-11-11 Q-022 用户确认
+- 用户选择 A：首次安装时主组件固定到桌面默认关闭，用户可主动开启。
+- Q-022 / CLQ-020：CLOSED / CONFIRMED。
+- 新增 ADR-027；SRS 更新为 v0.2 草案。
+- 原有 CLQ-020 选项和助手推荐保留，用户原始回答逐字追加。
+
+
+## 2026-11-12 Q-024 用户确认与 Q-025 新增
+- Q-024 / CLQ-022：用户选择 A，已关闭；新增 ADR-029。
+- 搜索采用不区分大小写包含匹配、输入动态更新、清空恢复当前分类列表、无结果提示。
+- Q-025 / CLQ-023：搜索范围跨分类或仅当前分类，当前 OPEN / PENDING_CONFIRMATION。
+
+
+## 2026-11-12 Q-025 用户确认与 Q-026 新增
+- Q-025 / CLQ-023：用户选择 A，已关闭；新增 ADR-030。
+- 搜索跨全部分类；同一记录仅显示一次并显示所属分类；清空恢复当前分类列表。
+- Q-026 / CLQ-024：多显示器/DPI/分辨率变化后的位置恢复，OPEN / PENDING_CONFIRMATION。
+
+## 2026-11-12 Q-151 澄清记录
+- 新增 `00_Project_Management/Clarifications/CLQ-151.md`，记录待清理记录批量重试失败处理与续行规则。
+- Q-151 / CLQ-151 已 CLOSED / CONFIRMED；新增 ADR-031；SRS 草案更新至 v0.7，仍待用户评审。
+- P2 保持 IN_PROGRESS，需求基线未建立；P3/P4 未启动。
+
+
+## 2026-11-14 状态与澄清历史同步
+- 当前阶段摘要与 Project_Status.md 对齐：P1 APPROVED；P2 IN_PROGRESS；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
+- 当前 SRS 草案为 v0.8；v0.7 保留为历史版本。
+- Q-029～Q-150 已补录到问题台账、决策汇总、逐题澄清记录及 SRS 草案；证据边界见各 CLQ 文件。
