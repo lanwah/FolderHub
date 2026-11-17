@@ -1,18 +1,18 @@
 # FolderHub 文档索引
 
-本目录统一存放 FolderHub 项目的研发过程文档。项目源代码、测试代码、脚本和配置与研发文档分离。项目管理入口 `project.md`、`Task_Board.md`、`plans/done.md` 位于项目根目录/ plans，是 V2.4 管理记录例外；正式研发文档仍统一归档于 `docs/`。
+本目录统一存放 FolderHub 项目的研发过程文档。当前工作流规范：`software-predev-workflow-skill V2.6.1`。项目源代码、测试代码、脚本和配置与研发文档分离。项目管理入口 `project.md`、`Task_Board.md`、`plans/done.md` 位于项目根目录/ plans，是 V2.4 管理记录例外；正式研发文档仍统一归档于 `docs/`。
 
 ## 文档目录
 | 目录 | 用途 | 当前内容 |
 |---|---|---|
-| `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md` |
-| `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.8.md`（当前 P2 草案；v0.7 保留为历史版本）、`P2_需求分析工作记录_v0.8.md` |
+| `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md`、`项目一致性检查报告-V2.6.1同步.md`、`项目一致性检查报告-V2.6.1项目实例独立复核.md` |
+| `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.11.md`（当前 P2 草案；v0.1～v0.10 保留为历史版本）、`P2_需求分析工作记录_v0.9.md` |
 | `02_Architecture/` | 概要架构与技术方案 | 当前尚无正式设计文档 |
 | `03_Detailed_Design/` | 详细设计 | 当前尚无正式设计文档 |
-| `04_Reviews/` | 阶段评审记录 | 当前尚无正式评审记录 |
+| `04_Reviews/` | 阶段评审记录 | `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`、`P2_阶段评审准备包_v0.3_DRAFT.md`（准备草案；非正式批准） |
 | `05_Development_Management/` | 开发过程管理 | 按阶段启用 |
 | `06_Test_Management/` | 测试过程管理 | 按阶段启用 |
-| `templates/` | 本项目使用的工作流模板副本 | 保留既有模板文件；本次未覆盖或替换历史模板 |
+| `templates/` | 本项目使用的工作流模板副本 | Q、ADR、CR、CLQ 已映射至 V2.6.1 独立字段模板；旧合并模板保留为历史兼容 |
 | `_Archive/` | 历史或已替代文件 | 如存在，按原状保留 |
 
 ## V2.4 项目管理入口
@@ -26,12 +26,12 @@
 
 ## 当前研发阶段
 - 当前阶段：`P2_REQUIREMENT_ANALYSIS`
-- 阶段状态：`IN_PROGRESS`
+- 阶段状态：`REVIEW_PENDING`（等待用户评审，不代表批准）
 - P1 需求采集：`APPROVED`
-- 当前 SRS：`SRS_FolderHub_v0.8.md`（DRAFT，待用户评审）
+- 当前 SRS：`SRS_FolderHub_v0.11.md`（DRAFT，待用户评审；v0.1～v0.10 保留历史）
 - 需求基线：尚未建立
 - P3 概要设计、P4 详细设计：`NOT_STARTED`
-- 当前未决项：Q-015（P3 技术设计）、Q-026（P2 待确认）
+- 当前未决项：Q-015（D2 / DEFERRED，延期至 P3 架构决策节点）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033），实现算法留待 P3/P4
 - Q-029～Q-150：已依据历史摘要补录结论；逐字证据缺失项标记 RECONSTRUCTED / UNAVAILABLE。
 
 ## 管理规则
@@ -131,3 +131,37 @@
 - 当前阶段摘要与 Project_Status.md 对齐：P1 APPROVED；P2 IN_PROGRESS；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
 - 当前 SRS 草案为 v0.8；v0.7 保留为历史版本。
 - Q-029～Q-150 已补录到问题台账、决策汇总、逐题澄清记录及 SRS 草案；证据边界见各 CLQ 文件。
+
+## V2.6.1 决策澄清与状态记录规则
+- 对未知事项先按 D1/D2/D3 判级；无法可靠判级时保持待判级并采取保守措施。
+- D1 必须取得用户明确确认；D2 可集中提问或按规则有效延期；D3 仅限低风险、可逆且可可靠推导的普通细节，由助手记录来源、依据、影响和验证方式，不创建 Q/CLQ。
+- 实际提出的 D1/D2 问题继续执行 V2.2 全过程追加记录，必须提供选项、优缺点、推荐及理由，并保留用户历次回答。
+- 分别判断记录完整性、决策完成度、阶段阻塞性、延期有效性；不得将记录完整误判为决策完成，也不得将延期误判为用户接受。
+- RAW、Q、ADR、CR、风险和阶段状态继续由各自权威台账管理；决策处理状态应独立记录，不替换原状态字段。
+- CR 涉及实质性用户决策时，必须执行 D1/D2/D3 判级及必要的 Q/CLQ/ADR 关联。
+
+### V2.6.1 模板副本
+`templates/` 中已同步独立的 `未决问题台账模板.md`、`决策台账模板.md`、`问题澄清记录台账模板.md`。原 `问题与决策台账模板.md` 保留为历史兼容模板，不用于新建台账。
+
+
+## V2.6.1 实例修复阶段记录（2026-11-14 历史快照）
+- 截至本记录日期，Q-026 为 D2 / PENDING_CONFIRMATION；四维状态 COMPLETE / PENDING / PARTIAL / NOT_DEFERRED。该状态已由 2026-11-15 的用户确认记录更新，当前状态见上方“当前研发阶段”及本文件末尾。
+- Q-015：D2 / DEFERRED；有效延期至 P3 架构决策/基线前。
+- CR-001：D1 / CONFIRMED；CR 状态仍 APPROVED；RISK-001 的 ACCEPTED 风险及兼容性验证义务保持不变。
+- ADR-032 的 122 个历史子项已拆分状态字段，RECONSTRUCTED/UNAVAILABLE 证据边界保留。
+- 当时 SRS v0.9 为 DRAFT；AI_DERIVED 已登记，未采纳任何未确认 DESIGN_ASSUMPTION。当前 SRS 已更新为 v0.10。
+- P2 仍 IN_PROGRESS；需求基线 NOT_ESTABLISHED；P3/P4 NOT_STARTED。
+
+
+## 2026-11-15 Q-026 用户确认同步
+- Q-026 / CLQ-024：D2 / CLOSED / CONFIRMED；用户选择 A，详见 `00_Project_Management/Clarifications/CLQ-024.md` V1.2。
+- 新增 ADR-033；当时 SRS 为 `01_Requirements/SRS_FolderHub_v0.10.md`（DRAFT）；v0.9 及更早版本保留为历史草案。
+- 当时 P2 阶段评审准备草案：`04_Reviews/P2_阶段评审准备包_v0.2_DRAFT.md`；仍需最终追踪矩阵和质量检查，未构成用户批准。
+- P1 APPROVED；P2 IN_PROGRESS；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
+
+
+## 2026-11-16 P2 最终收尾同步
+- 当前 SRS 草案：`01_Requirements/SRS_FolderHub_v0.11.md`。
+- 质量检查：`04_Reviews/P2_需求质量检查与追踪矩阵复核报告_v1.0.md`（WARNING / READY_FOR_USER_REVIEW_WITH_NOTES）。
+- 评审准备包：`04_Reviews/P2_阶段评审准备包_v0.3_DRAFT.md`。
+- P2：`REVIEW_PENDING`，等待用户评审；未批准 SRS/P2，未建立需求基线，未启动 P3。

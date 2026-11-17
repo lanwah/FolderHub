@@ -1,21 +1,55 @@
 # FolderHub 项目状态
 
 - 文档编号：FH-PM-002
-- 版本：v3.1
+- 版本：v3.7
 - 状态：项目管理状态记录
-- 日期：2026-11-14
-- 工作流规范：software-predev-workflow-skill V2.5.0
+- 日期：2026-11-16
+- 工作流规范：software-predev-workflow-skill V2.6.1
 
 ## 0. 工作流规范更新记录
 - 2026-11-10：依据用户明确选择 A，将 FolderHub 项目管理规范对齐至 `software-predev-workflow-skill V2.5.0`。完成 RISK-001 三层风险管理字段适配及初步筛查；保留其既有完整评估、`ACCEPTED` 状态和用户接受证据，不改变 RAW/Q/ADR/CR、阶段批准或任何需求/设计基线。
 - 2026-11-08：项目执行规范版本标识更新为 `software-predev-workflow-skill V2.4.2`。本次版本差异仅涉及技能包 `.gitignore` 对 `.cursor/` 的跟踪修正及移除技能包内冗余提交规则文件；不改变 FolderHub 项目需求、阶段状态、评审批准或任何基线。
+
+
+## 0.4 V2.6.1 修复后独立一致性检查记录（2026-11-14）
+- 已对写回资料库的修复文件执行二次读回检查，报告：`项目一致性检查报告-V2.6.1修复后独立检查.md`。
+- 检查结果：修复项文件级 PASS；P2 阶段最终批准为 BLOCKED（Q-026 / D2 尚待用户确认）；Git Commit/Tag 与 Cursor/Codex 本地加载仍 NOT_CHECKED。
+- 已验证：Q-026 D2 四维记录；Q-015 D2 有效延期；CR-001 D1 / CONFIRMED 且 CR APPROVED 状态分离；ADR-032 122 项状态字段拆分且 RECONSTRUCTED 证据保留；SRS v0.9 AI-DER-000～004 及 DESIGN_ASSUMPTION NONE_ADOPTED；模板映射和 P2 准备包索引。
+- SRS v0.9 仍为 DRAFT；P2 准备包仍为 DRAFT；需求基线 NOT_ESTABLISHED；P1 APPROVED、P2 IN_PROGRESS、P3/P4 NOT_STARTED 均未改变。
+- Q-026 当前未申请延期，决策处理状态仍 PENDING_CONFIRMATION；不阻断无依赖的 P2 分析，但阻断 P2 最终批准。TASK-016 保持 IN_PROGRESS，等待用户回答 Q-026 后完成剩余处理。
+
+## 0.3 V2.6.1 项目实例修复记录（2026-11-14）
+- TASK-016 已启动；用户批准按六项顺序修复独立复核发现。
+- 模板映射已切换至独立 Q/ADR/CLQ 模板；CR 模板补充决策等级、决策处理状态及四维评估字段；旧合并模板保留为历史兼容。
+- ADR-032 的 122 个历史子项状态表达已拆分为 Q 状态、用户确认状态、决策处理状态、证据等级；证据仍为 RECONSTRUCTED，不倒推 D 等级。
+- Q-026：D2 / PENDING_CONFIRMATION；四维评估 COMPLETE / PENDING / PARTIAL / NOT_DEFERRED；不阻断无依赖 P2 分析，但阻断 P2 最终批准，等待用户选择。
+- Q-015：D2 / DEFERRED；延期有效，目标为 P3 架构方案评审/批准前；P2 不阻断，P3 架构决策节点阻断。
+- CR-001：D1 / CONFIRMED；CR 状态仍 APPROVED；RISK-001 仍以 Risk_Register.md 的 ACCEPTED 为准，兼容性测试义务不变。
+- SRS v0.9 由 v0.8 保留历史后新建；已登记 AI_DERIVED 内容；当前没有采纳 DESIGN_ASSUMPTION；SRS 仍 DRAFT。
+- 当前阶段仍 P2 IN_PROGRESS；需求基线 NOT_ESTABLISHED；P3/P4 NOT_STARTED。Q-026 未答复前不提交 P2 最终评审/批准，不建立基线。
+
+## 0.2 V2.6.1 项目实例独立复核记录（2026-11-14）
+- 已完成对 RAW/Q/ADR/CLQ/CR/RISK、模板、SRS v0.8、Task_Board 和阶段门禁的只读独立复核；报告：`项目一致性检查报告-V2.6.1项目实例独立复核.md`。
+- 结论：WARNING。V2.6.1 规则已写入管理说明，但部分活动台账和 SRS 尚未实例化新字段/标记；P2 可继续非依赖工作，但当前不具备 P2 阶段批准条件。
+- 主要发现：模板映射未切换到独立模板；Q-015/Q-026 缺少 D 等级/独立处理状态/四维评估；ADR-032 子项状态表达混合；CR-001 缺少决策分级；SRS v0.8 缺少 AI_DERIVED / DESIGN_ASSUMPTION 标记，且 Q-023 被错误列入未决问题、Q-026 条目重复。
+- P2 门禁：Q-026 暂按 D2 候选评估，待正式判级与用户确认或有效延期；Q-015 属 P3 技术架构事项，不自动阻断 P2，但进入 P3 架构决策/基线前须解决或有效延期。CR-001 范围已确认，兼容性验证义务保留。
+- 本次仅记录审计发现；未修改 RAW/Q/ADR/CR/RISK 的业务状态或历史内容，未修改 SRS 需求内容，未建立需求基线，未改变 P1 APPROVED、P2 IN_PROGRESS、P3/P4 NOT_STARTED。
+- TASK-015 已完成并归档；Git Commit/Tag 与本地客户端加载状态仍 NOT_CHECKED。
+
+## 0.1 V2.6.1 工作流规范同步记录（2026-11-14）
+- 已将 FolderHub 项目管理规范标识更新为 `software-predev-workflow-skill V2.6.1`。
+- 同步重点：D1/D2/D3 决策分级；D3 仅用于低风险、可逆且可可靠推导的普通细节；实际提出的 D1/D2 继续执行 V2.2 澄清全过程记录；CR 引入/改变实质性用户决策时接入同一分级与澄清流程。
+- 新增四维独立判断要求：记录完整性、决策完成度、阶段阻塞性、延期有效性；延期不等于用户接受或批准。
+- RAW/Q/ADR/CR 原有状态枚举继续独立维护；决策处理状态不得替换专业台账状态。历史记录不追溯性改写；Q-015、Q-026 在后续实际处理时按新规范判级并评估四维状态；现已分别完成实例化。
+- 本次仅更新规范引用、管理说明及同步记录；不修改 RAW 原文/状态、Q 原状态、ADR 决策内容、CR-001、RISK-001、SRS v0.8 的需求内容，不建立需求基线，不改变阶段批准。
+- Git Commit/Tag 与本地 Cursor/Codex 加载验证：`NOT_CHECKED`；本次仅操作个人 Library 中的 FolderHub 项目资料。
 
 ## 1. 当前状态
 | 项目 | 状态 |
 |---|---|
 | 项目初始化 P0 | 已完成（V2.4 接管初始化已完成） |
 | 需求采集 P1 | APPROVED |
-| 需求分析 P2 | IN_PROGRESS |
+| 需求分析 P2 | REVIEW_PENDING |
 | 概要设计 P3 | NOT_STARTED |
 | 详细设计 P4 | NOT_STARTED |
 | 需求基线 | 尚未建立 |
@@ -27,12 +61,12 @@
 - 已确认需求/产品选择：13 项（RAW-001 至 RAW-013；RAW-001/RAW-002 的关键范围已确认，Server 兼容性待验证）
 - 待澄清/细化的原始需求：0 项（RAW-001/RAW-002 关键范围已确认；兼容性验证作为风险跟踪）
 - 助手建议：8 项（SUG-001 至 SUG-008，非用户需求）
-- 未决问题：2 项（Q-015 为 P3 技术设计问题；Q-026 为 P2 多显示器位置恢复澄清）；Q-001～Q-014、Q-016～Q-020、Q-022～Q-025、Q-029～Q-151 均已关闭（Q-029～Q-150 为历史摘要重建记录）
-- 决策记录：32 项（ADR-001 至 ADR-032）；ADR-032 汇总 Q-029～Q-150 的 122 项历史确认结论
+- 未决问题：1 项（Q-015 为 D2 / DEFERRED 的 P3 技术设计问题）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033）；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-151 均已关闭（Q-029～Q-150 为历史摘要重建记录）
+- 决策记录：33 项（ADR-001 至 ADR-033）；ADR-032 汇总 Q-029～Q-150 的 122 项历史确认结论
 - 澄清记录：147 项（CLQ-001～CLQ-146、CLQ-151；CLQ-025～CLQ-146 为 RECONSTRUCTED）
-- 澄清历史：CLQ-001～CLQ-146、CLQ-151 已登记；Q-001～Q-014、Q-016～Q-020、Q-022～Q-025、Q-029～Q-151 已关闭；Q-015 为 P3 技术设计问题，Q-026 为 P2 待确认。Q-029～Q-150 结论已按历史摘要补写，原始逐字问答缺失边界已逐题标记 RECONSTRUCTED/UNAVAILABLE
+- 澄清历史：CLQ-001～CLQ-146、CLQ-151 已登记；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-151 已关闭；Q-015 为 P3 技术设计问题。Q-026 / CLQ-024 已于 2026-11-15 追加用户选择 A 及四维评估。Q-029～Q-150 结论已按历史摘要补写，原始逐字问答缺失边界已逐题标记 RECONSTRUCTED/UNAVAILABLE
 - 变更记录：1 项（CR-001 范围已获用户确认；兼容性验证待执行；需求基线尚未建立）
-- 任务看板：TASK-001～TASK-010 已完成并归档；TASK-011/012 IN_PROGRESS；TASK-013 TODO
+- 任务看板：TASK-001～TASK-010 已完成并归档；TASK-011～TASK-013 IN_PROGRESS（P2 评审等待用户评审）；TASK-014～TASK-016 DONE（TASK-016 已追加归档）
 
 ## 3. 当前重点
 1. Q-001～Q-009、Q-011～Q-014 均已关闭；RAW-003～RAW-006 的别名、用途说明、路径失效和打开操作规则已确认并同步 RAW/ADR。
@@ -41,7 +75,7 @@
 4. 同类项目调研范围已确认（5～10 个候选及约定交付物）；具体技术栈尚未批准，调研结论不得直接视为技术选型。
 
 ## 4. 下一步
-P2 需求分析阶段已于 2026-11-10 获用户明确启动授权，当前 IN_PROGRESS。已建立 SRS v0.1～v0.7 草案（v0.7 当前；v0.1～v0.6 历史版本保留）；Q-022～Q-025、Q-151 已关闭，Q-026 为当前 P2 待确认问题。待继续处理 P2 其他需求缺口、执行需求质量检查并形成阶段评审包。未经用户明确批准 SRS 指定版本，不建立需求基线、不启动 P3。Q-015 留待 P3 设计阶段处理。
+P2 需求分析已完成本轮追踪矩阵、质量检查和评审准备，阶段状态更新为 REVIEW_PENDING，仅表示等待用户评审，不代表批准。当前 SRS v0.11 为 DRAFT（v0.1～v0.10 保留历史）；P2 评审准备包 v0.3 与质量检查报告 v1.0 已形成。Q-026 为 D2 / CLOSED / CONFIRMED；Q-015 为 D2 / DEFERRED，有效延期至 P3 架构决策节点。用户尚未批准 SRS/P2，需求基线 NOT_ESTABLISHED，P3 NOT_STARTED。
 
 ## 5. 阶段与基线历史
 - 2026-10-31：P0 初始化完成，进入 P1 需求采集；需求基线尚未建立。
@@ -53,12 +87,12 @@ P2 需求分析阶段已于 2026-11-10 获用户明确启动授权，当前 IN_P
 - 2026-11-02：用户确认 RAW-003～RAW-006 推荐方案，新增 Q-011～Q-014、ADR-017～ADR-020 并关闭四题；用户选择 Q-010 方案 C，设置默认值及作用范围待确认。TASK-006 完成；P1 保持 IN_PROGRESS，未建立需求基线，未进入 P2。
 
 ## 6. 任务与风险
-- 当前活跃任务：TASK-011（P2 SRS 需求整理，IN_PROGRESS）；TASK-012（P2 需求缺口澄清，IN_PROGRESS）；TASK-013（P2 需求质量检查与阶段评审包，TODO）。TASK-001～TASK-010 已完成并归档。
+- 当前活跃任务：TASK-011（P2 SRS 需求整理，IN_PROGRESS）；TASK-012（P2 需求缺口澄清与未决边界跟踪，IN_PROGRESS）；TASK-013（P2 质量检查与评审包，IN_PROGRESS，成果已提交用户评审）。TASK-001～TASK-010 已完成并归档。
 - 已完成任务：TASK-001～TASK-010；TASK-008 为 RAW-001/RAW-002 完整性澄清及 Q-016～Q-020 关闭与台账同步；TASK-009 为 P1 阶段评审批准及管理文件同步。
 - 当前风险：RISK-001（Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；V2.5.0 初筛为 NORMAL；既有完整评估及用户接受状态 ACCEPTED 保持有效；P3/P4 仍须逐版本验证）；Q-015 独立卡片生命周期技术实现留待 P3；Q-001～Q-009 部分原始逐轮历史仍不可访问。
 - Git 仓库/Commit/Tag：当前环境不可验证，NOT_CHECKED。
 
-- P1 阶段评审：用户已批准 P1 成果；需求基线尚未建立；P2 启动授权待用户单独确认。
+- P1 阶段评审：用户已批准 P1 成果；P2 已于 2026-11-10 明确启动；需求基线尚未建立。
 
 ## 7. 修订记录
 - v1.9（2026-11-08）：修正项目管理文件之间的阶段状态冲突：Task_Board、project.md、docs/README 与本文件统一为 P1_REQUIREMENT_COLLECTION / APPROVED；补齐 TASK-009 状态历史及完成归档。P2 仍 NOT_STARTED，需求基线仍未建立。核查发现根目录 FH_SYNC_Raw_Requirements.md 为过期同步副本，权威文件为 docs/01_Requirements/Raw_Requirements.md；将该同步副本标记为非权威；当前项目资料库接口不允许删除项目附件，故未删除该文件；不修改权威需求内容。文档目录说明补充于 docs/README。
@@ -190,3 +224,31 @@ P2 需求分析阶段已于 2026-11-10 获用户明确启动授权，当前 IN_P
 - `docs/README.md` 当前阶段摘要已与本文件对齐。
 - 当前阶段：P1 APPROVED；P2 IN_PROGRESS；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
 - Q-015 仍为 P3 OPEN；Q-026 仍为 P2 OPEN / PENDING_CONFIRMATION。
+
+- v3.2（2026-11-14）：同步 software-predev-workflow-skill V2.6.1；补充 D1/D2/D3、四维状态模型、CR 决策澄清衔接及台账状态分离规则；不改变阶段状态和任何需求/设计基线。
+
+
+## 0.5 Q-026 用户确认与项目状态更新（2026-11-15）
+- 用户明确选择 Q-026 选项 A；原始回答（VERBATIM）保存在 `Clarifications/CLQ-024.md` V1.2 与问题澄清记录台账。
+- Q-026：Q 状态 `CLOSED`；用户确认状态 `CONFIRMED`；决策等级 `D2`；决策处理状态 `CONFIRMED`。四维评估：记录完整性 `COMPLETE`、决策完成度 `CONFIRMED`、阶段阻塞性 `NON_BLOCKING`、延期有效性 `NOT_DEFERRED`。
+- 新增 ADR-033；SRS v0.10 增加 FR-019、更新 NFR-002 和 RAW-011/RAW-013 追踪；SRS v0.9 保留为历史草案。
+- Q-026 不再阻断 P2；Q-015 仍为 D2 / DEFERRED，P3 架构节点前必须处理；RISK-001 仍为 ACCEPTED，兼容性逐版本验证义务不变。
+- TASK-016 已完成并追加至 `plans/done.md`；TASK-011/012 继续 IN_PROGRESS；TASK-013 仍 TODO，负责最终追踪矩阵、质量检查和 P2 正式评审准备。
+- P1 `APPROVED`、P2 `IN_PROGRESS`、P3/P4 `NOT_STARTED`；需求基线仍 `NOT_ESTABLISHED`。SRS v0.10 和 P2 准备包 v0.2 均为 DRAFT，尚未获得用户批准。
+- Git Commit/Tag 与 Cursor/Codex 本地加载仍 `NOT_CHECKED`。
+
+
+## 0.6 当前统计与门禁修正（2026-11-15）
+- 已将当前统计中的未决问题数修正为 1 项（Q-015）；Q-026 已关闭并确认。
+- 当前决策记录数修正为 33 项（新增 ADR-033）。
+- 当前澄清与任务摘要已同步 Q-026 CLOSED / CONFIRMED、TASK-016 DONE。
+- P2 仍 IN_PROGRESS；SRS v0.10 与评审包 v0.2 仍为 DRAFT；需求基线 NOT_ESTABLISHED。
+
+
+## 0.7 P2 最终收尾与评审提交（2026-11-16）
+- 用户明确批准按 software-predev-workflow-skill V2.6.1 完成 P2 最终收尾；授权范围为检查、追踪矩阵、质量检查和评审准备，不包含用户代批 SRS/P2、建立需求基线或启动 P3。
+- SRS 新草案 v0.11：补齐 RAW→FR/BR/UIR/NFR 追踪；将既有业务规则编号化、界面要求条目化；补齐 NFR 来源字段；修正 Q-026、Q-029～Q-150 状态描述矛盾；保留 Q-029～Q-150 的 RECONSTRUCTED/UNAVAILABLE 证据边界。
+- 新增 `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`（PASS 9 / WARNING 3 / FAIL 0 / NOT_CHECKED 2）及 `P2_阶段评审准备包_v0.3_DRAFT.md`。
+- RAW-001～RAW-013 原文未修改；Open_Issues、Decision_Log、Change_Log、Risk_Register 中用户决策/风险状态未修改；Q-015 延期、Q-026 确认、CR-001 与 RISK-001 状态保持不变。
+- P2 更新为 REVIEW_PENDING（等待用户评审，不代表 APPROVED）；P1 APPROVED；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
+- Git Commit/Tag、Windows 实机验证、Cursor/Codex 本地加载：NOT_CHECKED。
