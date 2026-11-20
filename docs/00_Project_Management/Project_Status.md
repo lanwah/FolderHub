@@ -1,9 +1,9 @@
 # FolderHub 项目状态
 
 - 文档编号：FH-PM-002
-- 版本：v3.7
+- 版本：v3.8
 - 状态：项目管理状态记录
-- 日期：2026-11-16
+- 日期：2026-11-20
 - 工作流规范：software-predev-workflow-skill V2.6.1
 
 ## 0. 工作流规范更新记录
@@ -49,10 +49,10 @@
 |---|---|
 | 项目初始化 P0 | 已完成（V2.4 接管初始化已完成） |
 | 需求采集 P1 | APPROVED |
-| 需求分析 P2 | REVIEW_PENDING |
-| 概要设计 P3 | NOT_STARTED |
+| 需求分析 P2 | APPROVED |
+| 概要设计 P3 | IN_PROGRESS |
 | 详细设计 P4 | NOT_STARTED |
-| 需求基线 | 尚未建立 |
+| 需求基线 | BASELINED：REQ-BL-1.0（SRS v0.11） |
 | 概要设计基线 | 尚未建立 |
 | 详细设计基线 | 尚未建立 |
 
@@ -65,17 +65,17 @@
 - 决策记录：33 项（ADR-001 至 ADR-033）；ADR-032 汇总 Q-029～Q-150 的 122 项历史确认结论
 - 澄清记录：147 项（CLQ-001～CLQ-146、CLQ-151；CLQ-025～CLQ-146 为 RECONSTRUCTED）
 - 澄清历史：CLQ-001～CLQ-146、CLQ-151 已登记；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-151 已关闭；Q-015 为 P3 技术设计问题。Q-026 / CLQ-024 已于 2026-11-15 追加用户选择 A 及四维评估。Q-029～Q-150 结论已按历史摘要补写，原始逐字问答缺失边界已逐题标记 RECONSTRUCTED/UNAVAILABLE
-- 变更记录：1 项（CR-001 范围已获用户确认；兼容性验证待执行；需求基线尚未建立）
-- 任务看板：TASK-001～TASK-010 已完成并归档；TASK-011～TASK-013 IN_PROGRESS（P2 评审等待用户评审）；TASK-014～TASK-016 DONE（TASK-016 已追加归档）
+- 变更记录：1 项（CR-001 范围已获用户确认；兼容性验证待执行；REQ-BL-1.0 已建立，CR-001 未因基线建立而改变）
+- 任务看板：TASK-001～TASK-016 已完成并归档；TASK-017～TASK-018 为当前 P3 活跃任务。
 
 ## 3. 当前重点
 1. Q-001～Q-009、Q-011～Q-014 均已关闭；RAW-003～RAW-006 的别名、用途说明、路径失效和打开操作规则已确认并同步 RAW/ADR。
-2. Q-010 已关闭：退出保留设置为全局统一开关，默认开启；开启时退出主程序后独立卡片继续显示，关闭时一并关闭。具体生命周期技术实现由 Q-015 跟踪，留待 P3。
+2. Q-010 已关闭：退出保留设置为全局统一开关，默认开启；开启时退出主程序后独立卡片继续显示，关闭时一并关闭。具体生命周期技术实现由 Q-015 跟踪；P3 已启动，当前由 TASK-018 进行架构分析。
 3. Q-016～Q-020 已全部关闭：保留 Windows 10/11 本地桌面支持，增加 Windows Server 2012 及以上单用户 GUI/Desktop Experience 支持；不含 Server Core/RDS 多用户；分类平级且各分类独立排序。
 4. 同类项目调研范围已确认（5～10 个候选及约定交付物）；具体技术栈尚未批准，调研结论不得直接视为技术选型。
 
 ## 4. 下一步
-P2 需求分析已完成本轮追踪矩阵、质量检查和评审准备，阶段状态更新为 REVIEW_PENDING，仅表示等待用户评审，不代表批准。当前 SRS v0.11 为 DRAFT（v0.1～v0.10 保留历史）；P2 评审准备包 v0.3 与质量检查报告 v1.0 已形成。Q-026 为 D2 / CLOSED / CONFIRMED；Q-015 为 D2 / DEFERRED，有效延期至 P3 架构决策节点。用户尚未批准 SRS/P2，需求基线 NOT_ESTABLISHED，P3 NOT_STARTED。
+P2 已于 2026-11-20 获用户明确批准，SRS v0.11 已建立需求基线 `REQ-BL-1.0`。P3 概要设计已获授权并进入 IN_PROGRESS。当前优先执行总体架构候选方案分析及 Q-015 独立卡片宿主生命周期分析；Q-015 仍为 OPEN / D2，延期触发条件已到达，必须在相关架构方案批准/基线前完成分析并取得必要确认。RISK-001 仍为 ACCEPTED，Windows Server 兼容性逐版本验证义务不变。
 
 ## 5. 阶段与基线历史
 - 2026-10-31：P0 初始化完成，进入 P1 需求采集；需求基线尚未建立。
@@ -87,12 +87,12 @@ P2 需求分析已完成本轮追踪矩阵、质量检查和评审准备，阶�
 - 2026-11-02：用户确认 RAW-003～RAW-006 推荐方案，新增 Q-011～Q-014、ADR-017～ADR-020 并关闭四题；用户选择 Q-010 方案 C，设置默认值及作用范围待确认。TASK-006 完成；P1 保持 IN_PROGRESS，未建立需求基线，未进入 P2。
 
 ## 6. 任务与风险
-- 当前活跃任务：TASK-011（P2 SRS 需求整理，IN_PROGRESS）；TASK-012（P2 需求缺口澄清与未决边界跟踪，IN_PROGRESS）；TASK-013（P2 质量检查与评审包，IN_PROGRESS，成果已提交用户评审）。TASK-001～TASK-010 已完成并归档。
-- 已完成任务：TASK-001～TASK-010；TASK-008 为 RAW-001/RAW-002 完整性澄清及 Q-016～Q-020 关闭与台账同步；TASK-009 为 P1 阶段评审批准及管理文件同步。
-- 当前风险：RISK-001（Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；V2.5.0 初筛为 NORMAL；既有完整评估及用户接受状态 ACCEPTED 保持有效；P3/P4 仍须逐版本验证）；Q-015 独立卡片生命周期技术实现留待 P3；Q-001～Q-009 部分原始逐轮历史仍不可访问。
+- 当前活跃任务：TASK-017（P3 总体架构与设计框架分析，IN_PROGRESS）；TASK-018（Q-015 独立卡片宿主生命周期架构分析，IN_PROGRESS）。TASK-001～TASK-016 已完成并归档。
+- 已完成任务：TASK-001～TASK-016；其中 TASK-011～TASK-013 已于 2026-11-20 随 P2 批准完成并归档。
+- 当前风险：RISK-001（Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；V2.5.0 初筛为 NORMAL；既有完整评估及用户接受状态 ACCEPTED 保持有效；P3/P4 仍须逐版本验证）；Q-015 已进入 P3 分析，相关架构批准/基线仍受其阻塞；Q-001～Q-009 部分原始逐轮历史仍不可访问。
 - Git 仓库/Commit/Tag：当前环境不可验证，NOT_CHECKED。
 
-- P1 阶段评审：用户已批准 P1 成果；P2 已于 2026-11-10 明确启动；需求基线尚未建立。
+- P1 阶段评审：用户已批准 P1 成果；P2 已于 2026-11-20 获批；需求基线 `REQ-BL-1.0` 已建立；P3 已获授权并启动。
 
 ## 7. 修订记录
 - v1.9（2026-11-08）：修正项目管理文件之间的阶段状态冲突：Task_Board、project.md、docs/README 与本文件统一为 P1_REQUIREMENT_COLLECTION / APPROVED；补齐 TASK-009 状态历史及完成归档。P2 仍 NOT_STARTED，需求基线仍未建立。核查发现根目录 FH_SYNC_Raw_Requirements.md 为过期同步副本，权威文件为 docs/01_Requirements/Raw_Requirements.md；将该同步副本标记为非权威；当前项目资料库接口不允许删除项目附件，故未删除该文件；不修改权威需求内容。文档目录说明补充于 docs/README。
@@ -252,3 +252,14 @@ P2 需求分析已完成本轮追踪矩阵、质量检查和评审准备，阶�
 - RAW-001～RAW-013 原文未修改；Open_Issues、Decision_Log、Change_Log、Risk_Register 中用户决策/风险状态未修改；Q-015 延期、Q-026 确认、CR-001 与 RISK-001 状态保持不变。
 - P2 更新为 REVIEW_PENDING（等待用户评审，不代表 APPROVED）；P1 APPROVED；P3/P4 NOT_STARTED；需求基线 NOT_ESTABLISHED。
 - Git Commit/Tag、Windows 实机验证、Cursor/Codex 本地加载：NOT_CHECKED。
+
+
+## 0.8 P2 批准、需求基线建立与 P3 启动（2026-11-20）
+- 用户原始批准表达（VERBATIM）：`FolderHub Q-P2-APPROVAL 我的选择：A。批准 SRS v0.11，建立需求基线，并授权进入 P3 概要设计。`
+- P2：`APPROVED`；批准文档：`docs/01_Requirements/SRS_FolderHub_v0.11.md`；批准范围：完整 SRS v0.11。
+- 需求基线：`REQ-BL-1.0`；基线文件 SHA-256：`263926943cf870344369b2b430ed90963db7e655a907a0b097dc53be5b2ab8a7`。该标识固定已批准版本；后续变更必须走 CR。
+- P3：`IN_PROGRESS`；P4：`NOT_STARTED`；概要设计基线尚未建立。
+- 已形成只读一致性检查报告：`docs/04_Reviews/项目一致性检查报告-P2批准与P3启动V1.0.md`；结果 WARNING（PASS 8 / WARNING 2 / FAIL 0 / NOT_CHECKED 3）。
+- Q-015：仍 `OPEN / D2 / DEFERRED`；P3 启动触发条件已到达，相关架构分析现为活动工作；在 Q-015 解决/完成必要确认前，不得批准独立卡片宿主生命周期架构或建立相应设计基线。
+- RAW-001～RAW-013、ADR-001～ADR-033、CR-001、RISK-001 的既有语义/状态未被本次阶段批准改写；决策台账仍为 33 项，本次为阶段审批，不新增产品 ADR。
+- Git Commit/Tag、Windows 实机兼容性验证、Cursor/Codex 本地加载：`NOT_CHECKED`。

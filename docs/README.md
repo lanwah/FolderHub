@@ -6,10 +6,10 @@
 | 目录 | 用途 | 当前内容 |
 |---|---|---|
 | `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md`、`项目一致性检查报告-V2.6.1同步.md`、`项目一致性检查报告-V2.6.1项目实例独立复核.md` |
-| `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.11.md`（当前 P2 草案；v0.1～v0.10 保留为历史版本）、`P2_需求分析工作记录_v0.9.md` |
-| `02_Architecture/` | 概要架构与技术方案 | 当前尚无正式设计文档 |
+| `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.11.md`（当前已批准需求基线 REQ-BL-1.0；v0.1～v0.10 保留为历史版本）、`P2_需求分析工作记录_v0.9.md` |
+| `02_Architecture/` | 概要架构与技术方案 | `P3_概要设计工作计划_v0.1.md`（工作计划，非设计基线；正式概要设计待形成） |
 | `03_Detailed_Design/` | 详细设计 | 当前尚无正式设计文档 |
-| `04_Reviews/` | 阶段评审记录 | `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`、`P2_阶段评审准备包_v0.3_DRAFT.md`（准备草案；非正式批准） |
+| `04_Reviews/` | 阶段评审记录 | `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`、`P2_阶段评审准备包_v0.3_DRAFT.md`（提交评审时的历史准备包）；`P2_阶段评审批准记录_v1.0.md`；`项目一致性检查报告-P2批准与P3启动V1.0.md` |
 | `05_Development_Management/` | 开发过程管理 | 按阶段启用 |
 | `06_Test_Management/` | 测试过程管理 | 按阶段启用 |
 | `templates/` | 本项目使用的工作流模板副本 | Q、ADR、CR、CLQ 已映射至 V2.6.1 独立字段模板；旧合并模板保留为历史兼容 |
@@ -25,13 +25,13 @@
 - 澄清逐题过程：`00_Project_Management/Clarifications/README.md` 及 CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151；其中 CLQ-025～CLQ-146 为历史摘要重建记录。
 
 ## 当前研发阶段
-- 当前阶段：`P2_REQUIREMENT_ANALYSIS`
-- 阶段状态：`REVIEW_PENDING`（等待用户评审，不代表批准）
-- P1 需求采集：`APPROVED`
-- 当前 SRS：`SRS_FolderHub_v0.11.md`（DRAFT，待用户评审；v0.1～v0.10 保留历史）
-- 需求基线：尚未建立
-- P3 概要设计、P4 详细设计：`NOT_STARTED`
-- 当前未决项：Q-015（D2 / DEFERRED，延期至 P3 架构决策节点）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033），实现算法留待 P3/P4
+- 当前阶段：`P3_HIGH_LEVEL_DESIGN`
+- 阶段状态：`IN_PROGRESS`
+- P1 需求采集、P2 需求分析：`APPROVED`
+- 当前 SRS：`SRS_FolderHub_v0.11.md`（APPROVED / BASELINED）
+- 需求基线：`REQ-BL-1.0`
+- P4 详细设计：`NOT_STARTED`
+- 当前未决项：Q-015（D2 / DEFERRED；P3 触发条件已到达，须在相关架构批准/基线前完成分析和必要确认）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033），实现算法留待 P3/P4
 - Q-029～Q-150：已依据历史摘要补录结论；逐字证据缺失项标记 RECONSTRUCTED / UNAVAILABLE。
 
 ## 管理规则
@@ -165,3 +165,9 @@
 - 质量检查：`04_Reviews/P2_需求质量检查与追踪矩阵复核报告_v1.0.md`（WARNING / READY_FOR_USER_REVIEW_WITH_NOTES）。
 - 评审准备包：`04_Reviews/P2_阶段评审准备包_v0.3_DRAFT.md`。
 - P2：`REVIEW_PENDING`，等待用户评审；未批准 SRS/P2，未建立需求基线，未启动 P3。
+
+
+## 2026-11-20 阶段状态更新
+- 用户批准 SRS v0.11，建立需求基线 `REQ-BL-1.0`，并授权进入 P3 概要设计。
+- P2：APPROVED；P3：IN_PROGRESS；P4：NOT_STARTED。
+- P3 当前重点：总体架构候选方案分析、Q-015 生命周期架构分析。

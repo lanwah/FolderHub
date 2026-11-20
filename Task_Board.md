@@ -1,11 +1,11 @@
 # Task Board
 
 - 项目名称：FolderHub
-- 台账版本：3.7
-- 最后更新：2026-11-16
+- 台账版本：3.8
+- 最后更新：2026-11-20
 - 工作流规范：software-predev-workflow-skill V2.6.1
-- 当前阶段（引用 Project_Status）：P2_REQUIREMENT_ANALYSIS / REVIEW_PENDING
-- 活跃任务数：3
+- 当前阶段（引用 Project_Status）：P3_HIGH_LEVEL_DESIGN / IN_PROGRESS
+- 活跃任务数：2
 - 阻塞任务数：0
 - 编号规则：TASK-001 起，全局递增，永不复用
 
@@ -19,9 +19,8 @@
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-011 | P2 需求分解与 SRS 草案 | P2 | REQUIREMENTS | P1 | IN_PROGRESS | 建立并持续修订 SRS 草案，覆盖范围/非目标、场景、功能/非功能需求、界面、数据逻辑、异常、风险及 RAW 追踪矩阵；保持草案状态并等待用户评审 | RAW-001～RAW-013；ADR-001～ADR-033；CR-001；RISK-001 | 助手 | 等待用户评审 SRS v0.11 | SRS_FolderHub_v0.11.md（DRAFT） | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-16 |
-| TASK-012 | P2 需求缺口澄清与 SRS 修订 | P2 | REQUIREMENTS | P1 | IN_PROGRESS | 跟踪 P2 未决边界；用户确认后同步 Q/CLQ/ADR 与 SRS；不得擅改已确认需求 | RAW-001/RAW-002/RAW-003/RAW-005/RAW-011/RAW-013；Q-015/Q-022～Q-026/Q-151/Q-029～Q-150；ADR-005/013/015/017/027/028/029/030/033 | 助手/用户 | 图标来源及宿主异常恢复语义仍待评审/设计分析 | Q-026 / CLQ-024 V1.2；ADR-033；SRS v0.11 | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-16 |
-| TASK-013 | P2 需求质量检查与阶段评审包 | P2 | DOCUMENTATION | P1 | IN_PROGRESS | 完成需求质量检查、追踪矩阵核验、风险/未决项披露并形成 P2 评审包；提交用户评审并跟踪反馈 | RAW-001～RAW-013；Q-015/Q-022～Q-026/Q-151/Q-029～Q-150；ADR-001～ADR-033；CR-001；RISK-001 | 助手 | 等待用户评审 SRS v0.11 与准备包 v0.3 | SRS v0.11；P2 质量检查报告 v1.0；项目一致性检查报告 v1.0；P2 评审准备包 v0.3 | NOT_CHECKED | NOT_CHECKED | 2026-11-10 | 2026-11-16 |
+| TASK-017 | P3 总体架构与设计框架分析 | P3 | DESIGN | P1 | IN_PROGRESS | 基于 REQ-BL-1.0 建立系统上下文、架构候选方案及权衡、总体模块边界和概要设计工作框架；未确认技术选型不得写成基线 | RAW-001～RAW-013；REQ-BL-1.0；ADR-001～ADR-033；RISK-001 | 助手/用户 | 关键架构方案需评估并按需提交用户确认；P3 未批准前不得进入 P4 | P3 概要设计工作计划 v0.1 | NOT_CHECKED | NOT_CHECKED | 2026-11-20 | 2026-11-20 |
+| TASK-018 | Q-015 独立卡片宿主生命周期架构分析 | P3 | DESIGN | P1 | IN_PROGRESS | 比较独立进程、后台服务及其他合理候选；分析依赖、退出行为、异常恢复、资源管理、部署维护、风险和回退；如需用户作实质性选择，建立/更新 Q/CLQ/ADR；在相关架构批准前关闭阻塞 | RAW-013；Q-015；ADR-007/ADR-021；REQ-BL-1.0 | 助手/用户 | 未完成分析及必要用户确认前，阻断独立卡片宿主/生命周期架构批准与设计基线 | Q-015 P3 架构分析记录（待形成） | NOT_CHECKED | NOT_CHECKED | 2026-11-20 | 2026-11-20 |
 
 ## 3. 任务状态历史（追加式）
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
@@ -155,3 +154,13 @@
 | 2026-11-16 | TASK-011 | IN_PROGRESS | IN_PROGRESS | SRS 从 v0.10 修订为 v0.11；完成 RAW→FR/BR/UIR/NFR 追踪矩阵、条目字段复核及矛盾修正；SRS 仍为 DRAFT，等待用户评审 | `SRS_FolderHub_v0.11.md`；`P2_需求质量检查与追踪矩阵复核报告_v1.0.md` |
 | 2026-11-16 | TASK-012 | IN_PROGRESS | IN_PROGRESS | Q-026 已关闭；Q-015 有效延期保持；已识别图标来源和宿主异常恢复语义为未决边界，未擅自作出用户决策 | `Open_Issues.md`；`SRS_FolderHub_v0.11.md` 第 13 章 |
 | 2026-11-16 | TASK-013 | TODO | IN_PROGRESS | 已完成追踪矩阵复核、质量检查和 P2 评审准备包 v0.3；报告结论 WARNING / READY_FOR_USER_REVIEW_WITH_NOTES，等待用户评审 | `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`；`项目一致性检查报告-P2最终收尾V1.0.md`；`P2_阶段评审准备包_v0.3_DRAFT.md` |
+
+
+## 2026-11-20 P2 批准与 P3 启动任务同步
+| 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
+|---|---|---|---|---|---|
+| 2026-11-20 | TASK-011 | IN_PROGRESS | DONE | SRS v0.11 获用户批准并建立需求基线 REQ-BL-1.0 | Q-P2-APPROVAL；P2_阶段评审批准记录_v1.0.md；SRS v0.11 |
+| 2026-11-20 | TASK-012 | IN_PROGRESS | DONE | P2 需求缺口处理收尾；Q-015 作为 P3 架构事项继续跟踪，不再作为 P2 需求分析任务 | Open_Issues.md；Q-015 P3 任务 TASK-018 |
+| 2026-11-20 | TASK-013 | IN_PROGRESS | DONE | P2 追踪矩阵、质量检查及评审准备包已完成，且 P2 阶段已获用户批准 | P2_需求质量检查与追踪矩阵复核报告_v1.0.md；P2_阶段评审批准记录_v1.0.md |
+| 2026-11-20 | TASK-017 | — | IN_PROGRESS | 用户明确授权进入 P3 概要设计，启动总体架构与设计框架分析 | 用户原文：`FolderHub Q-P2-APPROVAL 我的选择：A。批准 SRS v0.11，建立需求基线，并授权进入 P3 概要设计。` |
+| 2026-11-20 | TASK-018 | — | IN_PROGRESS | P3 启动触发 Q-015 延期目标节点，启动独立卡片宿主生命周期架构分析 | Q-015 / Open_Issues.md；REQ-BL-1.0 |

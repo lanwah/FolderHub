@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="FolderHub P3 交互式网页原型 - REQ-BL-1.0">
+  <title>FolderHub · P3 交互式 Demo</title>
+  <link rel="stylesheet" href="styles/app.css">
+</head>
+<body>
+  <div class="wallpaper" aria-hidden="true"><div class="wallpaper-glow"></div><div class="wallpaper-grid"></div></div>
+  <header class="desktop-top"><div class="desktop-brand"><span class="brand-mark">F</span><span>FolderHub <small>P3 DESIGN PREVIEW</small></span></div><div class="desktop-status"><span class="status-dot"></span> 本地交互式原型 <span class="divider-v"></span><span id="clock">--:--</span></div></header>
+  <main class="desktop" id="desktop">
+    <section class="desktop-note"><div class="note-icon">✦</div><div><strong>桌面工作区</strong><p>独立文件夹卡片可在此区域单独显示、移动和锁定</p></div></section>
+    <div id="desktop-widgets" class="desktop-widgets" aria-live="polite"></div>
+    <section class="app-window" id="app-window" aria-label="FolderHub 主组件">
+      <div class="window-titlebar" id="window-drag-handle"><div class="window-title"><span class="brand-mark small">F</span><strong>FolderHub</strong><span class="window-subtitle">文件夹快速访问</span></div><div class="window-actions"><button class="icon-button" id="minimize-btn" title="隐藏主组件">—</button><button class="icon-button" id="settings-btn" title="设置">⚙</button><button class="icon-button close" id="hide-btn" title="隐藏主组件">×</button></div></div>
+      <div class="window-body">
+        <aside class="sidebar"><div class="sidebar-head"><span>工作空间</span><button class="text-icon" id="add-category-btn" title="新增分类">＋</button></div><nav id="category-list" class="category-list"></nav><div class="sidebar-bottom"><div class="storage-card"><div class="storage-icon">▦</div><div><b>文件夹库</b><small><span id="folder-count">8</span> 个文件夹记录</small></div></div><div class="sidebar-foot">REQ-BL-1.0 · P3 Demo Draft</div></div></aside>
+        <section class="content-area"><div class="content-heading"><div><div class="eyebrow">YOUR WORKSPACE</div><h1 id="current-category-title">全部文件夹</h1><p id="current-category-subtitle">所有常用位置，一处快速访问</p></div><button class="primary-button" id="add-folder-btn"><span>＋</span> 添加文件夹</button></div>
+          <div class="toolbar"><label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="搜索文件夹名称或别名…" autocomplete="off"><kbd>⌘ K</kbd></label><div class="view-tools"><span id="result-count">8 个项目</span><button class="view-button active" title="网格视图">▦</button><button class="view-button" title="列表视图（预览）" id="list-view-btn">☷</button></div></div>
+          <div class="folder-grid" id="folder-grid"></div><div class="empty-state hidden" id="empty-state"><div class="empty-icon">⌕</div><strong>没有找到匹配的文件夹</strong><p>试试其他名称或别名</p></div>
+          <footer class="content-footer"><span><i class="status-dot"></i> 所有更改仅保存在本次演示会话</span><span>交互原型 · 非正式产品</span></footer>
+        </section>
+      </div>
+      <div class="window-resize-hint">⋰</div>
+    </section>
+    <div class="tray-popover hidden" id="tray-popover"><div class="tray-popover-title">FolderHub</div><button data-tray="show">▣　打开主界面</button><button data-tray="settings">⚙　设置</button><div class="tray-separator"></div><button data-tray="exit">⏻　退出演示</button></div>
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  </main>
+  <footer class="taskbar"><div class="taskbar-left"><span class="win-mark">⊞</span><span class="taskbar-search">在这里搜索</span><span class="taskbar-app active">F</span></div><div class="taskbar-right"><button class="tray-button" id="tray-button" title="FolderHub 托盘菜单"><span class="tray-mini">F</span>⌃</button><span>◖</span><span>◧</span><span id="taskbar-clock">--:--</span></div></footer>
+  <div class="modal-backdrop hidden" id="modal-backdrop"><section class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"></section></div>
+  <div class="context-menu hidden" id="context-menu"></div>
+  <script src="scripts/app.js"></script>
+</body>
+</html>
