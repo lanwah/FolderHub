@@ -53,6 +53,12 @@ public partial class MainWindow : Window
         Closed += (_, _) => PersistBounds();
     }
 
+    /// <summary>托盘「设置」入口：确保可在主窗口已显示时打开。</summary>
+    public void OpenSettings() => OnOpenSettings();
+
+    /// <summary>退出前由 App 调用，确保隐藏态下也能落盘窗口位置。</summary>
+    public void PersistBoundsIfNeeded() => PersistBounds();
+
     private void ApplyChrome()
     {
         if (_vm is null)
@@ -79,7 +85,7 @@ public partial class MainWindow : Window
             DragMove();
     }
 
-    private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    private void Minimize_Click(object sender, RoutedEventArgs e) => Hide();
 
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
@@ -166,7 +172,7 @@ public partial class MainWindow : Window
     private void OnOpenSettings()
     {
         if (_vm is null) return;
-        var dialog = new SettingsDialog(_vm.CurrentSettings) { Owner = this };
+        var dialog = new SettingsDialog(_vm.CurrentSettings) { Owner = IsVisible ? this : null };
         if (dialog.ShowDialog() != true)
             return;
 
@@ -175,6 +181,7 @@ public partial class MainWindow : Window
             dialog.MainLocked,
             dialog.KeepCardsAfterMainExit,
             dialog.MainOpacity,
+            dialog.StartupEnabled,
             new Rect(Left, Top, Width, Height));
         ApplyChrome();
     }

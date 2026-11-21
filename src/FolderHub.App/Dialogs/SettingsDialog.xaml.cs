@@ -8,6 +8,7 @@ public partial class SettingsDialog : Window
     public SettingsDialog(MainSettingsSnapshot settings)
     {
         InitializeComponent();
+        StartupBox.IsChecked = settings.StartupEnabled;
         PinBox.IsChecked = settings.MainPinned;
         LockBox.IsChecked = settings.MainLocked;
         KeepCardsBox.IsChecked = settings.KeepCardsAfterMainExit;
@@ -16,6 +17,7 @@ public partial class SettingsDialog : Window
         OpacityLabel.Text = $"{percent}%";
     }
 
+    public bool StartupEnabled => StartupBox.IsChecked == true;
     public bool MainPinned => PinBox.IsChecked == true;
     public bool MainLocked => LockBox.IsChecked == true;
     public bool KeepCardsAfterMainExit => KeepCardsBox.IsChecked == true;

@@ -369,6 +369,7 @@ public sealed class MainViewModel : ObservableObject
         bool mainLocked,
         bool keepCards,
         double opacity,
+        bool startupEnabled,
         Rect bounds)
     {
         opacity = Math.Clamp(opacity, 0.20, 1.0);
@@ -381,10 +382,16 @@ public sealed class MainViewModel : ObservableObject
             MainHeight: Math.Max(420, bounds.Height),
             MainLocked: mainLocked,
             MainOpacity: opacity,
-            StartupEnabled: _session.Settings.StartupEnabled);
+            StartupEnabled: startupEnabled);
 
-        _session.SaveSettings(next);
+        var startupOk = _session.SaveSettingsWithStartup(next, out var startupError);
         ApplySettingsSnapshot(next);
+        if (!startupOk)
+        {
+            StatusMessage = $"设置已保存，但开机启动同步失败：{startupError}";
+            return;
+        }
+
         StatusMessage = mainPinned
             ? "设置已保存（固定到桌面将在 WP9 壁纸层实现）"
             : "设置已保存";
