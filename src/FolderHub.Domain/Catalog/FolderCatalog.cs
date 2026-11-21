@@ -177,6 +177,29 @@ public sealed class FolderCatalog
         _folders.Remove(folderId);
     }
 
+    /// <summary>
+    /// 设置文件夹的完整分类归属（多归属）。空列表时回落到「未分类」。
+    /// </summary>
+    public void SetFolderCategories(Guid folderId, IReadOnlyList<Guid> categoryIds)
+    {
+        _ = GetFolder(folderId);
+        var distinct = (categoryIds ?? Array.Empty<Guid>()).Distinct().ToList();
+        if (distinct.Count == 0)
+            distinct.Add(Uncategorized.Id);
+
+        foreach (var categoryId in distinct)
+            _ = GetCategory(categoryId);
+
+        _links.RemoveAll(l => l.FolderId == folderId && !distinct.Contains(l.CategoryId));
+
+        foreach (var categoryId in distinct)
+        {
+            if (_links.Any(l => l.FolderId == folderId && l.CategoryId == categoryId))
+                continue;
+            _links.Add(new FolderCategoryLink(folderId, categoryId, NextFolderSortOrder(categoryId)));
+        }
+    }
+
     public void ReorderFoldersInCategory(Guid categoryId, IReadOnlyList<Guid> orderedFolderIds)
     {
         _ = GetCategory(categoryId);

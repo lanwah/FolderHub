@@ -106,4 +106,19 @@ public class FolderCatalogTests
         Assert.True(FolderPathComparer.Equals(@"D:\Projects\A\", @"d:\projects\a"));
         Assert.Equal(@"D:\Projects\A", FolderPathComparer.Normalize(@"D:\Projects\A\"));
     }
+
+    [Fact]
+    public void SetFolderCategories_ReplacesMembership_EmptyFallsBackToUncategorized()
+    {
+        var catalog = FolderCatalog.CreateEmpty();
+        var work = catalog.AddCategory("工作");
+        var personal = catalog.AddCategory("个人");
+        var folder = catalog.AddFolder(@"D:\Projects\A", "A", work.Id).Folder;
+
+        catalog.SetFolderCategories(folder.Id, [personal.Id]);
+        Assert.Equal([personal.Id], catalog.GetCategoriesForFolder(folder.Id).Select(c => c.Id));
+
+        catalog.SetFolderCategories(folder.Id, []);
+        Assert.Equal([catalog.Uncategorized.Id], catalog.GetCategoriesForFolder(folder.Id).Select(c => c.Id));
+    }
 }
