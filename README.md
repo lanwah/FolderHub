@@ -1,21 +1,23 @@
 # FolderHub
 
-FolderHub 是一个 Windows 文件夹快速访问工具项目。
+Windows 文件夹快速访问工具：桌面主组件 + 独立文件夹卡片。
 
-## 项目目标
+## 当前工程状态
 
-帮助用户通过桌面组件对常用文件夹进行分类管理，并快速打开对应文件夹。具体功能范围以 `docs/01_Requirements/Raw_Requirements.md` 和后续经用户批准的需求规格说明书为准。
+- 需求输入：`REQ-BL-1.0`（`docs/01_Requirements/SRS_FolderHub_v0.11.md`）
+- 交互参考：`docs/design-demo/`（`p3-demo-v0.1` 已评审）
+- 开发计划：`docs/05_Development/开发计划_v0.1.md`
+- 技术栈假定：WPF + .NET 8（`net8.0-windows`），Main + CardHost 双进程，SQLite，Named Pipes
 
-## 项目状态
+## 构建
 
-当前处于需求采集阶段（`P1_REQUIREMENT_COLLECTION`）。需求基线尚未建立；尚未获准进入正式需求分析阶段。
+```powershell
+dotnet build src\FolderHub.sln
+dotnet test src\FolderHub.sln
+```
 
-## 目录说明
+## 目录
 
-- `docs/`：项目研发文档、需求台账、决策记录、评审资料和模板。
-- `src/`：应用程序源代码。
-- `tests/`：自动化及手工测试相关资产。
-- `scripts/`：开发、构建或维护脚本。
-- `config/`：项目配置文件。
-
-当前技术栈尚未确认，代码目录暂不预设具体框架或工程文件。
+- `src/`：应用程序源代码
+- `tests/`：单元测试
+- `docs/`：需求、架构、Demo 与开发文档

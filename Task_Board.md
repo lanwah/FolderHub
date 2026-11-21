@@ -1,11 +1,11 @@
 # Task Board
 
 - 项目名称：FolderHub
-- 台账版本：5.1
+- 台账版本：5.2
 - 最后更新：2026-11-21
-- 工作流规范：software-predev-workflow-skill V2.6.1
-- 当前阶段（引用 Project_Status）：P3_HIGH_LEVEL_DESIGN / REVIEW_PENDING
-- 活跃任务数：2
+- 工作流规范：已退出 V2.6.1 阶段门禁；工程实现以 `docs/05_Development/开发计划_v0.1.md` 为准
+- 当前阶段：ENGINEERING_IMPLEMENTATION
+- 活跃任务数：1
 - 阻塞任务数：0
 - 编号规则：TASK-001 起，全局递增，永不复用
 
@@ -18,14 +18,16 @@
 
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-017 | P3 总体架构与设计框架分析 | P3 | DESIGN | P1 | IN_PROGRESS | 基于 REQ-BL-1.0 完成系统上下文、架构候选方案及权衡、模块边界、关键集成、数据/接口候选、验证计划和需求追踪；未确认技术选型不得写成基线 | RAW-001～RAW-013；REQ-BL-1.0；ADR-001～ADR-038；RISK-001/RISK-002；Q-015/CLQ-152；Q-152/CLQ-153；Q-153/CLQ-154；Q-154/CLQ-155；ADR-034/035/036/037/038；Q-P3-TEST-001/002；Q-P3-CRASH-001 | 助手/用户 | Q-015 已确认 A；GAP-01/GAP-06 决策已收敛；RISK-002 仅受限接受 P4 详细设计；持久化/恢复、IPC 安全、桌面/OS 验证仍未执行；等待用户批准 P3，批准前不得进入 P4 | P3-01 v0.1；P3-02 v0.2；P3-03 v0.1；P3-04 v0.3；P3-05 v0.3；P3-06 v0.4；P3-07 v0.1；P3-08 v0.2；P3-09 v0.2；CLQ-158/159/160；ADR-039/040；P3 Review v0.2 | NOT_CHECKED | NOT_CHECKED | 2026-11-20 | 2026-11-21 |
-| TASK-018 | CardHost 生命周期与运行边界架构分析 | P3 | DESIGN | P1 | IN_PROGRESS | Q-015/Q-152 选择已记录；完成 Q-154/ADR-037 恢复策略分析；继续验证 CardHost 持久化/恢复、跨聚合对账、Main Process 运行期间宿主故障、资源管理、部署维护、风险和回退；仅在相关设计审查完成后关闭任务 | RAW-013；Q-015/CLQ-152；Q-152/CLQ-153；ADR-007/ADR-021/ADR-034/035/036/037/038；Q-P3-CRASH-001；RISK-002；REQ-BL-1.0 | 助手/用户 | Q-015/ADR-034、Q-152/ADR-035、Q-153/ADR-036、Q-154/ADR-037、Q-P3-CRASH-001/ADR-038 已确认；停止后续测试；RISK-002 仅接受 P4 设计阶段，开发/真实数据/运行/部署/发布前安全验证仍 BLOCKING | P3-04 v0.3；P3-05 v0.3；P3-06 v0.4；P3-07 v0.1；P3-08 v0.2；P3-09 v0.2；CLQ-158/159/160；ADR-039/040；RISK-002 ACCEPTED（受限） | NOT_CHECKED | NOT_CHECKED | 2026-11-20 | 2026-11-21 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0/WP1 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0 脚手架编译通过；WP1 Domain 8 测通过；`src/FolderHub.sln` | #8 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
 
 ## 3. 任务状态历史（追加式）
 
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-21 | TASK-017 | IN_PROGRESS | CANCELLED | 用户退出原 P3/P4 工作流门禁，改走工程实现；设计文档保留参考 | 用户明确要求不再按现有流程推进并开始编码 |
+| 2026-11-21 | TASK-018 | IN_PROGRESS | CANCELLED | 同上；CardHost 边界改在实现中按 ADR-034～038 落地 | 同上 |
+| 2026-11-21 | TASK-020 | — | IN_PROGRESS | 建立工程实现任务；已完成 WP0/WP1 | `开发计划_v0.1.md`；`src/`；Domain 单测 |
 | 2026-11-20 | TASK-017 | IN_PROGRESS | IN_PROGRESS | P3-02 总体架构候选、模块边界、Windows 集成及 8 个同类项目轻量调研形成；继续后续验证和架构收敛 | `docs/02_Architecture/P3-02_总体架构候选方案与权衡分析_v0.1.md` |
 | 2026-11-20 | TASK-018 | IN_PROGRESS | IN_PROGRESS | Q-015 候选分析完成并提交 CLQ-152；等待用户选择，相关架构批准仍受阻 | `docs/02_Architecture/P3-02_总体架构候选方案与权衡分析_v0.1.md`；`docs/00_Project_Management/问题澄清记录台账.md` CLQ-152 |
 | 2026-11-20 | TASK-019 | IN_PROGRESS | DONE | P3 Demo v0.1 已交付、自检及追踪资料齐备，用户明确评审通过；Demo 仍非正式设计基线 | `docs/design-demo/`；`docs/04_Reviews/P3_Demo_v0.1_自检报告.md`；`docs/04_Reviews/P3_Demo_v0.1_用户评审通过记录.md`；用户原文：“ok，demo审核通过，继续往前推进” |

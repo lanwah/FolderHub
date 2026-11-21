@@ -1,33 +1,34 @@
 # Project Board
 
-- 工作流规范：software-predev-workflow-skill V2.6.1
+- 工作流规范：已退出 software-predev-workflow-skill V2.6.1 阶段门禁；历史 P0～P3 文档与 REQ-BL-1.0 仍作输入保留。
+- 执行模式：工程实现（见 `docs/05_Development/开发计划_v0.1.md`）
 
 ## 1. 项目目标
 FolderHub 是一款 Windows 文件夹快速访问工具，通过桌面主组件和独立文件夹卡片帮助用户分类管理并快速打开常用文件夹。需求细节以 RAW 台账及用户确认的 ADR 为准。
 
 ## 2. 当前状态
-- 当前阶段：P3_HIGH_LEVEL_DESIGN / REVIEW_PENDING；P1/P2 APPROVED；P4 NOT_STARTED。
-- 需求基线：REQ-BL-1.0（SRS v0.11）；概要设计基线尚未建立。
-- ADR-034～ADR-040 已确认 CardHost 进程模型、单一写入者边界、Named Pipes 传输、崩溃恢复、SQLite 本地数据库和多显示器/DPI 位置策略。
-- Q-P3-GATE-001=A / CLQ-157：停止后续 PoC/实机测试，保留未验证状态并完成 P3 预审准备；REC-POC-01 为 PASS_WITH_LIMITATIONS（仅模拟进程生命周期），其余验证均 NOT RUN / NOT_CHECKED。
-- TASK-017/TASK-018 均 IN_PROGRESS；RISK-001 ACCEPTED（兼容性验证义务仍有效）；RISK-002 ACCEPTED（仅 P4 详细设计阶段；缓解仍未验证，开发/真实数据/运行/部署/发布前安全门禁仍 BLOCKING）；P3 REVIEW_PENDING；Git Commit/Tag NOT_CHECKED。
+- 当前阶段：`ENGINEERING_IMPLEMENTATION`（已退出原 P3/P4 工作流门禁）。
+- 需求输入：REQ-BL-1.0（SRS v0.11）；交互参考：`p3-demo-v0.1`；架构约束：ADR-034～ADR-040。
+- 编码进度：WP0 解决方案脚手架 DONE；WP1 Domain 核心（分类/文件夹/搜索/路径唯一）DONE，8 项单测通过。
+- 技术假定：WPF + .NET 8；Main + CardHost 双进程；SQLite；Named Pipes。
+- 历史快照：P1/P2 曾 APPROVED；P3 曾 REVIEW_PENDING / HLD 未建立；该路径不再作为推进条件。
+- RISK-001 兼容性验证义务仍有效；RISK-002 安全缓解未验证——本机开发允许，真实用户数据/部署/发布前仍须完成安全验证。
 
 ## 3. 关键决策
 ADR-001～ADR-040 的详细内容以 `docs/00_Project_Management/Decision_Log.md` 为准。ADR-037 仅适用于 Main Process 已退出且 Keep Cards=ON；ADR-038 仅适用于 Main Process 仍运行期间。
 
 ## 4. 待办事项
-- TASK-017：完成 P3 总体架构、接口/模块/验证追踪及评审准备。
-- TASK-018：整理 CardHost 生命周期、持久化/恢复和 IPC 安全的未验证边界；本轮不执行后续 PoC。
-- P3 PoC 工具包 FH-TEST-POC-001 v0.1 已准备；REC-POC-01 为有限范围 PASS_WITH_LIMITATIONS；依据用户选择 A，后续 PoC/桌面集成/兼容性测试停止并保留 NOT RUN。
+- 按 `docs/05_Development/开发计划_v0.1.md` 继续 WP2（SQLite）→ WP3（Main UI 对齐 Demo）。
+- TASK-017/TASK-018：因退出原流程，状态改为 CANCELLED（设计文档保留作参考）。
+- TASK-020：工程实现按开发计划推进（活跃）。
 
 ## 5. 风险
 - RISK-001：Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；用户接受的剩余风险及验证义务不变。
-- RISK-002：用户明确接受其仅在 P4 详细设计阶段继续处理的残余风险；风险等级仍高，安全缓解和 NP-01～NP-11 PoC 未验证；真实数据、产品运行、部署和发布前必须完成安全验证及复评。
+- RISK-002：Named Pipes 安全缓解未验证；允许本机开发库调试；禁止未验证前对外部署/发布及接入真实生产用户数据。
 
 ## 6. 下一步
-- 下一步行动：完成 P3 文档级架构收敛、质量/风险/一致性核对和评审准备包，向用户提交预审。
-- 依据/关联：REQ-BL-1.0；ADR-034～ADR-038；FH-TEST-POC-001；TASK-017/TASK-018；RISK-001/RISK-002。
-- 门禁：未经用户明确批准，不得进入 P4；本轮不批准 P3、不建立 HLD 基线。
+- 下一步行动：实现 WP2 SQLite Schema/仓储，再推进 WP3 Main UI。
+- 依据/关联：REQ-BL-1.0；ADR-034～040；`开发计划_v0.1.md`；`src/FolderHub.sln`。
 
 维护规则：本文件仅为管理摘要，不是阶段/任务/决策/风险权威台账。
 
@@ -172,3 +173,9 @@ ADR-001～ADR-040 的详细内容以 `docs/00_Project_Management/Decision_Log.md
 - Q-P3-RISK-001 / CLQ-160=A：RISK-002 受限接受，仅限 P4 详细设计；安全验证前禁止开发/真实数据/产品运行/部署/发布。
 - P3-04 v0.3、P3-08 v0.2、P3-09 v0.2、P3 Review v0.2.1、P3 工作计划 v1.3 已形成。
 - P3 `REVIEW_PENDING`，等待用户明确批准或退回；P4 `NOT_STARTED`；REQ-BL-1.0 不变；HLD 基线未建立。
+
+
+## 2026-11-21 退出原工作流并开始工程实现
+- 用户明确：不再按 software-predev-workflow 的 P3/P4 门禁推进；基于现有需求、ADR、Demo 制定开发计划并开始编码。
+- 已交付：`docs/05_Development/开发计划_v0.1.md`；`src/FolderHub.sln`（WP0）；Domain `FolderCatalog` + 8 项单测（WP1）。
+- 阶段摘要改为 `ENGINEERING_IMPLEMENTATION`；不建立 HLD/P4 基线；历史 docs 保留作输入。
