@@ -10,7 +10,8 @@ public sealed class FolderListItem : ObservableObject
         string subtitle,
         string description,
         string path,
-        string categoriesLabel)
+        string categoriesLabel,
+        bool isPathUnavailable = false)
     {
         Id = id;
         Title = title;
@@ -18,6 +19,7 @@ public sealed class FolderListItem : ObservableObject
         Description = description;
         Path = path;
         CategoriesLabel = categoriesLabel;
+        IsPathUnavailable = isPathUnavailable;
     }
 
     public Guid Id { get; }
@@ -26,6 +28,8 @@ public sealed class FolderListItem : ObservableObject
     public string Description { get; }
     public string Path { get; }
     public string CategoriesLabel { get; }
+    public bool IsPathUnavailable { get; }
+    public string PathStatusLabel => IsPathUnavailable ? "路径异常 · 请重新指定" : Path;
 
     public bool IsSelected
     {

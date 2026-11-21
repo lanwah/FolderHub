@@ -13,6 +13,7 @@
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     <ContextMenu x:Key="FolderMenu">
       <MenuItem Header="打开文件夹" Click="ContextOpen_Click"/>
+      <MenuItem Header="重新指定路径" Click="ContextEdit_Click"/>
       <MenuItem Header="编辑记录" Click="ContextEdit_Click"/>
       <MenuItem Header="固定到桌面" Click="ContextPin_Click"/>
       <Separator/>
@@ -217,7 +218,7 @@
                   <Ellipse Width="6" Height="6" Fill="#63C6A6" Margin="0,0,6,0" VerticalAlignment="Center"/>
                   <TextBlock Text="{Binding StatusMessage}" FontSize="10" Foreground="#A2ACA8"/>
                 </StackPanel>
-                <TextBlock DockPanel.Dock="Right" Text="WP3 · Main UI" FontSize="10" Foreground="#A2ACA8"
+                <TextBlock DockPanel.Dock="Right" Text="WP4 · Shell" FontSize="10" Foreground="#A2ACA8"
                            HorizontalAlignment="Right"/>
               </DockPanel>
             </Border>
@@ -245,6 +246,10 @@
                               <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                 <Setter Property="BorderBrush" Value="#7BB5A6"/>
                               </DataTrigger>
+                              <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
+                                <Setter Property="BorderBrush" Value="#D9A06A"/>
+                                <Setter Property="Background" Value="#FFFBF6"/>
+                              </DataTrigger>
                             </Style.Triggers>
                           </Style>
                         </Border.Style>
@@ -259,8 +264,19 @@
                                     Tag="{Binding}"/>
                           </DockPanel>
                           <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
-                            <TextBlock Text="{Binding Path}" FontSize="9" Foreground="#AAB4B0"
-                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding PathStatusLabel}" FontSize="9"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center">
+                              <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                  <Setter Property="Foreground" Value="#AAB4B0"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
+                                      <Setter Property="Foreground" Value="#B8753A"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBlock.Style>
+                            </TextBlock>
                             <Button DockPanel.Dock="Right" Content="＋ 固定" FontSize="9" Padding="7,4"
                                     Margin="8,0,0,0" Background="White" BorderBrush="#E8EEEB"
                                     Foreground="#82908B" Click="Pin_Click" Tag="{Binding}"/>
@@ -285,7 +301,7 @@
                 <TextBlock Text="⌕" FontSize="30" HorizontalAlignment="Center" Foreground="#87938F"/>
                 <TextBlock Text="没有找到匹配的文件夹" FontWeight="SemiBold" FontSize="13"
                            Foreground="#87938F" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                <TextBlock Text="试试其他名称或别名，或添加新记录" FontSize="10" Foreground="#87938F"
+                <TextBlock Text="可从资源管理器拖入文件夹，或点击「添加文件夹」" FontSize="10" Foreground="#87938F"
                            HorizontalAlignment="Center" Margin="0,4,0,0"/>
               </StackPanel>
             </Grid>

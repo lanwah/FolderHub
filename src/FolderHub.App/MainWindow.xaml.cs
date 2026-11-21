@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,6 +18,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        AllowDrop = true;
+        DragOver += Window_DragOver;
+        Drop += Window_Drop;
     }
 
     public void Attach(MainViewModel viewModel)
@@ -27,6 +31,7 @@ public partial class MainWindow : Window
         viewModel.RequestRenameCategory += OnRenameCategory;
         viewModel.RequestEditFolder += OnEditFolder;
         viewModel.RequestOpenSettings += OnOpenSettings;
+        viewModel.RequestRetargetUnavailablePath += OnRetargetUnavailablePath;
         viewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(MainViewModel.PanelOpacity) or nameof(MainViewModel.MainLocked))
@@ -239,4 +244,53 @@ public partial class MainWindow : Window
 
     private void ContextDelete_Click(object sender, RoutedEventArgs e)
         => _vm?.DeleteFolderCommand.Execute(_contextFolder);
+
+    private void OnRetargetUnavailablePath(Guid folderId, string path)
+    {
+        var result = MessageBox.Show(
+            this,
+            $"目标路径不可用：\n{path}\n\n记录已保留。是否立即重新指定路径？",
+            "路径异常",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+        if (result == MessageBoxResult.Yes)
+            OnEditFolder(folderId);
+    }
+
+    private void Window_DragOver(object sender, DragEventArgs e)
+    {
+        e.Effects = HasFolderDrop(e.Data) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private void Window_Drop(object sender, DragEventArgs e)
+    {
+        if (_vm is null || !HasFolderDrop(e.Data))
+            return;
+
+        var folders = ExtractDroppedFolders(e.Data);
+        if (!_vm.TryAddDroppedFolders(folders, out var message))
+            MessageBox.Show(this, message, "拖拽添加", MessageBoxButton.OK, MessageBoxImage.Information);
+
+        e.Handled = true;
+    }
+
+    private static bool HasFolderDrop(IDataObject data)
+        => ExtractDroppedFolders(data).Count > 0;
+
+    private static IReadOnlyList<string> ExtractDroppedFolders(IDataObject data)
+    {
+        if (!data.GetDataPresent(DataFormats.FileDrop))
+            return Array.Empty<string>();
+
+        if (data.GetData(DataFormats.FileDrop) is not string[] paths)
+            return Array.Empty<string>();
+
+        return paths
+            .Where(p => !string.IsNullOrWhiteSpace(p))
+            .Select(p => p.Trim())
+            .Where(Directory.Exists)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
 }

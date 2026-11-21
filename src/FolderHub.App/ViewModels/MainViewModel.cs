@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using FolderHub.App.Services;
@@ -39,12 +40,7 @@ public sealed class MainViewModel : ObservableObject
             if (p is FolderListItem item)
                 SelectFolder(item);
         });
-        OpenFolderCommand = new RelayCommand(p =>
-        {
-            var folder = ResolveFolder(p);
-            if (folder is null) return;
-            StatusMessage = $"打开文件夹将在 WP4 接入资源管理器：{folder.Path}";
-        });
+        OpenFolderCommand = new RelayCommand(p => OpenFolder(ResolveFolder(p)));
         PinFolderCommand = new RelayCommand(_ =>
             StatusMessage = "固定到桌面卡片将在 WP7 实现");
         AddCategoryCommand = new RelayCommand(_ => RequestAddCategory?.Invoke());
@@ -93,6 +89,8 @@ public sealed class MainViewModel : ObservableObject
     public event Action<CategoryListItem>? RequestRenameCategory;
     public event Action<Guid?>? RequestEditFolder;
     public event Action? RequestOpenSettings;
+    /// <summary>打开失败且路径不可用时，询问是否进入重新指定（FR-010）。</summary>
+    public event Action<Guid, string>? RequestRetargetUnavailablePath;
 
     public string SearchText
     {
@@ -296,6 +294,76 @@ public sealed class MainViewModel : ObservableObject
         }
     }
 
+    /// <summary>
+    /// 从资源管理器拖入的目录路径批量添加（FR-009）。无效项跳过并汇总提示。
+    /// </summary>
+    public bool TryAddDroppedFolders(IReadOnlyList<string> paths, out string message)
+    {
+        message = string.Empty;
+        if (paths.Count == 0)
+        {
+            message = "未检测到可添加的文件夹。";
+            return false;
+        }
+
+        var categoryId = SelectedCategory is { IsVirtualAll: false, CategoryId: Guid catId }
+            ? catId
+            : _session.Catalog.Uncategorized.Id;
+
+        var created = 0;
+        var linked = 0;
+        var skipped = 0;
+        var invalid = 0;
+
+        try
+        {
+            foreach (var raw in paths)
+            {
+                if (!_session.Shell.IsDirectoryAccessible(raw))
+                {
+                    invalid++;
+                    continue;
+                }
+
+                var displayName = new DirectoryInfo(raw.Trim()).Name;
+                if (string.IsNullOrWhiteSpace(displayName))
+                    displayName = raw.Trim();
+
+                var result = _session.Catalog.AddFolder(raw, displayName, categoryId);
+                switch (result.ResultKind)
+                {
+                    case Domain.Catalog.AddFolderResult.Kind.Created:
+                        created++;
+                        break;
+                    case Domain.Catalog.AddFolderResult.Kind.LinkedExisting:
+                        linked++;
+                        break;
+                    default:
+                        skipped++;
+                        break;
+                }
+            }
+
+            if (created + linked == 0)
+            {
+                message = invalid > 0
+                    ? "拖入项不是有效文件夹，或路径已全部存在于当前分类。"
+                    : "拖入路径已全部存在于当前分类，未创建重复记录。";
+                return false;
+            }
+
+            PersistCatalog($"已从拖拽添加 {created + linked} 项"
+                + (invalid > 0 ? $"（跳过 {invalid} 个无效路径）" : string.Empty)
+                + (skipped > 0 ? $"（{skipped} 项已在分类中）" : string.Empty));
+            return true;
+        }
+        catch (Exception ex)
+        {
+            message = ex.Message;
+            return false;
+        }
+    }
+
     public void ApplyAndSaveSettings(
         bool mainPinned,
         bool mainLocked,
@@ -336,6 +404,38 @@ public sealed class MainViewModel : ObservableObject
             MainHeight = Math.Max(420, bounds.Height)
         };
         _session.SaveSettings(next);
+    }
+
+    private void OpenFolder(FolderListItem? item)
+    {
+        if (item is null)
+            return;
+
+        // BR-010：主要在打开时检查路径；不可用则保留记录并标记异常（FR-010 / BR-009）。
+        if (!_session.Shell.IsDirectoryAccessible(item.Path))
+        {
+            _session.Catalog.MarkFolderPathUnavailable(item.Id);
+            PersistCatalog($"路径不可用，已保留记录并标记异常：{item.Path}");
+            RequestRetargetUnavailablePath?.Invoke(item.Id, item.Path);
+            return;
+        }
+
+        var record = _session.Catalog.Folders.FirstOrDefault(f => f.Id == item.Id);
+        if (record?.IsPathUnavailable == true)
+        {
+            _session.Catalog.MarkFolderPathAvailable(item.Id);
+            _session.SaveCatalog();
+            RefreshFolders();
+        }
+
+        if (_session.Shell.TryOpenInExplorer(item.Path, out var error))
+        {
+            StatusMessage = $"已在资源管理器中打开：{item.Path}";
+            return;
+        }
+
+        StatusMessage = $"无法打开文件夹：{error}";
+        MessageBox.Show(error ?? "无法打开文件夹。", "打开失败", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
     private void DeleteSelectedCategory()
@@ -461,7 +561,8 @@ public sealed class MainViewModel : ObservableObject
                 subtitle,
                 string.IsNullOrWhiteSpace(folder.Description) ? "暂无用途说明" : folder.Description!,
                 folder.Path,
-                catsLabel));
+                catsLabel,
+                folder.IsPathUnavailable));
         }
 
         ResultCountText = $"{Folders.Count} 个项目";

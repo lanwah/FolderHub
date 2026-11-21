@@ -165,8 +165,27 @@ public sealed class FolderCatalog
         if (_folders.Values.Any(f => f.Id != folderId && FolderPathComparer.Equals(f.Path, normalized)))
             throw new InvalidOperationException("目标路径已被其他文件夹记录占用。");
 
+        // 路径未变时只更新显示名，保留异常标记（避免仅改别名/说明/同名路径编辑误清 FR-010 状态）。
+        if (FolderPathComparer.Equals(folder.Path, normalized))
+        {
+            folder.SetDisplayName(displayName);
+            return;
+        }
+
         folder.UpdatePath(normalized, displayName);
     }
+
+    /// <summary>
+    /// 标记路径不可用（FR-010 / BR-009）。不删除记录或磁盘目录。
+    /// </summary>
+    public void MarkFolderPathUnavailable(Guid folderId)
+        => GetFolder(folderId).MarkPathUnavailable();
+
+    /// <summary>
+    /// 清除路径异常标记（路径恢复可访问后，BR-010）。
+    /// </summary>
+    public void MarkFolderPathAvailable(Guid folderId)
+        => GetFolder(folderId).MarkPathAvailable();
 
     public void DeleteFolder(Guid folderId)
     {

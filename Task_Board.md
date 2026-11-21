@@ -19,12 +19,13 @@
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP3 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0～WP3 DONE；Main UI + SQLite 接线；审核 PASS_WITH_NOTES 后已修添加已有路径多归属与 AlreadyLinked 提示；Domain 11 + Infra 8 | #10 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
+| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP4 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0～WP4 DONE；Shell 打开/路径检查/拖拽；审核 PASS_WITH_NOTES 后已修同路径编辑误清异常标记；Domain 14 + Infra 12 | #11 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
 
 ## 3. 任务状态历史（追加式）
 
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP4 Shell 适配完成并经用户确认提交；继续 WP5 | 用户：「修复第 1 条，然后提交代码」；开发计划 WP4=DONE；测试 26 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP3 Main UI 完成并经用户确认提交；继续 WP4 | 用户：「更新文档并提交。」；开发计划 WP3=DONE；测试 19 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP2 SQLite 持久化完成并经用户确认提交；继续 WP3 | 用户：「更新文档并提交。」；开发计划 WP2=DONE；测试 18 通过 |
 | 2026-11-21 | TASK-017 | IN_PROGRESS | CANCELLED | 用户退出原 P3/P4 工作流门禁，改走工程实现；设计文档保留参考 | 用户明确要求不再按现有流程推进并开始编码 |

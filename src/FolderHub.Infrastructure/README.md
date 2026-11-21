@@ -6,7 +6,7 @@
 |---|---|---|
 | SQLite | WP2 | Schema v1、迁移、`FolderCatalog` / Main 设置 / CardDefinition 仓储 |
 | Named Pipes | WP6 | 待实现 |
-| Shell/Explorer | WP4 | 待实现 |
+| Shell/Explorer | WP4 | `WindowsShellFolderService`：路径检查 + explorer.exe 打开 |
 | 托盘与启动项 | WP5 | 待实现 |
 
 默认库路径：`%LocalAppData%\FolderHub\folderhub.db`。

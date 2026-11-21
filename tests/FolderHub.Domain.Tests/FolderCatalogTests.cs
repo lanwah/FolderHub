@@ -43,6 +43,51 @@ public class FolderCatalogTests
     }
 
     [Fact]
+    public void MarkFolderPathUnavailable_PreservesRecord_AndRetargetClearsFlag()
+    {
+        var catalog = FolderCatalog.CreateEmpty();
+        var work = catalog.AddCategory("工作");
+        var folder = catalog.AddFolder(@"D:\Projects\Gone", "Gone", work.Id).Folder;
+
+        catalog.MarkFolderPathUnavailable(folder.Id);
+        Assert.True(catalog.Folders.Single().IsPathUnavailable);
+        Assert.Single(catalog.Folders);
+
+        catalog.RetargetFolderPath(folder.Id, @"D:\Projects\Back", "Back");
+        Assert.False(catalog.Folders.Single().IsPathUnavailable);
+        Assert.Equal(@"D:\Projects\Back", catalog.Folders.Single().Path);
+    }
+
+    [Fact]
+    public void RetargetFolderPath_SamePath_DoesNotClearUnavailableFlag()
+    {
+        var catalog = FolderCatalog.CreateEmpty();
+        var work = catalog.AddCategory("工作");
+        var folder = catalog.AddFolder(@"D:\Projects\Gone\", "Gone", work.Id).Folder;
+        catalog.MarkFolderPathUnavailable(folder.Id);
+
+        catalog.RetargetFolderPath(folder.Id, @"d:\projects\gone", "GoneRenamed");
+        catalog.UpdateFolder(folder.Id, alias: "别名", description: "说明");
+
+        var updated = catalog.Folders.Single();
+        Assert.True(updated.IsPathUnavailable);
+        Assert.Equal("GoneRenamed", updated.DisplayName);
+        Assert.Equal("别名", updated.Alias);
+        Assert.Equal(@"D:\Projects\Gone", updated.Path);
+    }
+
+    [Fact]
+    public void MarkFolderPathAvailable_ClearsUnavailableFlag()
+    {
+        var catalog = FolderCatalog.CreateEmpty();
+        var work = catalog.AddCategory("工作");
+        var folder = catalog.AddFolder(@"D:\Projects\A", "A", work.Id).Folder;
+        catalog.MarkFolderPathUnavailable(folder.Id);
+        catalog.MarkFolderPathAvailable(folder.Id);
+        Assert.False(catalog.Folders.Single().IsPathUnavailable);
+    }
+
+    [Fact]
     public void AddFolder_AlreadyLinked_DoesNotDuplicateLink()
     {
         var catalog = FolderCatalog.CreateEmpty();

@@ -1,7 +1,9 @@
 using FolderHub.Domain.Catalog;
+using FolderHub.Infrastructure.Shell;
 using FolderHub.Infrastructure.Sqlite;
 using FolderHub.Infrastructure.Storage;
 using FolderHub.UseCases.Persistence;
+using FolderHub.UseCases.Shell;
 
 namespace FolderHub.App.Services;
 
@@ -12,11 +14,16 @@ public sealed class AppSession : IDisposable
 {
     private readonly SqliteDb _db;
 
-    public AppSession(SqliteDb db, IFolderCatalogStore catalogStore, IMainSettingsStore settingsStore)
+    public AppSession(
+        SqliteDb db,
+        IFolderCatalogStore catalogStore,
+        IMainSettingsStore settingsStore,
+        IShellFolderService shell)
     {
         _db = db;
         CatalogStore = catalogStore;
         SettingsStore = settingsStore;
+        Shell = shell;
         Catalog = catalogStore.Load();
         Settings = settingsStore.Load();
     }
@@ -28,7 +35,8 @@ public sealed class AppSession : IDisposable
         return new AppSession(
             db,
             new SqliteFolderCatalogStore(db),
-            new SqliteMainSettingsStore(db));
+            new SqliteMainSettingsStore(db),
+            new WindowsShellFolderService());
     }
 
     public string DatabasePath => AppDataPaths.GetDefaultDatabasePath();
@@ -36,6 +44,8 @@ public sealed class AppSession : IDisposable
     public IFolderCatalogStore CatalogStore { get; }
 
     public IMainSettingsStore SettingsStore { get; }
+
+    public IShellFolderService Shell { get; }
 
     public FolderCatalog Catalog { get; private set; }
 

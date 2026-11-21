@@ -39,6 +39,16 @@ public sealed class FolderRecord
 
     public void SetDescription(string? description) => Description = NormalizeOptionalText(description);
 
+    public void SetDisplayName(string displayName)
+    {
+        if (string.IsNullOrWhiteSpace(displayName))
+            throw new ArgumentException("文件夹显示名不能为空。", nameof(displayName));
+        DisplayName = displayName.Trim();
+    }
+
+    /// <summary>
+    /// 更换真实路径并更新显示名；仅在路径变更时清除异常标记（FR-010）。
+    /// </summary>
     public void UpdatePath(string path, string displayName)
     {
         if (string.IsNullOrWhiteSpace(path))
