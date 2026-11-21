@@ -19,7 +19,7 @@
   const categoryCount = name => name==='全部文件夹' ? folders.length : folders.filter(f=>f.cats.includes(name)).length;
   const shownFolders = () => {
     const q = $('#search-input').value.trim().toLocaleLowerCase();
-    return folders.filter(f => (activeCategory==='全部文件夹'||f.cats.includes(activeCategory)) && (!q || f.name.toLocaleLowerCase().includes(q)||f.alias.toLocaleLowerCase().includes(q)));
+    return folders.filter(f => (q || activeCategory==='全部文件夹' || f.cats.includes(activeCategory)) && (!q || f.name.toLocaleLowerCase().includes(q)||f.alias.toLocaleLowerCase().includes(q)));
   };
   function renderCategories(){
     categoryList.innerHTML = categories.map(c=>`<button class="category-item ${c===activeCategory?'active':''}" data-category="${esc(c)}"><span class="cat-icon">${catIcons[c]||'◇'}</span><span class="cat-label">${esc(c)}</span><span class="cat-count">${categoryCount(c)}</span></button>`).join('');
@@ -31,7 +31,7 @@
     grid.classList.toggle('list-mode',listMode);
     grid.innerHTML=items.map(f=>`<article class="folder-card ${selectedId===f.id?'selected':''}" data-id="${f.id}" tabindex="0" aria-label="${esc(f.name)}">
       <div class="folder-top"><div class="folder-icon" style="background:${f.tone}">${f.icon}</div><button class="folder-more" data-more="${f.id}" title="更多操作">···</button></div>
-      <div class="folder-name">${esc(f.alias||f.name)}</div><div class="folder-alias">${f.alias?esc(f.name):'文件夹'}</div><p class="folder-desc">${esc(f.desc||'暂无用途说明')}</p>
+      <div class="folder-name">${esc(f.alias||f.name)}</div><div class="folder-alias">${f.alias?esc(f.name):'文件夹'} · ${esc(f.cats.join(' / '))}</div><p class="folder-desc">${esc(f.desc||'暂无用途说明')}</p>
       <div class="folder-bottom"><span class="folder-path" title="${esc(f.path)}">${esc(f.path)}</span><button class="pin-toggle ${f.pinned?'pinned':''}" data-pin="${f.id}">${f.pinned?'✓ 已固定':'＋ 固定到桌面'}</button></div></article>`).join('');
     $('#empty-state').classList.toggle('hidden',items.length!==0);
     grid.style.display=items.length?'grid':'none';
@@ -53,11 +53,12 @@
     $('#folder-form').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.currentTarget);const path=d.get('path').trim();const duplicate=folders.find(x=>x.path.toLowerCase()===path.toLowerCase()&&x.id!==f?.id);if(duplicate){toast('该路径已存在，演示中不创建重复记录','error');return;}const cats=$('select[name="category"]',e.currentTarget).selectedOptions.length?[...$('select[name="category"]',e.currentTarget).selectedOptions].map(o=>o.value):['未分类'];const values={name:d.get('name').trim(),alias:d.get('alias').trim(),path,desc:d.get('desc').trim(),cats};if(editing)Object.assign(f,values);else folders.push({id:nextId++,...values,icon:'📁',tone:'#edf3ff',pinned:false});closeModal();renderFolders();toast(editing?'文件夹记录已更新':'文件夹记录已添加');});
   }
   function settingsModal(){showModal(`<div class="modal-header"><div><h2 id="modal-title">设置</h2><p>FolderHub 桌面组件与运行偏好</p></div><button class="modal-close" data-close>×</button></div>
-    <div class="settings-section"><div class="settings-row"><div><strong>主组件固定到桌面</strong><small>开启后主组件显示在桌面壁纸层；演示中用于模拟固定状态</small></div><input type="checkbox" id="main-pin" checked></div></div>
+    <div class="settings-section"><div class="settings-row"><div><strong>主组件固定到桌面</strong><small>开启后主组件显示在桌面壁纸层；演示中用于模拟固定状态</small></div><input type="checkbox" id="main-pin"></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>锁定主组件位置</strong><small>锁定后不可拖动或调整位置</small></div><input type="checkbox" id="main-lock" ${mainLocked?'checked':''}></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>退出主程序后保留独立卡片</strong><small>全局统一开关，默认开启；不提供逐卡片覆盖</small></div><input type="checkbox" id="keep-cards" ${keepCards?'checked':''}></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>背景透明度</strong><small>仅调整主组件背景，文字和图标保持不透明</small></div><span class="range-value" id="opacity-value">${opacity}%</span></div><div class="range-row"><input id="opacity-range" type="range" min="20" max="100" value="${opacity}"></div></div>
     <div class="form-actions"><button class="modal-primary" data-close>完成</button></div>`);
+    $('#main-pin').addEventListener('change',e=>{toast(e.target.checked?'主组件固定到桌面：开启（演示）':'主组件固定到桌面：关闭（演示）');});
     $('#main-lock').addEventListener('change',e=>{mainLocked=e.target.checked;toast(mainLocked?'主组件位置已锁定':'主组件位置已解锁');});
     $('#keep-cards').addEventListener('change',e=>{keepCards=e.target.checked;toast(keepCards?'退出后保留独立卡片：开启':'退出后保留独立卡片：关闭');});
     $('#opacity-range').addEventListener('input',e=>{opacity=Number(e.target.value);$('#opacity-value').textContent=opacity+'%';$('#app-window').style.background=`rgba(255,255,255,${opacity/100})`;});
@@ -75,6 +76,7 @@
   $('#add-category-btn').addEventListener('click',()=>showModal(`<div class="modal-header"><div><h2 id="modal-title">新增分类</h2><p>分类为平级列表，不支持嵌套</p></div><button class="modal-close" data-close>×</button></div><form id="category-form"><div class="form-field"><label>分类名称 *</label><input name="name" required maxlength="20" placeholder="输入分类名称"></div><div class="form-actions"><button type="button" class="secondary-button" data-close>取消</button><button class="modal-primary">创建分类</button></div></form>`));
   $('#modal').addEventListener('submit',e=>{if(e.target.id!=='category-form')return;e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name||categories.includes(name)||name==='全部文件夹'){toast('分类名称为空或已存在','error');return;}categories.push(name);closeModal();renderFolders();toast(`已创建分类「${name}」`);});
   $('#settings-btn').addEventListener('click',settingsModal);$('#hide-btn').addEventListener('click',hideMain);$('#minimize-btn').addEventListener('click',hideMain);
+  const appWindow=$('#app-window'), dragHandle=$('#window-drag-handle');let windowDrag=null;dragHandle.addEventListener('pointerdown',e=>{if(mainLocked||e.target.closest('button'))return;const r=appWindow.getBoundingClientRect();windowDrag={x:e.clientX,y:e.clientY,left:r.left,top:r.top};appWindow.style.transform='none';appWindow.style.left=r.left+'px';appWindow.style.top=r.top+'px';dragHandle.setPointerCapture(e.pointerId);});dragHandle.addEventListener('pointermove',e=>{if(!windowDrag)return;appWindow.style.left=Math.max(0,Math.min(innerWidth-appWindow.offsetWidth,windowDrag.left+e.clientX-windowDrag.x))+'px';appWindow.style.top=Math.max(0,Math.min(innerHeight-appWindow.offsetHeight-44,windowDrag.top+e.clientY-windowDrag.y))+'px';});dragHandle.addEventListener('pointerup',()=>{if(windowDrag)toast('主组件位置已调整（仅本次演示会话）');windowDrag=null;});
   $('#tray-button').addEventListener('click',()=>$('#tray-popover').classList.toggle('hidden'));
   $('#tray-popover').addEventListener('click',e=>{const b=e.target.closest('[data-tray]');if(!b)return;$('#tray-popover').classList.add('hidden');if(b.dataset.tray==='show')$('#app-window').classList.remove('hidden-window');if(b.dataset.tray==='settings')settingsModal();if(b.dataset.tray==='exit'){if(keepCards)toast('演示：主程序退出，独立卡片按全局设置继续显示');else{folders.forEach(f=>f.pinned=false);renderFolders();toast('演示：主程序退出，独立卡片已全部关闭');}hideMain();}});
   widgets.addEventListener('click',e=>{const lock=e.target.closest('[data-widget-lock]');if(lock){const f=folders.find(x=>x.id===Number(lock.dataset.widgetLock));f.locked=!f.locked;renderWidgets();toast(f.locked?'卡片位置已锁定':'卡片位置已解锁');}const close=e.target.closest('[data-widget-close]');if(close){const f=folders.find(x=>x.id===Number(close.dataset.widgetClose));f.pinned=false;renderFolders();toast('已取消固定');}});

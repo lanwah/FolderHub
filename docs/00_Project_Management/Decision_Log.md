@@ -1,9 +1,9 @@
 # FolderHub 已确认决策台账
 
 - 文档编号：FH-PM-ADR-001
-- 版本：v1.6
+- 版本：v2.2
 - 状态：草稿记录（决策内容来自用户明确表达）
-- 日期：2026-11-16
+- 日期：2026-11-21
 
 | 编号 | 主题 | 用户确认的选择 | 状态 | 关联需求 |
 |---|---|---|---|---|
@@ -38,6 +38,12 @@
 | ADR-029 | 搜索匹配与反馈规则 | 搜索真实文件夹名称和别名，采用不区分大小写的包含匹配；输入变化时动态更新结果；清空关键词恢复当前分类完整列表；无匹配结果时显示明确提示。不包含拼音、错别字容错、模糊语义搜索或高级筛选。搜索跨分类范围另由 Q-025 澄清 | CONFIRMED | RAW-001/RAW-003/Q-024/CLQ-022 |
 | ADR-030 | 搜索范围与跨分类结果呈现 | 搜索全部已登记文件夹记录，不受当前选中分类限制；同一记录在搜索结果中仅显示一次，并显示其所属分类信息；清空关键词恢复当前选中分类完整列表。具体查询/索引实现留待 P3/P4 设计 | CONFIRMED | RAW-001/RAW-003/Q-025/CLQ-023 |
 | ADR-033 | 多显示器/DPI/分辨率变化后的组件位置恢复 | 尽量保持原显示器及相对位置；原显示器不可用或组件全部/部分移出可见桌面时，主组件和每张独立卡片分别迁移至当前主显示器可见位置 | CONFIRMED | RAW-011/RAW-013/Q-026/CLQ-024 |
+| ADR-034 | 独立卡片宿主/进程模型 | 每个交互式用户会话一个独立 CardHost 进程，承载该会话全部独立卡片；主应用负责管理和 IPC 协调 | CONFIRMED | RAW-013/Q-015/CLQ-152/FR-016/FR-017/BR-012 |
+| ADR-035 | Main Process 与 CardHost 的逻辑数据写入权 | Main Process 唯一写入业务主数据、全局配置及卡片定义/启停；CardHost 唯一写入卡片位置、锁定及显示环境恢复状态 | CONFIRMED | FR-016/FR-017/FR-019/NFR-002/NFR-003/BR-012/Q-152/CLQ-153/ADR-034 |
+| ADR-036 | Main Process 与 CardHost 的本机 IPC 传输技术 | 采用 Windows Named Pipes（命名管道）；限定同机/当前交互式用户会话，安全描述符和调用者身份校验必须显式设计并经 PoC 验证 | CONFIRMED | Q-153/CLQ-154/ADR-034/ADR-035/FR-016/FR-017/FR-019/NFR-001/002/003 |
+| ADR-037 | Main Process 已退出时 CardHost 崩溃后的恢复策略 | Keep Cards=ON 时不增加常驻 Supervisor；卡片暂时不显示，下次 Main Process 启动时恢复最后成功持久化状态 | CONFIRMED | Q-154/CLQ-155/ADR-034/035/036 |
+| ADR-038 | Main Process 运行期间 CardHost 崩溃后的恢复策略 | Main Process 负责检测并有限自动重启，采用退避；多次失败后提示用户，不无限重启 | CONFIRMED | Q-P3-CRASH-001/CLQ-156/ADR-034/035/036/037 |
+
 
 
 
@@ -1137,3 +1143,337 @@
 - ADR-032 的 Q-029～Q-150 历史结论及 `RECONSTRUCTED/UNAVAILABLE` 证据边界保持不变。
 - ADR-033 继续记录 Q-026 用户选择 A；未修改其决策内容或状态。
 - 本轮未新增 ADR，未改变任何已确认决策，不将 SRS 草案编号化/追踪修订解释为新的用户决策或基线批准。
+
+
+## ADR-034：独立卡片宿主/进程模型
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-20
+- 来源：Q-015 / CLQ-152 V3
+- 关联需求：RAW-013；FR-016、FR-017、BR-012；需求基线 REQ-BL-1.0
+- 用户原始回答（VERBATIM）：
+
+```text
+FolderHub Q-015 / CLQ-152 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账，并继续 P3 架构收敛。
+```
+
+### 用户确认结论
+
+每个交互式用户会话使用一个独立 CardHost 进程，由该进程承载该会话的全部独立文件夹卡片。FolderHub 主应用负责主界面、托盘、设置和卡片管理；主应用启动时发现/启动并连接 CardHost，通过受限 IPC 协调卡片配置与生命周期。主应用正常退出且全局“主程序退出后保留卡片”开关开启时，CardHost 独立运行并继续显示卡片；开关关闭时，主应用要求 CardHost 关闭全部卡片并退出。
+
+### 明确排除的等价替代
+
+- 不以“只关闭主窗口、主应用进程继续驻留”冒充主程序退出。
+- 不采用每张卡片一个进程作为首选宿主模型。
+- 不使用 Windows Service 直接承载可见桌面卡片。
+
+### 未由本决策确定的事项
+
+IPC 技术与 ACL、消息协议/版本、超时/重连/幂等、卡片状态持久化写入边界、CardHost 崩溃恢复与 Supervisor、Explorer 重启、桌面层级 API、安装升级、残留进程清理、RDP 行为及各目标 Windows 版本兼容性均留待 P3 继续设计和验证。不得将任何候选或助手推荐视为用户批准。
+
+### 影响与验证
+
+- 主应用与 CardHost 需具备明确进程边界和会话隔离。
+- 一个会话至多存在一个有效 CardHost；需防止重复启动与重复卡片。
+- IPC 断连、主应用退出/重启、CardHost 异常终止、用户注销/关机需建立状态行为与测试。
+- CardHost 崩溃时的即时恢复机制尚未确认；在完成成本/收益分析和必要确认前，不引入 Windows Service 或常驻 Supervisor。
+- 具体技术栈、数据库、IPC 实现及设计基线不由本 ADR 批准。
+
+### 修订记录
+- v1.0（2026-11-20）：根据用户对 Q-015 / CLQ-152 的明确选择 A 新增 ADR-034；仅确认每用户会话单一 CardHost 进程模型；不修改 ADR-021 已确认产品行为、SRS v0.11 或 REQ-BL-1.0，不建立完整 P3 设计基线。
+
+- v1.7（2026-11-20）：新增 ADR-034，记录用户对 Q-015 / CLQ-152 选项 A 的明确选择；保留 ADR-021 原有产品行为及其他既有 ADR。
+- v1.8（2026-11-20）：新增 ADR-035，记录用户对 Q-152 / CLQ-153 选项 A 的明确选择；仅确认逻辑数据聚合写入权，不冻结物理存储或 IPC 技术。
+
+
+## 2026-11-20 P3-04 持久化写入权候选提交（历史快照；当前状态以 ADR-035 / CLQ-153 V2 为准）
+
+- 历史快照：提交当时 Q-152 / CLQ-153 为 `OPEN / D2 / PENDING_CONFIRMATION`；用户后续选择 A，当前状态 `CLOSED / D2 / CONFIRMED`，见 ADR-035 / CLQ-153 V2。
+- 推荐候选 A：Main Process 拥有分类/文件夹业务主数据、主组件/全局设置和卡片启停定义；CardHost 是卡片位置/锁定/显示环境恢复状态的唯一权威写入者。
+- 本记录仅为用户选择前的历史快照；用户确认后已新增 ADR-035，并在本台账追加当前决策。
+- 不选择数据库、文件格式、物理存储布局、IPC 技术或加密方案。
+
+
+## ADR-035：Main Process 与 CardHost 的逻辑数据写入权划分
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-20
+- 来源：Q-152 / CLQ-153 V2
+- 关联需求：FR-016、FR-017、FR-019、NFR-002、NFR-003、BR-012；需求基线 REQ-BL-1.0
+- 关联决策：ADR-021、ADR-033、ADR-034
+- 用户选择：A。
+
+### 用户确认结论
+
+按逻辑数据聚合划分单一权威写入者：
+
+1. **Main Process** 唯一拥有并写入分类、文件夹记录、分类关联、主组件配置、全局设置以及 `CardDefinition`（独立卡片定义/启停状态）。
+2. **CardHost** 唯一拥有并写入其交互式用户会话内各卡片的 `CardPresentationState`（位置、锁定、显示环境恢复状态）。主应用退出后 CardHost 仍可独立保存卡片状态。
+3. 双方通过 IPC 交换命令、定义快照/变更和必要状态通知。同步协议应具备聚合版本/预期版本或等效防护，禁止陈旧快照覆盖较新状态。
+4. 每个逻辑聚合只有一个权威写入者；跨聚合操作（例如删除 FolderRecord 时协调卡片关闭）需由后续设计定义事务/补偿和失败恢复语义。
+
+### 未由本决策确定的事项
+
+数据库/物理存储布局/文件格式/ORM、是否共享数据库文件、IPC 传输技术、消息协议、访问控制实现、加密、迁移和备份机制、事务/补偿细节、CardHost 崩溃恢复均未由本 ADR 决定。不得将推荐或候选技术写为已批准选型。
+
+### 影响与验证
+
+- 验证主应用退出期间，CardHost 对位置/锁定状态的修改可持久保存，并在 CardHost 重启后恢复。
+- 验证 Main Process 更新/删除 CardDefinition 时，不会覆盖 CardHost 的较新 CardPresentationState。
+- 验证卡片启停、文件夹删除、主程序断连、重复命令和重连对账的幂等性及一致性。
+- 验证不同交互式用户会话之间数据隔离；同一 SID 多会话策略仍需明确验证。
+
+### 修订记录
+- v1.0（2026-11-20）：根据用户对 Q-152 / CLQ-153 的明确选择 A 新增 ADR-035；仅确认逻辑数据聚合写入权，不选择数据库、物理存储或 IPC 技术；不修改 SRS v0.11 / REQ-BL-1.0，不建立完整 P3 设计基线。
+
+
+## 2026-11-21 Q-153 / CLQ-154 待确认候选（历史快照；当前状态以 ADR-036 / CLQ-154 V2.0 为准）
+
+- 提交时 Q-153 为 OPEN / D2 / PENDING_CONFIRMATION；推荐 Windows Named Pipes，备选 Local RPC、TCP loopback、Shared Memory。
+- 用户随后明确选择 A，Q-153 当前 CLOSED / D2 / CONFIRMED；新增 ADR-036。
+- 本历史快照保留当时未确认状态，不代表当前状态。
+
+
+## ADR-036：Main Process 与 CardHost 的本机 IPC 传输技术
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-21
+- 来源：Q-153 / CLQ-154 V2.0
+- 关联需求：FR-016、FR-017、FR-019、NFR-001、NFR-002、NFR-003；需求基线 REQ-BL-1.0
+- 关联决策：ADR-021、ADR-034、ADR-035
+- 用户原始回答（VERBATIM）：
+
+```text
+FolderHub Q-153 / CLQ-154 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。
+```
+
+### 用户确认结论
+
+Main Process 与同一交互式用户会话内的 CardHost 采用 **Windows Named Pipes（命名管道）** 作为本机 IPC 传输机制。
+
+该选择基于同机、双向、低流量、Windows-only 通信场景；无需分配 TCP 端口，并可通过显式 DACL 限制访问。该 ADR 与 ADR-034（每交互式用户会话一个 CardHost）及 ADR-035（按逻辑聚合划分唯一写入者）共同构成当前局部 IPC 架构决策。
+
+### 强制安全设计约束（需实现并验证）
+
+1. 创建管道时使用显式安全描述符/DACL，不依赖宽松默认 ACL。
+2. 将允许的用户 SID 与当前 Logon SID/交互式会话边界纳入访问控制；验证跨会话连接被拒绝。
+3. 明确拒绝远程客户端（采用平台支持的远程拒绝控制，例如 `PIPE_REJECT_REMOTE_CLIENTS`；目标版本需 PoC 验证）。
+4. 服务端核验客户端 PID、SessionId、用户令牌及预期进程身份；PID 不可单独作为身份凭据。
+5. 通过连接 nonce/实例令牌或等效机制防止同用户同会话的非授权进程冒用；消息角色字段本身不能作为身份认证。
+6. 对消息类型、帧长度、载荷、路径参数、速率、超时、取消、半包/断连和协议版本执行校验。
+7. 日志采用最小化和脱敏策略，不记录不必要的完整敏感路径或令牌材料。
+8. 传输层认证不替代业务层授权；Main Process 与 CardHost 仍必须遵守 ADR-035 的聚合写入权。
+
+### 未由本决策确定的事项
+
+- 序列化库、消息帧格式、具体 .NET API/包装层和协议 Major/Minor 兼容矩阵。
+- 数据库、物理存储布局、加密和密钥管理。
+- CardHost 崩溃后自动恢复策略、Supervisor、重启 SLA。
+- 安全控制的最终代码实现、性能指标和目标 Windows 版本实测结果。
+
+### 验证要求（NEEDS_VALIDATION）
+
+在隔离 PoC 中至少验证：Windows Server 2012/2012 R2、Server 2016+ Desktop Experience、Windows 10 22H2、Windows 11 x64 的管道创建/连接；显式 DACL；Logon SID/Session 隔离；远程客户端拒绝；非授权用户与同会话冒用进程拒绝；客户端 PID/Session/令牌核验；超时/取消/半包/超大帧；进程崩溃、重连和协议不兼容行为。未通过验证前不得声称安全实现或全目标 OS 兼容性已通过。
+
+### 决策边界
+
+- 本 ADR 确认 IPC 传输机制选择，不等于 P3 概要设计整体批准或建立 `HLD-BL`。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-035 或 RISK-001。
+- RISK-002 的评估与缓解独立管理；本 ADR 不构成风险接受。
+
+### 修订记录
+- v1.0（2026-11-21）：根据用户对 Q-153 / CLQ-154 的明确选择 A 新增 ADR-036；确认 Windows Named Pipes 为本机 IPC 传输技术，安全实现与目标 OS 兼容性仍需 PoC；不建立 P3 设计基线。
+
+
+## ADR-037：Main Process 已退出时 CardHost 崩溃后的恢复策略
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-21
+- 来源：Q-154 / CLQ-155 V2.0
+- 关联需求：FR-016、FR-017、FR-019、NFR-002、NFR-003、BR-012；需求基线 REQ-BL-1.0
+- 关联决策：ADR-021、ADR-033、ADR-034、ADR-035、ADR-036
+- 用户原始回答（VERBATIM）：
+
+```text
+FolderHub Q-154 / CLQ-155 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。
+```
+
+### 用户确认结论
+
+当 Main Process 已退出且全局 Keep Cards=ON 时，如果 CardHost 随后意外崩溃：
+
+1. **不增加常驻 Supervisor，也不引入 Windows Service + GUI Agent** 负责该场景的自动监督/重启。
+2. CardHost 崩溃后，当前由其承载的独立卡片暂时不显示。
+3. CardHost 独立拥有的 CardPresentationState 保留最后一次成功持久化的状态。
+4. 用户下次启动 Main Process 时，由 Main Process 启动/连接 CardHost；CardHost 读取其持久化的展示状态，再与 Main Process 管理的 CardDefinition 对账并恢复卡片。
+
+### 决策边界与未确定事项
+
+- 本决策只覆盖“Main Process 已退出、Keep Cards=ON、CardHost 随后崩溃”的场景。
+- 不改变 ADR-021 已确认的正常退出行为：Keep ON 时 Main Process 正常退出后 CardHost 继续显示；Keep OFF 时关闭全部卡片并退出 CardHost。
+- 不承诺 CardHost 崩溃后自动恢复，不定义恢复时限、重试/退避参数或零丢失窗口。
+- 不决定 Main Process 仍运行时检测到 CardHost 崩溃后的完整恢复/重启细节；由 P3 后续设计分析并验证。
+- 不决定数据库、文件格式、物理存储布局、持久化刷新频率/原子性、进程启动 API、诊断机制或目标 OS 兼容性。
+
+### 影响与验证要求（P3 / NEEDS_VALIDATION）
+
+- 验证 CardHost 独立写入的 CardPresentationState 在 Main Process 退出期间仍可成功持久化。
+- 验证 CardHost 崩溃后无残留卡片窗口/重复实例；下次 Main Process 启动可重新建立 CardHost 并恢复最后成功持久化状态。
+- 验证恢复时 CardDefinition 与 CardPresentationState 对账遵守 ADR-035 的聚合写入权和版本防陈旧覆盖规则。
+- 验证持久化中断/损坏、启动失败、权限不足、显示器/DPI 变化和会话注销/重启等边界；结果未实测前均不得标记 PASS。
+- 具体恢复流程、错误提示/诊断、幂等、重试策略和持久化原子性仍属于 P3 设计/验证工作。
+
+### 决策边界
+
+- ADR-037 是局部恢复策略决策，不等于 P3 概要设计整体批准或建立 `HLD-BL`。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-036、RISK-001/RISK-002。
+- 不代表风险接受、PoC 通过或目标 Windows 版本兼容性已验证。
+
+### 修订记录
+- v1.0（2026-11-21）：根据用户对 Q-154 / CLQ-155 的明确选择 A 新增 ADR-037；确认不增加常驻监督进程，Main Process 下次启动时恢复最后成功持久化状态；实现细节留待 P3 验证，非设计基线。
+
+
+## ADR-038：Main Process 运行期间 CardHost 崩溃后的有限自动恢复策略
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-21
+- 来源：Q-P3-CRASH-001
+- 关联决策：ADR-021、ADR-034、ADR-035、ADR-036、ADR-037
+- 关联需求基线：REQ-BL-1.0（仅作为设计输入；本 ADR 不修改需求）
+
+### 用户原始回答（VERBATIM）
+```text
+FolderHub P3 集中确认结果：Q-P3-TEST-002=尚未盘点；Q-P3-CRASH-001=A。请记录选择，分析影响并继续推进P3；不得擅自修改已批准基线或进入P4。
+```
+
+### 用户确认结论
+当 Main Process 仍在运行且检测到本会话 CardHost 异常退出时，由 Main Process 负责检测、协调并执行有限次数的自动重启；重启采用退避策略；达到多次失败条件后停止自动重启并向用户提示，不允许无限重启。
+
+### 设计约束与待验证细节
+1. 不引入独立常驻 Supervisor 或 Windows Service；Main Process 存活期间由其进程生命周期协调逻辑负责。
+2. 重启前应确认旧 CardHost 已退出，避免同一用户会话出现重复宿主实例或重复卡片窗口。
+3. 重启后按 ADR-035 的单一写入者边界恢复：Main Process 不写 CardPresentationState；CardHost 不写 CardDefinition/GlobalSettings。
+4. 恢复过程需幂等，并对 CardDefinition 与 CardPresentationState 执行版本/有效性对账；不得用旧状态覆盖更新定义。
+5. 达到重试上限后进入明确的降级/停止自动重试状态，记录可诊断错误并向用户提示；恢复入口由 P3 设计细化。
+6. 最大重试次数、初始/最大退避时长、重试窗口、退避算法（含是否抖动）、提示方式、手动恢复行为均未由本决策定值，必须通过 P3 PoC/分析给出候选及证据，不得伪装为用户已确认参数。
+
+### 与 ADR-037 的适用范围隔离
+- 本 ADR 仅适用于 Main Process 仍运行时 CardHost 崩溃。
+- Main Process 已退出且 Keep Cards=ON 时，仍按 ADR-037：不增加常驻 Supervisor/Windows Service；卡片暂时不显示；保留最后成功持久化状态，下次 Main Process 启动时恢复。
+- 本 ADR 不扩大或覆盖 ADR-037，也不改变 ADR-021 的 Keep ON/OFF 正常退出行为。
+
+### 影响与验证要求（P3 / NEEDS_VALIDATION）
+- 验证正常退出、异常退出、连续崩溃、启动失败、快速崩溃循环、旧进程残留、重复窗口、重启中 Main Process 退出等场景。
+- 验证有限重试确实终止，不发生无限重启；退避可限制资源消耗；达到上限后可诊断并提示用户。
+- 验证恢复期间的幂等、状态对账、持久化边界和 Named Pipes 重连/重新认证。
+- 在隔离 PoC 中验证；不接入真实用户数据。PoC 未执行前保持 `NEEDS_VALIDATION`。
+
+### 决策边界
+- ADR-038 是局部运行期故障恢复策略，不等于 P3 概要设计整体批准或建立 `HLD-BL`。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-037 或 RISK-001/RISK-002。
+- 不代表 PoC 通过、风险接受、P3 批准或进入 P4。
+
+### 修订记录
+- v1.0（2026-11-21）：依据用户对 Q-P3-CRASH-001 的明确选择 A 新增；仅确认 Main Process 存活期间的有限自动恢复高层策略，参数与实现待 P3 验证。
+
+## 2026-11-21 Q-P3-GATE-001 / CLQ-157：P3 停止测试与预审准备路径
+
+- 决策记录性质：用户确认的 P3 工作路径决定；不是产品架构 ADR，不改变需求或设计基线。
+- 用户原始回答（VERBATIM）：`FolderHub Q-P3-GATE-001 我的选择：A。请按 software-predev-workflow-skill V2.6.1 继续处理，保护现有需求和设计决策基线，不得未经我明确批准进入 P4。`
+- 用户选择：A。停止后续 PoC/Windows 实机测试；REC-POC-01 保留 `PASS_WITH_LIMITATIONS`；其余测试保持 `NOT RUN` / `NOT_CHECKED`；完成文档级 P3 架构收敛和评审准备。
+- 决策等级：D2；Q 状态 `CLOSED`；决策处理状态 `CONFIRMED`；逐题记录 `CLQ-157`。
+- 四维状态：记录完整性 `PARTIAL`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（仅限文档准备）；延期有效性 `NOT_DEFERRED`。
+- 风险边界：RISK-001 保持 `ACCEPTED`，逐版本兼容性验证义务保留；RISK-002 保持 `ASSESSED`，未接受、未关闭。
+- 阶段边界：P3 `IN_PROGRESS`；P4 `NOT_STARTED`；HLD 基线未建立；本次不批准 P3。
+- 关联交付：P3-09 v0.1；P3 评审准备包 v0.1_DRAFT；P3 工作计划 v1.2。
+
+## ADR-039：SQLite 本地数据库作为首版持久化后端
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-21
+- 来源：Q-P3-DATA-001 / CLQ-158
+- 关联决策：ADR-021、ADR-033、ADR-034、ADR-035
+- 关联需求基线：REQ-BL-1.0（仅作为设计输入；本 ADR 不修改需求）
+
+### 用户原始回答（VERBATIM）
+
+```text
+FolderHub P3 未决事项集中澄清：
+Q-P3-DATA-001 数据持久化方案：A。
+Q-P3-DISPLAY-001 多显示器/DPI 坐标方案：A。
+Q-P3-RISK-001 RISK-002 风险处置及跨阶段安排：A。
+请按 software-predev-workflow-skill V2.6.1 保存完整选项、推荐、回答和四维评估，更新相关台账及设计草案；严格保护已批准基线。此回答不等于批准 HLD 或进入 P4，后续请提交明确的 P3 评审版本供我批准。
+```
+
+### 用户确认结论
+
+采用 SQLite 本地数据库作为 FolderHub 首版物理持久化后端。继续遵守 ADR-035：Main Process 是业务主数据、全局设置和 CardDefinition 的唯一逻辑写入者；CardHost 是 CardPresentationState 的唯一逻辑写入者。
+
+### 未由本决策确定的事项
+
+SQLite 版本/封装库、ORM、表结构、Journal/WAL 模式、连接管理、busy timeout、跨进程锁与事务边界、加密、备份格式、迁移回滚和目标 Windows 兼容性均留待 P4 详细设计/验证；不得将其标为已确认或已验证。
+
+### 决策边界
+
+ADR-039 只确认持久化后端，不修改 ADR-035 的逻辑写入权，不代表 P3 整体批准或建立 HLD-BL。
+
+## ADR-040：多显示器/DPI 位置恢复策略
+
+- ADR 状态：`CONFIRMED`
+- 决策等级：`D2`
+- 决策处理状态：`CONFIRMED`
+- 用户确认状态：`CONFIRMED`
+- 日期：2026-11-21
+- 来源：Q-P3-DISPLAY-001 / CLQ-159
+- 关联决策：ADR-033、ADR-034、ADR-035
+- 关联需求基线：REQ-BL-1.0（仅作为设计输入；本 ADR 不修改需求）
+
+### 用户原始回答（VERBATIM）
+
+```text
+FolderHub P3 未决事项集中澄清：
+Q-P3-DATA-001 数据持久化方案：A。
+Q-P3-DISPLAY-001 多显示器/DPI 坐标方案：A。
+Q-P3-RISK-001 RISK-002 风险处置及跨阶段安排：A。
+请按 software-predev-workflow-skill V2.6.1 保存完整选项、推荐、回答和四维评估，更新相关台账及设计草案；严格保护已批准基线。此回答不等于批准 HLD 或进入 P4，后续请提交明确的 P3 评审版本供我批准。
+```
+
+### 用户确认结论
+
+采用“显示器身份 + 工作区归一化坐标 + DPI 换算”保存和恢复主组件及独立卡片位置。必须保持 Q-026 / ADR-033 已确认的行为：优先恢复到原显示器和相对位置；原显示器不可用或位置不可见时迁移至当前主显示器可见区域；主组件与各独立卡片分别判断/恢复。
+
+### 未由本决策确定的事项
+
+显示器稳定标识字段、DPI awareness、坐标原点、工作区计算、缩放/舍入、混合 DPI、拓扑变化、热插拔/RDP/Explorer 行为和多卡片冲突布局留待 P4 细化与验证。
+
+### 决策边界
+
+ADR-040 仅确认策略方向，不证明多显示器/DPI 行为已验证，不修改 Q-026 / ADR-033 的既有含义，不代表 P3 整体批准或建立 HLD-BL。
+
+
+## ADR 索引追加（2026-11-21）
+
+| 编号 | 主题 | 用户确认的选择 | 状态 | 关联问题 |
+|---|---|---|---|---|
+| ADR-039 | 首版物理持久化后端 | SQLite 本地数据库；保留 ADR-035 逻辑聚合单一写入者；数据库并发/事务/迁移细节留待 P4 | CONFIRMED | Q-P3-DATA-001 / CLQ-158 |
+| ADR-040 | 多显示器/DPI 位置恢复策略 | 显示器身份 + 工作区归一化坐标 + DPI 换算；沿用 Q-026/ADR-033 回退行为 | CONFIRMED | Q-P3-DISPLAY-001 / CLQ-159 |
+
+RISK-002 的受限接受不是架构 ADR，详见 `Risk_Register.md` 与 `CLQ-160.md`。

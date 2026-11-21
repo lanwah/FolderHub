@@ -1,9 +1,9 @@
 # FolderHub 未决问题台账
 
 - 文档编号：FH-REQ-ISS-001
-- 版本：v1.9
+- 版本：v2.5
 - 状态：草稿
-- 日期：2026-11-20
+- 日期：2026-11-21
 
 | 编号 | 关联需求 | 问题描述 | 影响等级 | 状态 | 当前结论 |
 |---|---|---|---|---|---|
@@ -21,7 +21,13 @@
 | Q-012 | RAW-004 | 文件夹用途说明的维护和展示规则是什么？ | 非阻塞 | CLOSED | 用户选择 A：可选说明；主组件列表和独立卡片均显示；长内容截断并可查看完整内容；不设严格字数限制。 |
 | Q-013 | RAW-005 | 文件夹路径不可用时如何处理？ | 非阻塞 | CLOSED | 用户选择 A：保留记录并标记异常，允许重新指定路径；不自动删除记录或磁盘目录；主要在打开时检查。 |
 | Q-014 | RAW-006 | 文件夹通过何种交互打开？ | 非阻塞 | CLOSED | 用户选择 A：双击打开、单击选中、右键菜单提供打开；调用 Windows 默认文件资源管理器；路径不可用时提示。 |
-| Q-015 | RAW-013/ADR-007/ADR-021 | 主程序退出后独立卡片继续显示的生命周期应采用何种技术架构？ | 可延期 | OPEN | 产品行为已确认：全局统一设置、默认开启；独立进程、后台服务或其他实现方案尚未选择，留待 P3 概要设计评估与验证。 |
+| Q-015 | RAW-013/ADR-007/ADR-021/ADR-034 | 主程序退出后独立卡片继续显示的生命周期应采用何种技术架构？ | 非阻塞 | CLOSED | 用户于 2026-11-20 明确选择 A：每个交互式用户会话一个独立 CardHost 进程承载该会话全部卡片。仅确认宿主/进程模型；IPC、崩溃恢复、持久化、升级和 Windows 兼容性仍为 P3 设计/验证事项。详见 CLQ-152 V3、ADR-034、P3-03。 |
+| Q-152 | FR-016/017/019、NFR-002/003、BR-012、ADR-021/033/034/035 | Main Process 与 CardHost 之间，卡片定义和卡片展示状态的持久化写入权应如何划分？ | 非阻塞 | CLOSED | 用户选择 A：按逻辑聚合划分单一写入者；Main Process 拥有业务主数据、全局设置和卡片启停定义，CardHost 唯一写入卡片位置/锁定/显示环境恢复状态。仅确认逻辑所有权，不选择物理存储/数据库/IPC 技术。详见 CLQ-153 V2、ADR-035、P3-04 v0.2。
+| Q-153 | FR-016/017/019、NFR-001/002/003、ADR-021/034/035/036 | Main Process 与同一交互式用户会话内的 CardHost，应采用哪一种本机 IPC 传输技术？ | 非阻塞（传输技术选择已确认；安全实现/PoC 作为 P3 验证工作） | CLOSED | D2 / CONFIRMED；用户选择 A：Windows Named Pipes。仅确认本机 IPC 传输机制；序列化库、消息帧实现、运行时、数据库、完整安全实现仍待设计/验证。详见 CLQ-154 V2.0、ADR-036、P3-05 v0.3。 |
+| Q-154 | RAW-013、FR-016/017、NFR-002、ADR-021/034/035/036/037 | Main Process 已退出且 Keep=ON 时，如果 CardHost 自身崩溃，首版应采用哪种恢复策略？ | 非阻塞（策略已确认；持久化/恢复实现继续 P3） | CLOSED | D2 / CONFIRMED；用户选择 A：不增加常驻监督进程，下次 Main Process 启动时恢复最后成功持久化状态。详见 CLQ-155 V2.0、ADR-037。 |
+| Q-P3-TEST-001 | P3 测试策略 | PoC/兼容性验证应采用何种测试环境策略？ | 非阻塞 | CLOSED | 用户选择 E：多种 Windows 环境；具体可用版本另由 Q-P3-TEST-002 盘点。 |
+| Q-P3-TEST-002 | P3 测试环境 | 当前实际可用的 Windows 测试环境版本清单是什么？ | 非阻塞 | IN_PROGRESS | 原选择“尚未盘点”历史保留；2026-11-21 收到 1 台 Windows x64 / RDP 环境采集证据（W11-RDP-001），OS Caption/ProductName 冲突待核实，其他目标 OS 环境仍未盘点。详见 P3_Test_Environment_Inventory_v0.4.md。 |
+| Q-P3-CRASH-001 | FR-016/017、NFR-002/003、ADR-034/035/036/037 | Main Process 运行期间 CardHost 崩溃后的恢复策略是什么？ | 非阻塞（参数与实现需 P3 PoC） | CLOSED | D2 / CONFIRMED；用户选择 A：Main Process 有限自动重启、退避，多次失败后提示，不无限重启。详见 CLQ-156、ADR-038。 |
 | Q-016 | RAW-001/ADR-008 | FolderHub 首版实际目标运行环境和使用场景是什么？ | 非阻塞 | CLOSED | 用户最终确认组合选项 A：保留 Windows 10（22H2）/Windows 11（x64）本地交互式桌面支持，并增加 Windows Server 单用户交互式桌面支持；不含 RDS 多用户。具体版本由 Q-019 细化。 |
 | Q-017 | RAW-002 | 分类是否支持父子层级或嵌套？ | 非阻塞 | CLOSED | 用户选择 A：分类采用平级列表，不支持父子分类或嵌套。 |
 | Q-018 | RAW-002 | 同一文件夹属于多个分类时，手动排序是否按分类独立维护？ | 非阻塞 | CLOSED | 用户选择 A：每个分类独立维护文件夹手动顺序；同一文件夹在不同分类中可处于不同位置。 |
@@ -350,3 +356,172 @@ FolderHub Q-026 我的选择：A。请按 V2.6.1 追加澄清历史并更新相�
 - 决策完成度仍为 `PENDING_DESIGN_ANALYSIS`；阶段阻塞性为 P3 相关架构批准/基线 `BLOCKING`。
 - 助手须完成候选架构、依赖、退出/异常恢复、部署维护、风险及回退分析；若分析表明需要用户作实质性选择，按 V2.6.1 新建/追加 Q/CLQ 并同步 ADR。
 - 在 Q-015 完成必要分析与用户确认前，不批准独立卡片宿主/生命周期相关架构，也不建立该部分设计基线。
+
+
+## Q-015 P3-02 架构候选分析与用户选择提交（2026-11-20）
+
+- Q 状态：`OPEN`（保持不变）。
+- 决策等级：`D2`（保持；该技术方案影响模块边界、运行维护和故障恢复，但产品行为已由 Q-010 / ADR-021 确认，候选方案可调整；若后续发现重大不可逆成本或改变核心产品语义，重新判级）。
+- 决策处理状态：`DEFERRED → PENDING_CONFIRMATION`（处理状态变化，不替换 Q 原状态）。
+- 关联：RAW-013、FR-016、FR-017、BR-012、ADR-007、ADR-021、REQ-BL-1.0、TASK-017、TASK-018、CLQ-152。
+- 本轮分析：已比较单进程后台驻留、单用户会话独立 CardHost、每卡片独立进程、Windows Service + GUI Agent 四类候选；推荐一个用户会话一个 CardHost 进程。
+- 用户选择：尚未取得；详见问题澄清记录台账 CLQ-152 V2。
+- 四维状态：记录完整性 `COMPLETE`；决策完成度 `PENDING`；阶段阻塞性 `BLOCKING`（Q-015 宿主生命周期架构批准/基线）/ `NON_BLOCKING`（无依赖的其他 P3 工作）；延期有效性 `NOT_DEFERRED`（原 P3 触发条件已到达，本轮已提问）。
+- 临时边界：用户选择前不批准宿主进程模型、不新增技术 ADR、不建立该部分设计基线；继续推进不依赖 Q-015 的模块边界、数据/接口候选和验证计划。
+- 证据：`docs/02_Architecture/P3-02_总体架构候选方案与权衡分析_v0.1.md`；CLQ-152。
+
+
+## Q-015 用户选择确认与关闭记录（2026-11-20）
+
+- 用户原始回答：`FolderHub Q-015 / CLQ-152 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账，并继续 P3 架构收敛。`
+- Q 状态：`OPEN → CLOSED`；关闭范围仅限原问题定义的独立卡片宿主/进程模型选择。
+- 决策等级：`D2`（保持）。
+- 决策处理状态：`PENDING_CONFIRMATION → CONFIRMED`。
+- 用户选择：A——一个交互式用户会话一个独立 CardHost 进程，承载该会话全部独立卡片。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（对 Q-015 已定义决策）；延期有效性 `NOT_DEFERRED`。
+- 关联：RAW-013、FR-016、FR-017、BR-012、ADR-007、ADR-021、ADR-034、REQ-BL-1.0、CLQ-152、TASK-017、TASK-018。
+- 仍待 P3 设计/验证：IPC 与 ACL、CardHost 崩溃恢复、状态持久化、升级协同、Explorer/桌面层、多显示器/DPI、RDP 与 Windows Server 兼容性。上述事项不因 Q-015 关闭而视为已决定或验证通过。
+- 基线边界：不修改 SRS v0.11 / REQ-BL-1.0，不批准完整 P3，不进入 P4。
+
+- v2.0（2026-11-20）：根据 CLQ-152 用户选择 A 关闭 Q-015 的宿主/进程模型选择；新增 ADR-034 关联；IPC、恢复、持久化及兼容性仍留待 P3 设计/验证。
+
+
+## Q-152 P3-04 数据持久化写入权澄清（2026-11-20）
+
+- Q 状态：`OPEN`；决策等级：`D2`；决策处理状态：`PENDING_CONFIRMATION`。
+- 问题：Main Process 与 CardHost 之间，卡片定义和卡片展示状态的持久化写入权应如何划分？
+- 关联：FR-016、FR-017、FR-019、NFR-002、NFR-003、BR-012、ADR-021、ADR-033、ADR-034、TASK-017、TASK-018、CLQ-153。
+- 推荐 A：按逻辑聚合划分单一写入者。Main Process 拥有业务主数据、全局设置和卡片启停定义；CardHost 唯一写入每张卡片的位置/锁定/显示环境恢复状态。仅确认逻辑写入权，不选择数据库、文件格式或物理存储布局。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `PENDING`；阶段阻塞性 `BLOCKING`（卡片持久化写入权最终收敛），`NON_BLOCKING`（其他无依赖 P3 工作）；延期有效性 `NOT_DEFERRED`。
+- 用户选择前不新增 ADR、不改变 SRS v0.11 / REQ-BL-1.0，不建立设计基线。
+- 详见 `docs/00_Project_Management/Clarifications/CLQ-153.md` 与 `docs/02_Architecture/P3-04_CardHost数据模型与持久化边界_v0.2.md`。
+
+
+## Q-152 用户选择确认与关闭记录（2026-11-20）
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-152 / CLQ-153 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账并继续 P3。`
+- Q 状态：`OPEN → CLOSED`；决策等级 `D2` 保持；决策处理状态 `PENDING_CONFIRMATION → CONFIRMED`。
+- 用户选择 A：Main Process 是业务主数据、全局配置和卡片定义/启停的唯一写入者；CardHost 是卡片位置、锁定和显示环境恢复状态的唯一写入者。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（仅对本题定义的逻辑写入权）；延期有效性 `NOT_DEFERRED`。
+- 新增 ADR-035；P3-04 修订至 v0.2。物理存储、数据库、IPC 传输、事务/补偿、迁移及恢复细节仍待设计/验证。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、RISK-001；不批准 P3 整体、不建立设计基线、不进入 P4。
+
+
+## Q-153：IPC 传输技术选择（2026-11-21）
+
+- 状态：`OPEN`；决策等级 D2；决策处理状态 `PENDING_CONFIRMATION`。
+- 澄清记录：`docs/00_Project_Management/Clarifications/CLQ-154.md` V1.0。
+- 推荐：A. Windows Named Pipes；置信度中高。
+- 影响：仅阻断 IPC 传输技术最终收敛及其安全设计批准；P3-06 CardHost 生命周期/崩溃恢复、协议无关接口和其他无依赖设计可继续。
+- 四维状态：记录完整性 COMPLETE；决策完成度 PENDING；阶段阻塞性局部 BLOCKING / 其他工作 NON_BLOCKING；延期有效性 NOT_DEFERRED。
+- 用户确认前不新增 ADR，不改变 SRS v0.11 / REQ-BL-1.0 或既有 ADR。
+
+
+## Q-153 用户选择确认与关闭记录（2026-11-21）
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-153 / CLQ-154 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。`
+- Q 状态：`OPEN → CLOSED`；决策等级 `D2` 保持；决策处理状态 `PENDING_CONFIRMATION → CONFIRMED`。
+- 用户选择 A：Main Process 与同一交互式用户会话内的 CardHost 采用 Windows Named Pipes（命名管道）作为本机 IPC 传输机制。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（传输技术选择已解决，安全实现与目标 OS PoC 作为 P3 验证工作）；延期有效性 `NOT_DEFERRED`。
+- 新增 ADR-036；P3-05 更新至 v0.3。Named Pipes 选型确认不等于具体 API/ACL/消息帧/序列化库或安全实现已验证。
+- RISK-002 完整评估已触发并登记为 `ASSESSED`；不代表用户接受该风险或风险已关闭。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-035 或 RISK-001；不批准 P3 整体、不建立设计基线、不进入 P4。
+- 逐题记录：`Clarifications/CLQ-154.md` V2.0。
+
+
+## Q-154：CardHost 崩溃后的恢复策略（2026-11-21）
+
+- 状态：`CLOSED`；决策等级 D2；决策处理状态 `CONFIRMED`。
+- 澄清记录：`docs/00_Project_Management/Clarifications/CLQ-155.md` V1.0。
+- 问题范围：Main Process 已退出且 Keep=ON 时，CardHost 自身崩溃后的恢复行为。
+- 用户已选择：A. 不增加常驻监督进程；CardHost 崩溃后暂时不显示卡片，保留最后成功持久化状态，下次 Main Process 启动时恢复。
+- 备选：B 每会话轻量 Supervisor 自动重启；C Windows Service + GUI Agent；D 其他。
+- 四维状态：记录完整性 COMPLETE；决策完成度 CONFIRMED；阶段阻塞性 NON_BLOCKING（策略已收敛，技术实现继续 P3）；延期有效性 NOT_DEFERRED。
+- 用户选择 A，已新增 ADR-037；不改变 ADR-021 的 Keep ON/OFF 正常退出规则，不修改 SRS v0.11 / REQ-BL-1.0。
+- 原 OPEN / PENDING_CONFIRMATION 为提问时状态历史，当前状态以本条更新及下方关闭记录为准。
+
+
+## Q-154 用户选择确认与关闭记录（2026-11-21）
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-154 / CLQ-155 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。`
+- Q 状态：`OPEN → CLOSED`；决策等级 `D2` 保持；决策处理状态 `PENDING_CONFIRMATION → CONFIRMED`。
+- 用户选择 A：不增加常驻 Supervisor/Windows Service；Main Process 已退出且 Keep Cards=ON 时若 CardHost 崩溃，卡片暂时不显示，保留最后成功持久化状态，下次 Main Process 启动时恢复。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（策略已收敛；实现细节继续 P3 技术设计/验证）；延期有效性 `NOT_DEFERRED`。
+- 新增 ADR-037；P3-06 更新至 v0.3。该决定不定义自动重启 SLA、零丢失窗口、存储技术或主程序运行期间 CardHost 崩溃处理的全部细节。
+- 不改变 ADR-021 的 Keep ON/OFF 正常退出规则；不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-036 或风险基线；不批准 P3 整体、不建立设计基线、不进入 P4。
+- 逐题记录：`Clarifications/CLQ-155.md` V2.0。
+
+
+## 2026-11-21 P3 测试环境与运行期 CardHost 崩溃策略集中确认
+
+### Q-P3-TEST-001：测试环境选择
+- 用户原始回答（VERBATIM）：`FolderHub Q-P3-TEST-001 测试环境选择：E。请按此选择继续推进 P3，保留现有需求和设计决策基线。`
+- 选择：`E — 多种 Windows 测试环境`。
+- 结论边界：确认采用多环境测试策略；不表示所有候选 OS 环境当前均可用，不表示具体版本已盘点或已执行测试。
+
+### Q-P3-TEST-002：具体可用环境盘点状态
+- 用户原始回答（VERBATIM）：`FolderHub P3 集中确认结果：Q-P3-TEST-002=尚未盘点；Q-P3-CRASH-001=A。请记录选择，分析影响并继续推进P3；不得擅自修改已批准基线或进入P4。`
+- 选择：`尚未盘点`。
+- 结论：目前没有已确认的可用 Windows 测试环境版本清单。后续先准备可复用 PoC 工程、测试脚本、环境探测/记录模板和部署说明；不得把候选矩阵记为已具备环境或已完成兼容性测试。
+
+### Q-P3-CRASH-001：Main Process 运行期间 CardHost 崩溃
+- 用户原始回答（VERBATIM）：`FolderHub P3 集中确认结果：Q-P3-TEST-002=尚未盘点；Q-P3-CRASH-001=A。请记录选择，分析影响并继续推进P3；不得擅自修改已批准基线或进入P4。`
+- 选择：`A — Main Process 运行期间检测到 CardHost 崩溃时，由 Main Process 负责自动重启 CardHost；采用有限重试和退避，多次失败后提示用户，不无限重启。`
+- 决策等级：D2；决策处理状态：CONFIRMED；逐题澄清记录：`Clarifications/CLQ-156.md`。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`（仅限运行期间的高层恢复策略）；阶段阻塞性 `NON_BLOCKING`（具体阈值、退避参数、恢复幂等和诊断仍需 P3 验证）；延期有效性 `NOT_DEFERRED`。
+- 影响：允许 Main Process 在自身存活期间承担 CardHost 进程监测及有限重启协调；不新增独立常驻 Supervisor/Windows Service。重试次数、初始/最大退避时长、重试窗口、是否需要抖动、最终失败状态与恢复入口均未由本次选择定值，留待 P3 PoC 量化。
+- 决策边界：仅覆盖 Main Process 仍运行时 CardHost 异常退出；ADR-037 对 Main Process 已退出且 Keep Cards=ON 的行为继续有效，不得在 Main Process 退出后留下监控/重启进程。
+- 新增 ADR-038；不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001 或 ADR-001～ADR-037 的既有含义；不代表 P3 整体批准、HLD 基线建立或进入 P4。
+
+
+## 2026-11-21 Q-P3-TEST-002 实际环境证据追加
+
+- 证据来源：用户上传 `environment-inventory.json`，采集时间 `2026-11-21T08:37:33.5865139Z`。
+- 新增环境追踪编号：`W11-RDP-001`。
+- 采集结果：OS Caption=`Microsoft Windows 11 专业版`；ProductName=`Windows 10 Pro`；Version/Build=`10.0.26300 / 26300`；DisplayVersion=`26H2`；x64；RDP SessionId=1；非管理员；PowerShell 7.6.6。
+- 由于 Caption/ProductName 冲突，暂不将该环境确认为某一正式 Windows 目标版本；原始值均保留。
+- Q-P3-TEST-002 从此前“尚未盘点”更新为 `IN_PROGRESS`：已获得一台环境的初步证据，但全量环境清单和 OS 身份核实未完成。
+- 该证据不构成兼容性验证、PoC 执行通过、需求变更、技术决策或风险接受；不修改 REQ-BL-1.0、ADR-001～ADR-038、RISK-001/RISK-002。
+
+
+## 2026-11-21 Q-P3-TEST-002 / REC-POC-01 证据补充
+
+- Q-P3-TEST-002 保持 `IN_PROGRESS`。W11-RDP-001 已由 `Win32_OperatingSystem` 独立查询确认为 Windows 11 专业版 x64（Version 10.0.26300 / Build 26300）；此前 JSON 的 ProductName=`Windows 10 Pro` 原值保留，作为字段冲突历史，不再阻碍 OS 身份识别。其他目标 OS/会话环境仍未盘点。
+- REC-POC-01：`PASS_WITH_LIMITATIONS`，只限 harness 模拟进程生命周期；一次异常退出、1 秒退避、第二次启动、5 秒进程存活观察和清理均有事件日志支持。
+- 不得将 REC-POC-01 标记为真实 CardHost 健康恢复、Named Pipes 安全、持久化恢复、桌面集成或兼容性 PASS。REC-POC-02～05、NP-01～11、CP-01～10 仍未执行。
+- 本次不改变 REQ-BL-1.0、ADR-001～ADR-038 或风险状态；不构成阶段批准。
+- 证据与详情：`P3_Test_Environment_Inventory_v0.5.md`；RunId `20ee473945ab4343a29533f3bb5a891a`。
+
+## 2026-11-21 P3 工作路径问题追加：Q-P3-GATE-001
+
+| 编号 | 关联需求/阶段 | 问题描述 | 影响等级 | 状态 | 当前结论 |
+|---|---|---|---|---|---|
+| Q-P3-GATE-001 | P3 / TASK-017 / TASK-018 / RISK-001 / RISK-002 | 停止后续 PoC/实机测试后，如何处理未验证事项及 P3 评审准备？ | P3 工作路径 / D2 | CLOSED | 用户选择 A：保留未验证状态，停止后续测试，完成文档级架构收敛和 P3 预审准备。该选择不代表风险接受、不解除 GAP-01/GAP-06 等阻塞、不批准 P3 或进入 P4。详见 CLQ-157。 |
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-P3-GATE-001 我的选择：A。请按 software-predev-workflow-skill V2.6.1 继续处理，保护现有需求和设计决策基线，不得未经我明确批准进入 P4。`
+- 决策等级：D2；决策处理状态：CONFIRMED；四维状态：PARTIAL / CONFIRMED / NON_BLOCKING（仅文档准备）/ NOT_DEFERRED。
+- 不新增 ADR；该问题仅确定 P3 工作路径，不形成架构或技术选型。
+
+## 2026-11-21 P3 未决事项集中澄清结果
+
+| 编号 | 关联需求/设计 | 问题描述 | 影响等级 | 状态 | 当前结论 |
+|---|---|---|---|---|---|
+| Q-P3-DATA-001 | REQ-BL-1.0 / ADR-035 / P3-04 | 数据持久化后端选择 | P3 D2 | CLOSED | 用户选择 A：SQLite 本地数据库；表结构、事务、并发锁、Journal/WAL、迁移/备份恢复细节留待 P4。详见 CLQ-158、ADR-039。 |
+| Q-P3-DISPLAY-001 | Q-026 / ADR-033 / P3-04 | 多显示器/DPI 位置持久化策略 | P3 D2 | CLOSED | 用户选择 A：显示器身份 + 工作区归一化坐标 + DPI 换算；具体标识字段、算法、混合 DPI 和碰撞处理留待 P4。详见 CLQ-159、ADR-040。 |
+| Q-P3-RISK-001 | RISK-002 / ADR-036 | 是否允许将 RISK-002 残余风险带入 P4 | 安全风险接受 D1 | CLOSED | 用户选择 A：仅接受 P4 详细设计阶段残余风险；不允许真实数据接入、产品运行、部署或发布，直至安全措施实施并通过验证。详见 CLQ-160、Risk_Register。 |
+
+### 用户原始回答（VERBATIM）
+
+```text
+FolderHub P3 未决事项集中澄清：
+Q-P3-DATA-001 数据持久化方案：A。
+Q-P3-DISPLAY-001 多显示器/DPI 坐标方案：A。
+Q-P3-RISK-001 RISK-002 风险处置及跨阶段安排：A。
+请按 software-predev-workflow-skill V2.6.1 保存完整选项、推荐、回答和四维评估，更新相关台账及设计草案；严格保护已批准基线。此回答不等于批准 HLD 或进入 P4，后续请提交明确的 P3 评审版本供我批准。
+```
+
+- Q-P3-DATA-001 / CLQ-158：D2 / CLOSED / CONFIRMED；四维 COMPLETE / CONFIRMED / NON_BLOCKING / NOT_DEFERRED。
+- Q-P3-DISPLAY-001 / CLQ-159：D2 / CLOSED / CONFIRMED；四维 COMPLETE / CONFIRMED / NON_BLOCKING / NOT_DEFERRED。
+- Q-P3-RISK-001 / CLQ-160：D1 / CLOSED / CONFIRMED；四维 COMPLETE / CONFIRMED / NON_BLOCKING（仅 P3/P4 设计）/ VALID；开发、真实数据、运行、部署和发布仍 BLOCKING，直到安全验证门禁满足。
+- GAP-01、GAP-06 的用户决策层面已收敛；不代表数据库并发/持久化原子性或显示器/DPI 行为已验证。
+- 本轮不改变需求基线或既有 ADR；不代表 HLD 已批准或 P4 已启动。

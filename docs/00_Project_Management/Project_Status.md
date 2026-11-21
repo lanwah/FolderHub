@@ -1,9 +1,9 @@
 # FolderHub 项目状态
 
 - 文档编号：FH-PM-002
-- 版本：v3.8
+- 版本：v5.2
 - 状态：项目管理状态记录
-- 日期：2026-11-20
+- 日期：2026-11-21
 - 工作流规范：software-predev-workflow-skill V2.6.1
 
 ## 0. 工作流规范更新记录
@@ -61,21 +61,21 @@
 - 已确认需求/产品选择：13 项（RAW-001 至 RAW-013；RAW-001/RAW-002 的关键范围已确认，Server 兼容性待验证）
 - 待澄清/细化的原始需求：0 项（RAW-001/RAW-002 关键范围已确认；兼容性验证作为风险跟踪）
 - 助手建议：8 项（SUG-001 至 SUG-008，非用户需求）
-- 未决问题：1 项（Q-015 为 D2 / DEFERRED 的 P3 技术设计问题）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033）；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-151 均已关闭（Q-029～Q-150 为历史摘要重建记录）
-- 决策记录：33 项（ADR-001 至 ADR-033）；ADR-032 汇总 Q-029～Q-150 的 122 项历史确认结论
-- 澄清记录：147 项（CLQ-001～CLQ-146、CLQ-151；CLQ-025～CLQ-146 为 RECONSTRUCTED）
-- 澄清历史：CLQ-001～CLQ-146、CLQ-151 已登记；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-151 已关闭；Q-015 为 P3 技术设计问题。Q-026 / CLQ-024 已于 2026-11-15 追加用户选择 A 及四维评估。Q-029～Q-150 结论已按历史摘要补写，原始逐字问答缺失边界已逐题标记 RECONSTRUCTED/UNAVAILABLE
+- 未决用户问题：0 项待答 Q（Q-153、Q-154 均 CLOSED / D2 / CONFIRMED；实现验证项继续跟踪）
+- 决策记录：38 项（ADR-001 至 ADR-038）；ADR-032 汇总 Q-029～Q-150 的 122 项历史确认结论
+- 澄清记录：152 项（CLQ-001～CLQ-146、CLQ-151～CLQ-156；CLQ-025～CLQ-146 为 RECONSTRUCTED；CLQ-152 V3、CLQ-153 V2、CLQ-154 V2.0、CLQ-155 V2.0、CLQ-156 V1.0 均已追加用户选择）
+- 澄清历史：CLQ-001～CLQ-146、CLQ-151～CLQ-155 已登记；Q-001～Q-014、Q-016～Q-020、Q-022～Q-026、Q-029～Q-154 已关闭；Q-P3-TEST-001/002、Q-P3-CRASH-001 已记录并关闭；Q-153 CLOSED / D2 / CONFIRMED，CLQ-154 V2.0 记录用户选择 A（Windows Named Pipes）；Q-154 CLOSED / D2 / CONFIRMED，CLQ-155 V2.0 记录用户选择 A（不增加常驻 Supervisor，下次 Main Process 启动时恢复）；Q-015 已 CLOSED / CONFIRMED，CLQ-152 V3 记录用户选择 A；Q-152 已 CLOSED / CONFIRMED，CLQ-153 V2 记录用户选择 A；CardHost 其他实现细节仍待 P3 设计。Q-026 / CLQ-024 已于 2026-11-15 追加用户选择 A 及四维评估。Q-029～Q-150 结论已按历史摘要补写，原始逐字问答缺失边界已逐题标记 RECONSTRUCTED/UNAVAILABLE
 - 变更记录：1 项（CR-001 范围已获用户确认；兼容性验证待执行；REQ-BL-1.0 已建立，CR-001 未因基线建立而改变）
-- 任务看板：TASK-001～TASK-016 已完成并归档；TASK-017～TASK-018 为当前 P3 活跃任务。
+- 任务看板：TASK-001～TASK-016、TASK-019 已完成并归档；TASK-017～TASK-018 为当前 P3 活跃任务。
 
 ## 3. 当前重点
 1. Q-001～Q-009、Q-011～Q-014 均已关闭；RAW-003～RAW-006 的别名、用途说明、路径失效和打开操作规则已确认并同步 RAW/ADR。
-2. Q-010 已关闭：退出保留设置为全局统一开关，默认开启；开启时退出主程序后独立卡片继续显示，关闭时一并关闭。具体生命周期技术实现由 Q-015 跟踪；P3 已启动，当前由 TASK-018 进行架构分析。
+2. Q-010 已关闭：退出保留设置为全局统一开关，默认开启；开启时退出主程序后独立卡片继续显示，关闭时一并关闭。Q-015 已由用户选择 A 并关闭（ADR-034）；Q-152 已由用户选择 A 并关闭（ADR-035）；Q-153 已由用户选择 A 并关闭（ADR-036：Windows Named Pipes）；Q-154 已由用户选择 A 并关闭（ADR-037：不增加常驻 Supervisor，下次 Main Process 启动时恢复）；安全 PoC、跨聚合事务、持久化/恢复实现和兼容性仍由 TASK-017/TASK-018 在 P3 收敛。
 3. Q-016～Q-020 已全部关闭：保留 Windows 10/11 本地桌面支持，增加 Windows Server 2012 及以上单用户 GUI/Desktop Experience 支持；不含 Server Core/RDS 多用户；分类平级且各分类独立排序。
 4. 同类项目调研范围已确认（5～10 个候选及约定交付物）；具体技术栈尚未批准，调研结论不得直接视为技术选型。
 
 ## 4. 下一步
-P2 已于 2026-11-20 获用户明确批准，SRS v0.11 已建立需求基线 `REQ-BL-1.0`。P3 概要设计已获授权并进入 IN_PROGRESS。当前优先执行总体架构候选方案分析及 Q-015 独立卡片宿主生命周期分析；Q-015 仍为 OPEN / D2，延期触发条件已到达，必须在相关架构方案批准/基线前完成分析并取得必要确认。RISK-001 仍为 ACCEPTED，Windows Server 兼容性逐版本验证义务不变。
+P2 已于 2026-11-20 获用户明确批准，SRS v0.11 已建立需求基线 `REQ-BL-1.0`。P3 概要设计已获授权并进入 IN_PROGRESS。下一步：先在可用 Windows 环境盘点 OS/Edition/Build/会话，再执行隔离恢复模拟器 REC-POC-01～05；随后推进 Named Pipes NP-01～NP-11 与持久化 CP-01～CP-10 实际 PoC，由 TASK-017/TASK-018 管理。RISK-001 仍为 ACCEPTED，Windows Server 兼容性逐版本验证义务不变。
 
 ## 5. 阶段与基线历史
 - 2026-10-31：P0 初始化完成，进入 P1 需求采集；需求基线尚未建立。
@@ -87,9 +87,9 @@ P2 已于 2026-11-20 获用户明确批准，SRS v0.11 已建立需求基线 `RE
 - 2026-11-02：用户确认 RAW-003～RAW-006 推荐方案，新增 Q-011～Q-014、ADR-017～ADR-020 并关闭四题；用户选择 Q-010 方案 C，设置默认值及作用范围待确认。TASK-006 完成；P1 保持 IN_PROGRESS，未建立需求基线，未进入 P2。
 
 ## 6. 任务与风险
-- 当前活跃任务：TASK-017（P3 总体架构与设计框架分析，IN_PROGRESS）；TASK-018（Q-015 独立卡片宿主生命周期架构分析，IN_PROGRESS）。TASK-001～TASK-016 已完成并归档。
+- 当前活跃任务：TASK-017（P3 总体架构与设计框架分析，IN_PROGRESS）；TASK-018（CardHost 生命周期、IPC、异常恢复和部署维护分析，IN_PROGRESS）。TASK-001～TASK-016、TASK-019 已完成并归档。
 - 已完成任务：TASK-001～TASK-016；其中 TASK-011～TASK-013 已于 2026-11-20 随 P2 批准完成并归档。
-- 当前风险：RISK-001（Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；V2.5.0 初筛为 NORMAL；既有完整评估及用户接受状态 ACCEPTED 保持有效；P3/P4 仍须逐版本验证）；Q-015 已进入 P3 分析，相关架构批准/基线仍受其阻塞；Q-001～Q-009 部分原始逐轮历史仍不可访问。
+- 当前风险：RISK-001（Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；V2.5.0 初筛为 NORMAL；既有完整评估及用户接受状态 ACCEPTED 保持有效；P3/P4 仍须逐版本验证）；Q-015 宿主/进程模型选择已确认（ADR-034）；Q-152 逻辑写入权已确认（ADR-035）；IPC 传输、跨聚合事务、崩溃恢复和部署兼容仍待 P3 收敛；Q-001～Q-009 部分原始逐轮历史仍不可访问。
 - Git 仓库/Commit/Tag：当前环境不可验证，NOT_CHECKED。
 
 - P1 阶段评审：用户已批准 P1 成果；P2 已于 2026-11-20 获批；需求基线 `REQ-BL-1.0` 已建立；P3 已获授权并启动。
@@ -263,3 +263,225 @@ P2 已于 2026-11-20 获用户明确批准，SRS v0.11 已建立需求基线 `RE
 - Q-015：仍 `OPEN / D2 / DEFERRED`；P3 启动触发条件已到达，相关架构分析现为活动工作；在 Q-015 解决/完成必要确认前，不得批准独立卡片宿主生命周期架构或建立相应设计基线。
 - RAW-001～RAW-013、ADR-001～ADR-033、CR-001、RISK-001 的既有语义/状态未被本次阶段批准改写；决策台账仍为 33 项，本次为阶段审批，不新增产品 ADR。
 - Git Commit/Tag、Windows 实机兼容性验证、Cursor/Codex 本地加载：`NOT_CHECKED`。
+
+
+## 0.9 P3 初版 Demo 制作启动与交付（2026-11-20）
+- 用户明确要求：先提供完整项目包同步本地，再按已批准 `REQ-BL-1.0` 开始制作 FolderHub P3 交互式网页 Demo。
+- 完整项目快照：基于 `/FolderHub/` 资料库 232 份文件生成 ZIP；ZIP 完整性测试通过。
+- 新增 `docs/design-demo/`：README、change-log、current/index.html、styles/app.css、scripts/app.js；版本 `p3-demo-v0.1`，状态 `P3_DEMO_DRAFT`。
+- 新增 `docs/04_Reviews/P3_Demo_v0.1_自检报告.md` 和 `项目一致性检查报告-P3Demo启动V1.0.md`；JavaScript 语法检查通过；浏览器/目标 Windows 桌面层级与系统集成仍需验证。
+- 新增 TASK-019（P3 / DESIGN / IN_PROGRESS）；TASK-017、TASK-018 保持 IN_PROGRESS。
+- P1/P2/P3/P4 阶段状态不变：P1/P2 APPROVED，P3 IN_PROGRESS，P4 NOT_STARTED；未批准 P3 概要设计、未进入 P4、未建立设计基线。
+- 未修改 `SRS_FolderHub_v0.11.md`、RAW 原文、ADR-001～ADR-033、CR-001、RISK-001 或 Q-015 状态；Q-015 仍 OPEN / D2 / DEFERRED。
+
+
+## 0.10 P3 Demo 用户评审通过与 P3-01 启动（2026-11-20）
+- 用户原始表达（VERBATIM）：`ok，demo审核通过，继续往前推进`。
+- `p3-demo-v0.1` 用户评审结论记录为 `USER_REVIEW_APPROVED`；批准范围仅限当前 P3 Demo。Demo 仍为 `P3_DEMO_DRAFT`，不构成 P3 概要设计整体批准或正式设计基线。
+- TASK-019：`IN_PROGRESS → DONE`，已追加至 `plans/done.md`；Demo 的已知限制继续披露，包括双击打开为模拟动作、未调用 Windows Explorer、真实文件系统/系统托盘/启动/桌面层级/持久化未实现或未验证。
+- P3-01 首轮系统上下文与边界分析草案已形成：`docs/02_Architecture/P3-01_系统上下文与边界分析_v0.1.md`；作为 TASK-017 的阶段性产物，TASK-017 继续 `IN_PROGRESS`。
+- TASK-018 继续 `IN_PROGRESS`；Q-015 仍 `OPEN / D2 / DEFERRED`，相关独立卡片宿主/生命周期架构批准和基线仍受其阻塞。
+- P1/P2 保持 `APPROVED`；P3 保持 `IN_PROGRESS`；P4 保持 `NOT_STARTED`；需求基线 `REQ-BL-1.0` 不变；概要设计基线仍未建立。
+- 未修改 SRS v0.11、RAW、Q 状态、ADR-001～ADR-033、CR-001 或 RISK-001；本轮未新增产品 ADR/CR。Git Commit/Tag 仍 `NOT_CHECKED`。
+- 本轮只读一致性检查：`docs/04_Reviews/项目一致性检查报告-P3Demo评审通过与P3-01推进V1.0.md`，结果 WARNING（PASS 8 / WARNING 1 / FAIL 0 / NOT_CHECKED 2）。
+
+
+## 0.11 P3-02 总体架构候选分析（2026-11-20）
+
+- 已完成 `docs/02_Architecture/P3-02_总体架构候选方案与权衡分析_v0.1.md`：比较单进程驻留、单用户会话 CardHost、每卡片独立进程、Windows Service + GUI Agent；形成逻辑模块边界、Windows 桌面集成候选、UI 框架比较、风险与验证计划及需求追踪初稿。
+- 推荐候选（非用户批准）：模块化 Windows 桌面应用；优先验证 WPF + Win32 适配，运行时并列验证 .NET Framework 4.8 与现代 .NET 10/11；卡片宿主优先验证一个用户会话一个 CardHost 进程。
+- Q-015：原 D2 / DEFERRED 的 P3 触发条件已到达；本轮提交 CLQ-152 V2 供用户选择。Q 状态仍 OPEN，决策处理状态为 PENDING_CONFIRMATION；未新增 ADR。
+- 技术核验发现 WinUI 3 / Windows App SDK 当前 Server 支持矩阵未列 Server 2012/2012 R2/2016；现代 .NET 支持表列出这些 Server 版本。此资料仅用于候选筛选；.NET Framework 4.8 可安装矩阵覆盖 Win10 22H2 与 Server 2012+，现代 .NET 10/11 的 Win10 22H2 支持存在 SKU/支持表缺口；不等于 WPF 任一运行时已在目标环境验证通过。
+- RISK-001 仍 ACCEPTED；追加兼容性资料复查，逐版本实测义务不变。
+- 未修改 SRS v0.11、REQ-BL-1.0、RAW、既有已确认 ADR、CR-001 或风险状态；未建立设计基线；P3 IN_PROGRESS、P4 NOT_STARTED。
+- 本轮只读一致性报告：`docs/04_Reviews/项目一致性检查报告-P3-02架构候选分析V1.0.md`，结果 WARNING（PASS 9 / WARNING 1 / FAIL 0 / NOT_CHECKED 2）。
+- Git Commit/Tag 与本地 Windows 实机验证：NOT_CHECKED。
+
+
+## 2026-11-20 Q-015 用户选择与 P3 架构收敛记录
+
+- 用户明确选择 Q-015 / CLQ-152 选项 A：每个交互式用户会话一个独立 CardHost 进程，承载该会话全部独立卡片。
+- Q-015：`CLOSED / D2 / CONFIRMED`；决策处理状态 `CONFIRMED`。关闭范围仅限宿主/进程模型选择。
+- 新增 ADR-034；CLQ-152 更新至 V3；P3-02 更新至 v0.2，追加生命周期、IPC/数据边界及异常恢复候选。
+- 后续新增/持续分析项：IPC 与访问控制、卡片状态持久化写入权、CardHost 崩溃恢复、Explorer/桌面层级、用户会话/RDP、安装升级和逐版本兼容性。
+- 阶段状态不变：P1/P2 `APPROVED`；P3 `IN_PROGRESS`；P4 `NOT_STARTED`。概要设计基线尚未建立。
+- 基线保护：SRS v0.11 / REQ-BL-1.0、RAW-013、ADR-021 和 CR-001 均未修改；RISK-001 仍 `ACCEPTED`，验证义务不变。
+- Git Commit/Annotated Tag、目标 Windows 实机验证仍 `NOT_CHECKED`。
+
+
+## 2026-11-20 P3-04 数据模型与持久化边界进展
+
+- P3-04 v0.1 已形成，覆盖逻辑实体、数据分类、CardHost 独立运行期间的持久化约束、写入权候选、版本一致性、迁移/恢复边界和需求追踪。
+- 新增 Q-152 / CLQ-153：D2 / CLOSED / CONFIRMED；用户选择 A，已新增 ADR-035，确认逻辑聚合单一写入者。
+- 四维状态：记录完整性 COMPLETE；决策完成度 PENDING；阶段阻塞性仅阻断卡片持久化写入权最终收敛；其他无依赖 P3 工作 NON_BLOCKING；延期有效性 NOT_DEFERRED。
+- 已新增 ADR-035；仍未选择数据库、物理存储布局或 IPC 技术。SRS v0.11 / REQ-BL-1.0、RAW、既有 ADR、CR-001、RISK-001 未修改。
+- 阶段保持 P1/P2 APPROVED、P3 IN_PROGRESS、P4 NOT_STARTED；概要设计基线未建立。
+
+
+## 2026-11-20 Q-152 用户选择确认与 P3-05 启动
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-152 / CLQ-153 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账并继续 P3。`
+- Q-152：`CLOSED / D2 / CONFIRMED`；CLQ-153 更新至 V2；四维状态为 COMPLETE / CONFIRMED / NON_BLOCKING / NOT_DEFERRED。
+- 新增 ADR-035：Main Process 唯一写入业务主数据、全局设置及 CardDefinition；CardHost 唯一写入 CardPresentationState。仅确认逻辑写入权，不决定数据库、物理存储或 IPC 技术。
+- P3-04 更新至 v0.2；P3-05 IPC 契约与同步语义分析启动。
+- P1/P2 继续 APPROVED；P3 `IN_PROGRESS`；P4 `NOT_STARTED`；概要设计基线尚未建立。
+- REQ-BL-1.0 / SRS v0.11、RAW、CR-001、RISK-001 未修改；RISK-001 仍 ACCEPTED，Windows Server 兼容性逐版本验证义务不变。
+- Git Commit/Annotated Tag、Windows 实机验证仍 `NOT_CHECKED`。
+
+- v4.2（2026-11-20）：追加 Q-152 / CLQ-153 用户选择 A、ADR-035 和 P3-05 IPC 契约分析；未改变需求基线及阶段批准状态。
+
+
+## 2026-11-21 P3-05 IPC 传输候选分析与 Q-153
+
+- P3-05 更新至 v0.2，新增 Named Pipes、Local RPC、TCP loopback、Shared Memory 候选比较及 Microsoft 官方资料核验。
+- 新增 Q-153 / CLQ-154：D2 / OPEN / PENDING_CONFIRMATION；推荐 Windows Named Pipes（中高置信度）。用户未确认前不新增 ADR、不写成已选技术。
+- Q-153 仅阻断 IPC 传输技术最终收敛及其安全设计批准；P3-06 CardHost 生命周期/崩溃恢复、协议无关接口等无依赖工作可继续。
+- Named Pipes 的显式 DACL、Logon SID、拒绝远程客户端、PID/Session/令牌核验和同会话进程冒用防护列为 PoC 必测项。
+- Microsoft 资料显示 .NET Framework 4.8 可安装于 Server 2012/2012 R2，但该 OS 已 out-of-support；技术兼容不代表安全支持。RISK-001 保持 ACCEPTED，原逐版本验证义务不变。
+- P1/P2 APPROVED；P3 IN_PROGRESS；P4 NOT_STARTED；REQ-BL-1.0 不变；概要设计基线未建立。
+
+- RISK-002：2026-11-21 已完成 Named Pipes 选型后的 P3 定性完整评估，状态 ASSESSED（中概率/高影响/高等级）；缓解措施与安全 PoC 尚未执行，未获用户接受。RISK-001 保持 ACCEPTED。
+- P3-06 v0.1 已形成 CardHost 生命周期与崩溃恢复策略分析；Supervisor 仍为候选，未选定自动恢复 SLA；REC-01/02 D2 待后续用户确认。
+
+
+## 2026-11-21 Q-153 / CLQ-154 用户选择确认与 P3 继续推进
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-153 / CLQ-154 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。`
+- Q-153：`CLOSED / D2 / CONFIRMED`；CLQ-154 更新至 V2.0，用户选择 A：Windows Named Pipes。
+- 新增 ADR-036，确认 Main Process 与同一交互式用户会话 CardHost 之间采用 Windows Named Pipes 作为本机 IPC 传输机制。
+- P3-05 更新至 v0.3，增加选型确认、显式 DACL/Logon SID/拒绝远程/客户端身份核验约束及 NP-01～NP-11 PoC 验收矩阵；P3-06 更新至 v0.2，纳入 Named Pipes 故障语义。
+- RISK-002 从 SCREENED 更新为 ASSESSED：中概率、高影响、高等级；缓解措施尚未实施/验证，未获用户接受。RISK-001 保持 ACCEPTED，既有 Windows Server 兼容性验证义务不变。
+- TASK-017/TASK-018 继续 IN_PROGRESS；下一步进行 Named Pipes 安全 PoC 计划细化与恢复机制/持久化/部署边界收敛。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001、ADR-001～ADR-035 或 RISK-001；P3 继续 IN_PROGRESS，P4 NOT_STARTED，概要设计基线尚未建立。
+
+
+## 2026-11-21 P3-07 Named Pipes 安全设计与 Q-154 恢复策略澄清
+
+- 新增 `P3-07_NamedPipes_IPC安全边界与PoC验证计划_v0.1.md`：形成威胁模型、端点 ACL、Logon SID/Session 隔离、远程拒绝、客户端身份握手、消息安全及 NP-01～NP-11 PoC 验收矩阵；均为设计/验证要求，未声称 PoC 已执行。
+- 新增 Q-154 / CLQ-155：D2 / OPEN / PENDING_CONFIRMATION；讨论 Main Process 已退出且 Keep=ON 时 CardHost 崩溃后的恢复策略；推荐 A（下次 Main Process 启动时恢复），等待用户选择。
+- Q-153 / ADR-036 保持 CLOSED / CONFIRMED；Named Pipes 安全实现仍 NEEDS_VALIDATION。
+- RISK-002 保持 ASSESSED（中概率/高影响/高等级），未接受、未关闭；缓解措施未实施/验证。
+- P3 继续 IN_PROGRESS；P4 NOT_STARTED；REQ-BL-1.0 不变；概要设计基线未建立。
+
+- 本轮一致性检查：`docs/04_Reviews/项目一致性检查报告-Q153选择确认与P3-07安全设计V1.0.md`（WARNING：PoC/实机/Git 尚未验证；Q-154 等待用户选择）。
+
+
+## 2026-11-21 Q-154 / CLQ-155 用户选择确认与 P3 继续推进
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-154 / CLQ-155 我的选择：A。请按 software-predev-workflow-skill V2.6.1 追加用户选择记录，更新相关台账和 ADR，并继续 P3。`
+- Q-154：`CLOSED / D2 / CONFIRMED`；CLQ-155 更新至 V2.0；用户选择 A。
+- 新增 ADR-037：Main Process 已退出且 Keep Cards=ON 时 CardHost 崩溃，不增加常驻 Supervisor/Windows Service；卡片暂时不显示，保留最后成功持久化状态，下次 Main Process 启动时恢复。
+- 四维评估：记录完整性 `COMPLETE`；决策完成度 `CONFIRMED`；阶段阻塞性 `NON_BLOCKING`（用户决策收敛；持久化、恢复对账、故障诊断/重试和目标 OS 验证仍为 P3 技术工作）；延期有效性 `NOT_DEFERRED`。
+- P3-06 更新至 v0.3；P3 工作计划更新至 v0.8；REC-01/REC-02 不再是待用户确认事项。 一致性检查报告：`docs/04_Reviews/项目一致性检查报告-Q154选择确认与P3继续推进V1.0.md`（Library 写回与读回已核验，WARNING：PoC/实机/Git 未验证）。
+- TASK-017 / TASK-018 保持 `IN_PROGRESS`；继续 Named Pipes 安全 PoC、CardHost 持久化/恢复验证、跨聚合对账和 Windows 集成分析。
+- P1/P2 保持 `APPROVED`；P3 保持 `IN_PROGRESS`；P4 保持 `NOT_STARTED`。需求基线 `REQ-BL-1.0` 与 SRS v0.11 不变；概要设计基线尚未建立。
+- RISK-001 保持 `ACCEPTED`；RISK-002 保持 `ASSESSED`（中概率/高影响/高等级），Named Pipes 缓解措施和 PoC 尚未验证、未被用户接受。Q-154 选择不改变风险状态。
+- Git Commit/Annotated Tag、Windows 实机/目标 OS 验证仍 `NOT_CHECKED`。
+- 不修改 RAW、SRS v0.11 / REQ-BL-1.0、CR-001、ADR-001～ADR-036、RISK-001/RISK-002；不批准 P3 整体、不建立概要设计基线、不进入 P4。
+
+
+## 2026-11-21 P3-08 需求追踪矩阵与质量属性分析
+
+- 新增 `02_Architecture/P3-08_需求-模块-接口-验证追踪矩阵与质量属性分析_v0.1.md`（DRAFT / 非设计基线）。
+- 以 REQ-BL-1.0 为唯一输入，完成 FR 19 项、BR 12 项、UIR 2 项、NFR 4 项共 37 项正式需求到逻辑模块 M-01～M-12、接口 IF-01～IF-12、验证工作 VFY-01～VFY-16 的映射；文档追踪映射 37/37（100%），不代表实现/测试覆盖。
+- 补充质量属性状态与 GAP-01～GAP-08；Named Pipes 安全 PoC、CardHost 持久化/恢复 PoC、桌面层级/显示器 DPI 和目标 OS 兼容性仍 NEEDS_VALIDATION / NOT_CHECKED。
+- RAW、SRS v0.11 / REQ-BL-1.0、Open_Issues、Decision_Log、CR-001、ADR-001～ADR-037、RISK-001/RISK-002 本轮均未修改；没有新增用户决策或问题。
+- TASK-017 / TASK-018 继续 `IN_PROGRESS`；P1/P2 `APPROVED`；P3 `IN_PROGRESS`；P4 `NOT_STARTED`；概要设计基线尚未建立。
+- 当前下一步：执行隔离的 CardHost 持久化/恢复 PoC，并执行 P3-07 Named Pipes NP-01～NP-11 安全 PoC；PoC 结果如实登记，不接入真实用户数据，不自动接受 RISK-002。
+
+
+## 2026-11-21 Q-P3-TEST-001 / 002 与 Q-P3-CRASH-001 用户选择确认
+
+- Q-P3-TEST-001：用户选择 E，多种 Windows 测试环境；确认的是测试策略，不代表各环境已具备。
+- Q-P3-TEST-002：用户选择“尚未盘点”；实际可用 OS 版本、Edition、Build、实体机/虚拟机/RDP 等信息均待盘点。PoC 先准备工程、脚本、环境探测和证据模板。
+- Q-P3-CRASH-001：用户选择 A；新增 ADR-038，Main Process 运行期间由 Main Process 检测 CardHost 崩溃并执行有限重启，采用退避，多次失败后提示用户，不无限重启。
+- ADR-038 只适用于 Main Process 存活期间；Main Process 已退出且 Keep Cards=ON 时 ADR-037 继续有效，不新增常驻 Supervisor/Windows Service。
+- 未确定：最大重试次数、退避时长/算法、重试窗口、启动与恢复超时、最终失败状态及手动恢复入口，需 P3 PoC 和设计分析收敛。
+- TASK-017 / TASK-018 保持 IN_PROGRESS；P1/P2 APPROVED；P3 IN_PROGRESS；P4 NOT_STARTED。
+- 需求基线 REQ-BL-1.0（SRS v0.11）不变；概要设计基线尚未建立；未批准 P3 整体或进入 P4。
+- RISK-001 保持 ACCEPTED；RISK-002 保持 ASSESSED（中概率/高影响/高等级），Named Pipes 缓解和安全 PoC 未验证、未被接受；本轮不调整风险状态。
+- Git Commit/Annotated Tag、实际 Windows 环境盘点及目标 OS 实测仍 NOT_CHECKED。
+- 本轮记录不修改 RAW、SRS、REQ-BL-1.0、CR-001 或 ADR-001～ADR-037 的既有含义。
+
+
+## 2026-11-21 P3 隔离 PoC 工具包准备（v4.8）
+- 新增 `FH-TEST-POC-001` / `P3_PoC_工程骨架与执行说明_v0.1.md`，并生成 `P3_PoC_Starter_Kit_v0.1.zip`。
+- 工具包包含环境探测脚本 v0.2、ADR-038 进程生命周期模拟器、dummy worker、部署/停止/清理脚本、测试矩阵、证据模板和 Runbook。
+- PowerShell 仅为隔离测试驱动；不代表 FolderHub 产品运行时、IPC、数据库或序列化技术选型。
+- 静态文件检查通过；本执行环境非 Windows，PowerShell AST 解析/脚本运行/Windows 行为均 `NOT_CHECKED`。
+- Q-P3-TEST-002 仍为“尚未盘点”；实际环境清单未建立，所有真实 Windows PoC 与兼容性测试仍 `NOT RUN / NOT_CHECKED`。
+- TASK-017/TASK-018 保持 `IN_PROGRESS`；P1/P2 `APPROVED`；P3 `IN_PROGRESS`；P4 `NOT_STARTED`；HLD 基线未建立。
+- REQ-BL-1.0、SRS v0.11、RAW、ADR-001～ADR-038、CR-001、RISK-001/RISK-002 均不变；本轮无需求/设计基线修改，无阶段批准或阶段转换。
+
+
+## 2026-11-21 P3 实际 Windows 环境采集证据追加（v4.9）
+
+- 收到用户上传 `environment-inventory.json`，新增环境追踪编号 `W11-RDP-001`。
+- 初步记录：OS Caption=`Microsoft Windows 11 专业版`；ProductName=`Windows 10 Pro`；Version/Build=`10.0.26300 / 26300`；UBR=`9974`；DisplayVersion=`26H2`；x64；RDP SessionId=1；非管理员；PowerShell 7.6.6。
+- `Caption` 与 `ProductName` 冲突，保留原始字段，OS 正式身份待独立核实；DPI 未测量，显示设备列表存在部分空字段。
+- `P3_Test_Environment_Inventory_v0.4.md` 追加一台环境记录；客户端桌面/RDP 环境矩阵更新为部分盘点，其他目标 OS 仍未盘点。
+- `Q-P3-TEST-002` 从原“尚未盘点”记录推进为 `IN_PROGRESS`：已有一台环境初步证据，但 OS 字段核实及全量环境清单未完成。原用户选择历史保留。
+- 本证据不构成 Windows 版本兼容性通过，不代表 REC-POC-01～05、NP-01～NP-11、CP-01～CP-10 或桌面集成测试已执行。
+- TASK-017/TASK-018 继续 `IN_PROGRESS`；P1/P2 `APPROVED`；P3 `IN_PROGRESS`；P4 `NOT_STARTED`；REQ-BL-1.0 不变；HLD 基线未建立。
+- RISK-001 继续 `ACCEPTED`，兼容性验证义务不变；RISK-002 继续 `ASSESSED`，本轮无风险接受/关闭。
+- RAW、SRS v0.11、REQ-BL-1.0、ADR-001～ADR-038、CR-001 不变；本轮无新增需求或技术决策，无阶段批准/阶段转换。
+- 下一步：在 `W11-RDP-001` 先独立核实 OS 身份，再执行隔离 REC-POC-01～05；不得将 RDP 结果替代本地桌面及目标 Server 环境验证。
+
+- PoC 执行前置条件：当前环境采集使用 PowerShell 7.6.6；恢复模拟器源码要求从 Windows PowerShell 5.1 的 `powershell.exe` 宿主启动，需先确认该宿主可用。
+
+## 2026-11-21 P3 OS 身份核实与 REC-POC-01 执行结果追加（v5.0）
+
+- `W11-RDP-001`：用户补充 `Win32_OperatingSystem` 查询截图，Caption=`Microsoft Windows 11 专业版`、Version=`10.0.26300`、BuildNumber=`26300`、OSArchitecture=`64 位`；OS 身份现按 Windows 11 专业版 x64 登记。此前 JSON 的 `ProductName=Windows 10 Pro` 原始值保留为字段冲突，不覆盖原始证据。
+- REC-POC-01 已收到 summary JSON 和 events JSONL。RunId=`20ee473945ab4343a29533f3bb5a891a`；LaunchCount=2、RestartCount=1、FailureCount=1；事件证据显示第一次 worker 异常退出（ExitCode 73），1 秒退避后第二次 worker 启动，并通过 5 秒进程存活观察窗口，随后清理。
+- REC-POC-01 判定 `PASS_WITH_LIMITATIONS`：仅证明隔离 harness 的模拟进程生命周期和一次退避重启控制流；`HarnessOnly=true`，不证明真实 CardHost 健康、IPC、对端认证、持久化、UI 或 Keep Cards=ON 恢复。MainProcessLifetimeSeconds=0，不构成 Main Process 长时间运行监控证据。
+- 环境盘点文档更新至 `P3_Test_Environment_Inventory_v0.5.md`；Q-P3-TEST-002 仍 `IN_PROGRESS`，完整目标 OS/会话矩阵未完成。
+- TASK-017/TASK-018 继续 `IN_PROGRESS`；REC-POC-02～05、NP-01～11、CP-01～10 和桌面集成测试仍未执行。
+- REQ-BL-1.0、SRS v0.11、RAW、ADR-001～ADR-038、CR-001、RISK-001/RISK-002 均不变；本轮无需求变更、无新增架构决策、无风险接受/关闭。
+- 阶段保持 P1/P2 `APPROVED`、P3 `IN_PROGRESS`、P4 `NOT_STARTED`；HLD 基线未建立。
+
+## 2026-11-21 Q-P3-GATE-001 用户选择 A 与 P3 预审准备（v5.1）
+
+- 用户原始回答（VERBATIM）：`FolderHub Q-P3-GATE-001 我的选择：A。请按 software-predev-workflow-skill V2.6.1 继续处理，保护现有需求和设计决策基线，不得未经我明确批准进入 P4。`
+- Q-P3-GATE-001 / CLQ-157：D2 / CLOSED / CONFIRMED；选择 A：停止后续 PoC/Windows 实机测试，保留未验证状态，完成文档级 P3 架构收敛和评审准备。
+- 四维评估：记录完整性 PARTIAL（缺失的推荐置信度不追溯补造）；决策完成度 CONFIRMED；阶段阻塞性 NON_BLOCKING（仅限文档准备）；延期有效性 NOT_DEFERRED。
+- 新增 P3-09 总体架构收敛草案和 P3 阶段评审准备包 v0.1_DRAFT；准备包状态 `DRAFT / NOT_SUBMITTED`，预审门禁 `BLOCKED_FOR_APPROVAL`。
+- REC-POC-01 保持 `PASS_WITH_LIMITATIONS`；REC-POC-02～05、NP-01～11、CP-01～10、桌面集成和其他目标 OS 验证保持 `NOT RUN` / `NOT_CHECKED`。
+- RISK-001 保持 `ACCEPTED`，Windows Server 逐版本验证义务不变；RISK-002 保持 `ASSESSED`（中概率/高影响/高等级），未接受、未关闭，Named Pipes 安全缓解未验证。
+- GAP-01（物理存储方案）和 GAP-06（显示器/DPI 方案）仍为 D2 未收敛事项；持久化关键路径无故障注入证据；当前不具备 P3 阶段批准条件。
+- TASK-017/TASK-018 保持 `IN_PROGRESS`；P3 保持 `IN_PROGRESS`；P4 保持 `NOT_STARTED`；概要设计基线未建立。
+- 不修改 SRS v0.11 / REQ-BL-1.0、RAW、CR-001 或 ADR-001～ADR-038 的既有含义；本次不新增 ADR、不接受风险、不提交正式 P3 阶段批准。
+
+## 2026-11-21 P3 集中澄清、风险受限接受与评审提交（v5.2）
+
+### 用户原始回答（VERBATIM）
+
+```text
+FolderHub P3 未决事项集中澄清：
+Q-P3-DATA-001 数据持久化方案：A。
+Q-P3-DISPLAY-001 多显示器/DPI 坐标方案：A。
+Q-P3-RISK-001 RISK-002 风险处置及跨阶段安排：A。
+请按 software-predev-workflow-skill V2.6.1 保存完整选项、推荐、回答和四维评估，更新相关台账及设计草案；严格保护已批准基线。此回答不等于批准 HLD 或进入 P4，后续请提交明确的 P3 评审版本供我批准。
+```
+
+### 用户选择与台账状态
+
+- Q-P3-DATA-001 / CLQ-158：D2 / CLOSED / CONFIRMED；选择 A，SQLite 本地数据库；新增 ADR-039；GAP-01 决策选择关闭。
+- Q-P3-DISPLAY-001 / CLQ-159：D2 / CLOSED / CONFIRMED；选择 A，显示器身份 + 工作区归一化坐标 + DPI 换算；新增 ADR-040；GAP-06 决策选择关闭。
+- Q-P3-RISK-001 / CLQ-160：D1 / CLOSED / CONFIRMED；选择 A，RISK-002 受限接受，仅适用于 P4 详细设计活动。Risk_Register 状态 `ACCEPTED（受限）`，风险等级仍高，缓解措施仍未实施/验证。
+- 四维评估：CLQ-158 COMPLETE / CONFIRMED / NON_BLOCKING / NOT_DEFERRED；CLQ-159 COMPLETE / CONFIRMED / NON_BLOCKING / NOT_DEFERRED；CLQ-160 COMPLETE / CONFIRMED / NON_BLOCKING（仅 P3/P4 设计）/ VALID。
+
+### 设计与风险状态
+
+- P3-04 更新 v0.3（ADR-039/040）；P3-08 更新 v0.2；P3-09 更新 v0.2；P3 工作计划更新 v1.3；P3 阶段评审准备包更新 v0.2.1。
+- SQLite 后端和多显示器/DPI 策略已由用户选择；并发/事务/恢复、显示器识别和 DPI 算法仍 `NEEDS_VALIDATION`。
+- RISK-002 仅允许 P4 详细设计阶段设计活动；禁止未经安全措施实施和目标环境验证接入真实业务数据、产品运行、部署或发布；复查点为 P4 设计评审结束、任何开发启动前及真实数据/集成/部署/发布前。
+- REC-POC-01 保持 `PASS_WITH_LIMITATIONS`；REC-POC-02～05、NP-01～11、CP-01～10、桌面集成和目标 OS 验证仍 `NOT RUN` / `NOT_CHECKED`；Git Commit/Annotated Tag 仍 `NOT_CHECKED`。
+- RISK-001 保持既有 `ACCEPTED` 范围，Windows Server 逐版本验证义务不变。
+
+### 阶段状态与基线保护
+
+- P3：`REVIEW_PENDING`，已提交明确版本的 P3 概要设计供用户审阅；等待用户明确批准或退回。
+- P4：`NOT_STARTED`；用户未批准 HLD，禁止启动 P4。
+- HLD 基线：`NOT_ESTABLISHED`。
+- REQ-BL-1.0 / SRS v0.11、RAW、CR-001、ADR-001～ADR-038 既有含义保持不变；新增 ADR-039/040 仅记录本轮用户确认。
+- 本轮不声称 PoC、Windows 实机、IPC 安全、SQLite 恢复或显示器/DPI 测试通过。

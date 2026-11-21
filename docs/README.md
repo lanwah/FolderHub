@@ -5,13 +5,14 @@
 ## 文档目录
 | 目录 | 用途 | 当前内容 |
 |---|---|---|
-| `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md`、`项目一致性检查报告-V2.6.1同步.md`、`项目一致性检查报告-V2.6.1项目实例独立复核.md` |
+| `00_Project_Management/` | 项目章程、项目状态、决策、变更、建议、澄清及风险管理 | `Project_Charter.md`、`Project_Status.md`、`Decision_Log.md`、`Change_Log.md`、`Assistant_Suggestions.md`、`Directory_Initialization_Record.md`、`问题澄清记录台账.md`、`Clarifications/`（CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151～CLQ-160）、`项目一致性检查报告-澄清历史恢复V1.0.md`、`项目一致性检查报告-澄清历史追加恢复V1.1.md`、`项目一致性检查报告-用户选择登记V1.2.md`、`项目一致性检查报告-用户补充确认V1.3.md、项目一致性检查报告-用户确认RAW003-006及Q010-V1.4.md、项目一致性检查报告-用户确认Q010细节V1.5.md`、`项目一致性检查报告-RAW001-002完整性检查V1.6.md`、`项目一致性检查报告-用户确认Q016-018V1.7.md`、`Risk_Register.md`、`项目一致性检查报告-V2.6.1同步.md`、`项目一致性检查报告-V2.6.1项目实例独立复核.md` |
 | `01_Requirements/` | 原始需求、问题、正式需求与追踪 | `Raw_Requirements.md`、`Open_Issues.md`、`SRS_FolderHub_v0.11.md`（当前已批准需求基线 REQ-BL-1.0；v0.1～v0.10 保留为历史版本）、`P2_需求分析工作记录_v0.9.md` |
-| `02_Architecture/` | 概要架构与技术方案 | `P3_概要设计工作计划_v0.1.md`（工作计划，非设计基线；正式概要设计待形成） |
+| `02_Architecture/` | 概要架构与技术方案 | `P3_概要设计工作计划_v1.3.md（当前，REVIEW_PENDING）`（当前工作计划，非设计基线；旧文件名/版本保留历史）、`P3-01_系统上下文与边界分析_v0.1.md`、`P3-02_总体架构候选方案与权衡分析_v0.1.md（内容 v0.2）`、`P3-03_CardHost生命周期与进程边界收敛_v0.1.md`、`P3-04_CardHost数据模型与持久化边界_v0.3.md（SQLite/显示策略已确认）`、`P3-05_MainProcess-CardHost_IPC消息契约与同步语义分析_v0.3.md`、`P3-06_CardHost生命周期与崩溃恢复策略分析_v0.3.md、P3-06_CardHost生命周期与崩溃恢复策略分析_v0.4.md、P3_CardHost_Runtime_Recovery_PoC_v0.1.md（历史）、P3_CardHost_Runtime_Recovery_PoC_v0.2.md`、`P3-07_NamedPipes_IPC安全边界与PoC验证计划_v0.1.md、P3-09_总体架构收敛与关键验证状态_v0.2.md`、`P3-08_需求-模块-接口-验证追踪矩阵与质量属性分析_v0.2.md`；P3-05 v0.1/v0.2、P3-06 v0.1 为历史修订（均 DRAFT / 非设计基线） |
+| `design-demo/` | P3/P4 可交互网页设计 Demo | `README.md`、`change-log.md`、`current/`（p3-demo-v0.1，P3_DEMO_DRAFT） |
 | `03_Detailed_Design/` | 详细设计 | 当前尚无正式设计文档 |
-| `04_Reviews/` | 阶段评审记录 | `P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`、`P2_阶段评审准备包_v0.3_DRAFT.md`（提交评审时的历史准备包）；`P2_阶段评审批准记录_v1.0.md`；`项目一致性检查报告-P2批准与P3启动V1.0.md` |
+| `04_Reviews/` | 阶段评审记录 | `项目一致性检查报告-Q153选择确认与P3-07安全设计V1.0.md、项目一致性检查报告-Q154选择确认与P3继续推进V1.0.md`（Q-153 选择确认与 P3-07 安全设计检查，WARNING）、`P2_需求质量检查与追踪矩阵复核报告_v1.0.md`、`项目一致性检查报告-P2最终收尾V1.0.md`、`P2_阶段评审准备包_v0.3_DRAFT.md`（提交评审时的历史准备包）；`P2_阶段评审批准记录_v1.0.md`；`项目一致性检查报告-P2批准与P3启动V1.0.md`、`P3_Demo_v0.1_自检报告.md`、`P3_Demo_v0.1_用户评审通过记录.md`、`项目一致性检查报告-P3Demo启动V1.0.md`、`项目一致性检查报告-P3Demo评审通过与P3-01推进V1.0.md`、`项目一致性检查报告-P3-02架构候选分析V1.0.md、项目一致性检查报告-Q015用户选择与P3架构收敛V1.1.md` |
 | `05_Development_Management/` | 开发过程管理 | 按阶段启用 |
-| `06_Test_Management/` | 测试过程管理 | 按阶段启用 |
+| `06_Test_Management/` | 测试过程管理 | `P3_Test_Environment_Inventory_v0.1.md`（历史）、`P3_Test_Environment_Inventory_v0.2.md`（历史）、`P3_Test_Environment_Inventory_v0.3.md`（历史）、`P3_Test_Environment_Inventory_v0.4.md`（当前，已登记 W11-RDP-001，OS 字段待核实）；`Get-FolderHubEnvironment_v0.2.ps1`；`P3_PoC_Starter_Kit_v0.1.zip`（隔离模拟器/部署清理脚本/测试矩阵/证据模板/Runbook）；`P3_PoC_工程骨架与执行说明_v0.1.md` |
 | `templates/` | 本项目使用的工作流模板副本 | Q、ADR、CR、CLQ 已映射至 V2.6.1 独立字段模板；旧合并模板保留为历史兼容 |
 | `_Archive/` | 历史或已替代文件 | 如存在，按原状保留 |
 
@@ -22,7 +23,7 @@
 - 阶段状态权威源：`00_Project_Management/Project_Status.md`。
 - 风险权威源：`00_Project_Management/Risk_Register.md`。
 - 问题澄清索引：`00_Project_Management/问题澄清记录台账.md`。
-- 澄清逐题过程：`00_Project_Management/Clarifications/README.md` 及 CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151；其中 CLQ-025～CLQ-146 为历史摘要重建记录。
+- 澄清逐题过程：`00_Project_Management/Clarifications/README.md` 及 CLQ-001～CLQ-024、CLQ-025～CLQ-146、CLQ-151～CLQ-156；其中 CLQ-025～CLQ-146 为历史摘要重建记录。
 
 ## 当前研发阶段
 - 当前阶段：`P3_HIGH_LEVEL_DESIGN`
@@ -31,7 +32,10 @@
 - 当前 SRS：`SRS_FolderHub_v0.11.md`（APPROVED / BASELINED）
 - 需求基线：`REQ-BL-1.0`
 - P4 详细设计：`NOT_STARTED`
-- 当前未决项：Q-015（D2 / DEFERRED；P3 触发条件已到达，须在相关架构批准/基线前完成分析和必要确认）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033），实现算法留待 P3/P4
+- 当前未决项：Q-015（CLOSED / D2 / CONFIRMED；ADR-034）、Q-152（CLOSED / D2 / CONFIRMED；ADR-035）、Q-153（CLOSED / D2 / CONFIRMED；ADR-036 / Windows Named Pipes；安全 PoC 待验证）、Q-154（CLOSED / D2 / CONFIRMED；CLQ-155 V2.0 / ADR-037，不增加常驻 Supervisor，下次 Main Process 启动时恢复）；Q-026 已于 2026-11-15 CLOSED / CONFIRMED（D2，ADR-033），实现算法留待 P3/P4
+- P3 Demo v0.1：用户评审通过；仍为 P3 草案，不等于概要设计批准或设计基线
+- P3-02：总体架构候选与模块边界分析 v0.2；P3-03：CardHost 生命周期与进程边界收敛 v0.1；Q-015 / CLQ-152 用户选择 A 已确认，详见 ADR-034
+- 当前 P3 活跃任务：TASK-017、TASK-018；TASK-019 已完成并归档
 - Q-029～Q-150：已依据历史摘要补录结论；逐字证据缺失项标记 RECONSTRUCTED / UNAVAILABLE。
 
 ## 管理规则
@@ -171,3 +175,133 @@
 - 用户批准 SRS v0.11，建立需求基线 `REQ-BL-1.0`，并授权进入 P3 概要设计。
 - P2：APPROVED；P3：IN_PROGRESS；P4：NOT_STARTED。
 - P3 当前重点：总体架构候选方案分析、Q-015 生命周期架构分析。
+
+
+## 2026-11-20 P3 Demo 工作记录
+- 已新增 `design-demo/current/` 可交互网页原型，版本 `p3-demo-v0.1`，状态 `P3_DEMO_DRAFT`。
+- 需求输入为已批准基线 `REQ-BL-1.0`；不修改 SRS 或需求/决策/变更/风险基线。
+- 自检报告：`04_Reviews/P3_Demo_v0.1_自检报告.md`；JavaScript 语法检查 PASS，Windows 实机及系统级行为 NOT_CHECKED。
+- TASK-019 IN_PROGRESS；P3 IN_PROGRESS；P4 NOT_STARTED。
+
+
+## 2026-11-20 P3 Demo 用户评审通过与 P3-01 进展
+- `p3-demo-v0.1` 用户评审通过，批准范围仅为 Demo；已知模拟/未验证限制保留在评审记录。
+- TASK-019 已 DONE 并归档；P3-01 系统上下文与边界分析草案已加入 `02_Architecture/`。
+- P3 继续 IN_PROGRESS，P4 NOT_STARTED；概要设计基线尚未建立。
+
+
+## 2026-11-20 P3-01 推进后只读一致性检查
+- 报告：`04_Reviews/项目一致性检查报告-P3Demo评审通过与P3-01推进V1.0.md`。
+- 结论：WARNING（PASS 8 / WARNING 1 / FAIL 0 / NOT_CHECKED 2）；WARNING 为 Demo 真实 Windows 集成仍未实现/验证；Git、本机浏览器和 Windows 实机检查仍 NOT_CHECKED。
+
+- Q-015：用户选择 A 已登记为 ADR-034；Q-015 CLOSED / CONFIRMED。P3-03 已形成 CardHost 生命周期与进程边界收敛草案；不代表完整 P3 批准或设计基线。
+
+
+## 2026-11-20 P3-04 更新
+- `02_Architecture/P3-04_CardHost数据模型与持久化边界_v0.2.md`：逻辑数据实体、CardHost 持久化边界候选及验证计划（DRAFT，非设计基线）。
+- `00_Project_Management/Clarifications/CLQ-153.md`：Q-152 卡片持久化写入权澄清（D2 / CLOSED / CONFIRMED；ADR-035）。
+- Q-152 已确认 A，新增 ADR-035；仅确认逻辑写入权，未选择数据库/物理存储/IPC 技术；SRS v0.11 / REQ-BL-1.0 不变。
+
+
+## 2026-11-20 P3-05 推进
+- `02_Architecture/P3-05_MainProcess-CardHost_IPC消息契约与同步语义分析_v0.1.md`：协议无关的 IPC 消息契约、版本一致性、幂等、访问控制边界和跨聚合补偿候选（DRAFT / 非设计基线）。
+- Q-152 / CLQ-153 已 CLOSED / CONFIRMED；ADR-035 确认逻辑写入权划分。
+- P3 继续 `IN_PROGRESS`；P4 `NOT_STARTED`；概要设计基线未建立。
+
+
+## 2026-11-20 P3-05 用户选择后检查
+- `04_Reviews/项目一致性检查报告-Q152用户选择与P3-05推进V1.0.md`：Q-152 用户选择同步、ADR-035、P3-04 v0.2、P3-05 v0.1 与基线保护的一致性检查；WARNING（PASS 8 / WARNING 2 / FAIL 0 / NOT_CHECKED 2）。
+
+
+## 2026-11-21 P3-05 IPC 传输候选分析
+- `02_Architecture/P3-05_MainProcess-CardHost_IPC消息契约与同步语义分析_v0.2.md`：新增 IPC 传输候选比较及官方安全/兼容性核查（DRAFT，非设计基线）。
+- `00_Project_Management/Clarifications/CLQ-154.md`：Q-153 IPC 传输技术选择（D2 / OPEN / PENDING_CONFIRMATION），推荐 Named Pipes。
+- 用户确认前不新增 ADR、不将 Named Pipes 作为已选技术；P3-06 生命周期/崩溃恢复分析继续推进。
+
+
+## 2026-11-21 P3-06 生命周期与崩溃恢复分析
+- `02_Architecture/P3-06_CardHost生命周期与崩溃恢复策略分析_v0.1.md`：CardHost 正常生命周期、崩溃恢复、Supervisor 候选、重启节流、残留进程及验证矩阵（DRAFT，非设计基线）。
+- REC-01/REC-02 为 D2 待决策；不因分析草案而默认新增 Supervisor 或承诺自动恢复 SLA。
+
+
+## 2026-11-21 P3 更新
+- Q-153 / CLQ-154 V2.0 已确认 A：Windows Named Pipes；ADR-036 已登记。
+- P3-05 v0.3 和 P3-06 v0.2 为 DRAFT / 非设计基线。
+- RISK-002 已 ASSESSED；安全缓解和目标 OS PoC 未执行；RISK-001 仍 ACCEPTED。
+- P3 IN_PROGRESS；P4 NOT_STARTED；REQ-BL-1.0 不变；概要设计基线未建立。
+
+
+## 2026-11-21 P3-07 与 Q-154
+- P3-07 v0.1 已形成 Named Pipes 安全设计与 PoC 验收计划，所有验证项仍 NEEDS_VALIDATION。
+- Q-154 / CLQ-155 等待用户选择 CardHost 崩溃后的恢复策略。
+- P3 IN_PROGRESS；P4 NOT_STARTED；REQ-BL-1.0 不变；概要设计基线未建立。
+
+
+## 2026-11-21 Q-154 用户选择确认与 P3 推进
+- Q-154 / CLQ-155 CLOSED / CONFIRMED；新增 ADR-037。
+- P3-06 更新至 v0.3；恢复策略已收敛，持久化与恢复实现细节继续 P3 验证。
+- P3 IN_PROGRESS；P4 NOT_STARTED；REQ-BL-1.0 不变；概要设计基线未建立。
+
+
+## 2026-11-21 P3-08 需求追踪与质量属性分析
+- 新增 `02_Architecture/P3-08_需求-模块-接口-验证追踪矩阵与质量属性分析_v0.1.md`；映射 FR 19、BR 12、UIR 2、NFR 4 共 37 项需求至逻辑模块、接口边界和验证工作。
+- 设计追踪映射覆盖率 37/37（100%）；不代表实现或测试覆盖率。
+- P3 继续 `IN_PROGRESS`；P4 `NOT_STARTED`；概要设计基线未建立。
+
+
+## 2026-11-21 P3 测试环境与 ADR-038
+- Q-P3-TEST-001=E（多种 Windows 环境）；Q-P3-TEST-002=尚未盘点（具体环境待盘点）。
+- Q-P3-CRASH-001=A；新增 ADR-038，Main Process 存活期间有限重启 CardHost，采用退避并在多次失败后提示用户。
+- P3-06 更新至 v0.4；P3 工作计划更新至 v1.0；P3 IN_PROGRESS，P4 NOT_STARTED；REQ-BL-1.0 不变，HLD 基线未建立。
+- 逐题澄清记录：`Clarifications/CLQ-156.md`；PoC/实际环境验证尚未执行。
+
+## 2026-11-21 P3 测试环境与运行期恢复策略索引更新
+- 澄清记录新增 `00_Project_Management/Clarifications/CLQ-156.md`，对应 Q-P3-CRASH-001 / ADR-038。
+- P3-06 更新版：`02_Architecture/P3-06_CardHost生命周期与崩溃恢复策略分析_v0.4.md`。
+- CardHost 运行期恢复 PoC 方案：`02_Architecture/P3_CardHost_Runtime_Recovery_PoC_v0.1.md`。
+- 测试环境盘点模板：`06_Test_Management/P3_Test_Environment_Inventory_v0.1.md`（历史）、`P3_Test_Environment_Inventory_v0.2.md`（当前）。
+- 当前具体 Windows 测试环境尚未盘点；上述文件均为计划/草案，不代表 PoC 或兼容性测试已通过。
+
+
+## 2026-11-21 P3 PoC 工具包
+- `06_Test_Management/P3_PoC_工程骨架与执行说明_v0.1.md`（FH-TEST-POC-001）说明隔离 PoC 工具包范围和边界。
+- `06_Test_Management/P3_PoC_Starter_Kit_v0.1.zip` 为隔离测试工具包压缩交付物。
+- `Get-FolderHubEnvironment_v0.2.ps1` 支持身份字段脱敏；屏幕几何不等于 DPI 测量。
+- 当前仅完成静态文件检查；Windows PowerShell 执行、实际环境盘点、NP/CP/桌面集成 PoC 均未完成。
+- P3 仍 IN_PROGRESS，P4 NOT_STARTED；REQ-BL-1.0 不变；HLD 基线未建立。
+
+
+## 2026-11-21 P3 实际 Windows 环境采集
+- `06_Test_Management/P3_Test_Environment_Inventory_v0.4.md` 追加环境 `W11-RDP-001`。
+- 原始采集 JSON 中 OS Caption 与 ProductName 不一致，保留原值并待独立核实；RDP/非管理员条件已记录。
+- Q-P3-TEST-002 更新为 IN_PROGRESS（已盘点一台，完整环境矩阵未完成）。
+- 当前仅有环境采集证据；REC-POC、Named Pipes、持久化和桌面集成测试仍未执行。
+
+- 工具包运行前置条件复核：恢复模拟器使用 `$PSHOME\powershell.exe` 启动 worker，建议从 Windows PowerShell 5.1 启动；PowerShell 7.6.6 采集环境不能直接证明恢复模拟器可运行。
+- P3 实际环境采集一致性报告：`04_Reviews/项目一致性检查报告-P3实际环境采集V1.0.md`。
+
+
+## 2026-11-21 P3 REC-POC-01 执行证据
+- 当前环境记录：`06_Test_Management/P3_Test_Environment_Inventory_v0.5.md`（W11-RDP-001 已由 Win32_OperatingSystem 独立确认为 Windows 11 专业版 x64）。
+- REC-POC-01：`PASS_WITH_LIMITATIONS`，仅验证隔离 harness 的模拟进程生命周期；不代表真实 CardHost 健康恢复。
+- 执行一致性报告：`04_Reviews/项目一致性检查报告-P3-REC-POC-01执行V1.0.md`。
+- REC-POC-02～05、NP/CP PoC、桌面集成及其他目标 OS 验证仍未完成；P3 `IN_PROGRESS`、P4 `NOT_STARTED`。
+
+## 2026-11-21 Q-P3-GATE-001 用户选择 A 与 P3 预审准备
+- `00_Project_Management/Clarifications/CLQ-157.md`：Q-P3-GATE-001 用户选择 A，停止后续测试并保留未验证状态。
+- `02_Architecture/P3-09_总体架构收敛与关键验证状态_v0.1.md`：总体逻辑架构、决策边界、验证状态和未收敛缺口。
+- `02_Architecture/P3_概要设计工作计划_v1.2.md`：追加停止测试与预审准备安排。
+- `04_Reviews/P3_阶段评审准备包_v0.1_DRAFT.md`：用户预审稿，当前 `BLOCKED_FOR_APPROVAL`，尚未正式提交评审。
+- `04_Reviews/项目一致性检查报告-P3-GATE-A_V1.0.md`：本轮选择同步和阶段门禁检查。
+- REC-POC-01 保持 `PASS_WITH_LIMITATIONS`；其他 PoC/桌面集成/兼容性验证保持 `NOT RUN` / `NOT_CHECKED`。
+- RISK-001 保持 `ACCEPTED` 且兼容性验证义务有效；RISK-002 保持 `ASSESSED`，未接受、未关闭。
+- P3 `IN_PROGRESS`；P4 `NOT_STARTED`；HLD 基线未建立。
+
+
+## 2026-11-21 P3 评审提交状态
+- 当前 P3 阶段：`REVIEW_PENDING`；P4：`NOT_STARTED`；HLD 基线未建立。
+- 最新 P3 评审版本：`P3_阶段评审准备包_v0.2.1_REVIEW_PENDING.md`。
+- 最新架构/追踪文件：P3-04 v0.3、P3-08 v0.2、P3-09 v0.2、P3 工作计划 v1.3。
+- 新增澄清记录：CLQ-158（SQLite）、CLQ-159（显示器/DPI）、CLQ-160（RISK-002 受限接受）。
+- 新增 ADR-039/040。RISK-002 仅接受 P4 设计阶段；安全措施未验证，开发/真实数据/运行/部署/发布仍被阻断。
+- REC-POC-01 保持 `PASS_WITH_LIMITATIONS`；其余 PoC/实机验证保持 `NOT RUN` / `NOT_CHECKED`；Git Commit/Tag 未检查。
