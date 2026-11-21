@@ -12,6 +12,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\FolderHub.CardHost.ico</ApplicationIcon>
+    <AssemblyTitle>FolderHub CardHost</AssemblyTitle>
+    <Product>FolderHub</Product>
   </PropertyGroup>
 
 </Project>

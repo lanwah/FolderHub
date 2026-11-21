@@ -17,6 +17,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets\FolderHub.ico</ApplicationIcon>
+    <AssemblyTitle>FolderHub</AssemblyTitle>
+    <Product>FolderHub</Product>
   </PropertyGroup>
 
   <!-- WinForms 全局 using 与 WPF 类型冲突；托盘代码使用完整限定名。 -->
