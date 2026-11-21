@@ -14,6 +14,37 @@
   let categories = ['全部文件夹','工作','项目','个人','未分类'];
   let activeCategory = '全部文件夹';
   let selectedId = null, nextId = 9, mainLocked = false, keepCards = true, opacity = 88, listMode = false;
+  const THEME_KEY = 'folderhub-demo-theme';
+  const currentTheme = () => document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  function syncThemeUi(){
+    const dark = currentTheme() === 'dark';
+    const btn = $('#theme-btn');
+    const chip = $('#theme-chip');
+    if(btn){btn.textContent = dark ? '☀' : '☾';btn.title = dark ? '切换到浅色主题' : '切换到深色主题';btn.setAttribute('aria-label',btn.title);}
+    if(chip){
+      $('.theme-chip-icon',chip).textContent = dark ? '☀' : '☾';
+      $('.theme-chip-label',chip).textContent = dark ? '浅色' : '深色';
+      chip.title = dark ? '切换到浅色主题' : '切换到深色主题';
+      chip.setAttribute('aria-label',chip.title);
+    }
+    const lightBtn = $('#theme-light');
+    const darkBtn = $('#theme-dark');
+    if(lightBtn) lightBtn.classList.toggle('active', !dark);
+    if(darkBtn) darkBtn.classList.toggle('active', dark);
+  }
+  function applyWindowOpacity(){
+    const rgb = getComputedStyle(document.documentElement).getPropertyValue('--panel-rgb').trim() || '255,255,255';
+    $('#app-window').style.background = `rgba(${rgb},${opacity/100})`;
+  }
+  function applyTheme(theme, {silent=false}={}){
+    const next = theme === 'dark' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    try{localStorage.setItem(THEME_KEY, next);}catch(e){}
+    syncThemeUi();
+    applyWindowOpacity();
+    if(!silent) toast(next === 'dark' ? '已切换到深色主题' : '已切换到浅色主题');
+  }
+  function toggleTheme(){applyTheme(currentTheme() === 'dark' ? 'light' : 'dark');}
   const catIcons = {'全部文件夹':'▦','工作':'▣','项目':'◈','个人':'♡','未分类':'□'};
   const categoryList = $('#category-list'), grid = $('#folder-grid'), widgets = $('#desktop-widgets');
   const categoryCount = name => name==='全部文件夹' ? folders.length : folders.filter(f=>f.cats.includes(name)).length;
@@ -49,19 +80,23 @@
   function folderForm(f){
     const editing=!!f;
     showModal(`<div class="modal-header"><div><h2 id="modal-title">${editing?'编辑文件夹':'添加文件夹'}</h2><p>维护文件夹记录、别名和用途说明</p></div><button class="modal-close" data-close>×</button></div>
-      <form id="folder-form"><div class="form-field"><label>文件夹名称 *</label><input name="name" required value="${esc(f?.name||'')}" placeholder="例如：项目资料"></div><div class="form-field"><label>别名（可选）</label><input name="alias" value="${esc(f?.alias||'')}" placeholder="例如：Project Docs"></div><div class="form-field"><label>真实路径 *</label><input name="path" required value="${esc(f?.path||'')}" placeholder="例如：D:\\Workspace\\Projects"></div><div class="form-field"><label>用途说明</label><textarea name="desc" placeholder="简要说明这个文件夹的用途">${esc(f?.desc||'')}</textarea></div><div class="form-field"><label>所属分类</label><select name="category" multiple size="${Math.min(4,categories.filter(c=>c!=='全部文件夹').length)}">${categories.filter(c=>c!=='全部文件夹').map(c=>`<option ${f?.cats.includes(c)?'selected':''}>${esc(c)}</option>`).join('')}</select><small style="color:#96a19b;font-size:9px">按住 Ctrl 可选择多个分类；分类为平级关系</small></div><div class="form-actions"><button type="button" class="secondary-button" data-close>取消</button><button class="modal-primary" type="submit">保存记录</button></div></form>`);
+      <form id="folder-form"><div class="form-field"><label>文件夹名称 *</label><input name="name" required value="${esc(f?.name||'')}" placeholder="例如：项目资料"></div><div class="form-field"><label>别名（可选）</label><input name="alias" value="${esc(f?.alias||'')}" placeholder="例如：Project Docs"></div><div class="form-field"><label>真实路径 *</label><input name="path" required value="${esc(f?.path||'')}" placeholder="例如：D:\\Workspace\\Projects"></div><div class="form-field"><label>用途说明</label><textarea name="desc" placeholder="简要说明这个文件夹的用途">${esc(f?.desc||'')}</textarea></div><div class="form-field"><label>所属分类</label><select name="category" multiple size="${Math.min(4,categories.filter(c=>c!=='全部文件夹').length)}">${categories.filter(c=>c!=='全部文件夹').map(c=>`<option ${f?.cats.includes(c)?'selected':''}>${esc(c)}</option>`).join('')}</select><small class="form-hint">按住 Ctrl 可选择多个分类；分类为平级关系</small></div><div class="form-actions"><button type="button" class="secondary-button" data-close>取消</button><button class="modal-primary" type="submit">保存记录</button></div></form>`);
     $('#folder-form').addEventListener('submit',e=>{e.preventDefault();const d=new FormData(e.currentTarget);const path=d.get('path').trim();const duplicate=folders.find(x=>x.path.toLowerCase()===path.toLowerCase()&&x.id!==f?.id);if(duplicate){toast('该路径已存在，演示中不创建重复记录','error');return;}const cats=$('select[name="category"]',e.currentTarget).selectedOptions.length?[...$('select[name="category"]',e.currentTarget).selectedOptions].map(o=>o.value):['未分类'];const values={name:d.get('name').trim(),alias:d.get('alias').trim(),path,desc:d.get('desc').trim(),cats};if(editing)Object.assign(f,values);else folders.push({id:nextId++,...values,icon:'📁',tone:'#edf3ff',pinned:false});closeModal();renderFolders();toast(editing?'文件夹记录已更新':'文件夹记录已添加');});
   }
   function settingsModal(){showModal(`<div class="modal-header"><div><h2 id="modal-title">设置</h2><p>FolderHub 桌面组件与运行偏好</p></div><button class="modal-close" data-close>×</button></div>
+    <div class="settings-section"><div class="settings-row"><div><strong>界面主题</strong><small>浅色 / 深色可随时切换；选择会保存在本机浏览器</small></div><div class="theme-toggle-group" role="group" aria-label="界面主题"><button type="button" class="theme-toggle-btn" id="theme-light">浅色</button><button type="button" class="theme-toggle-btn" id="theme-dark">深色</button></div></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>主组件固定到桌面</strong><small>开启后主组件显示在桌面壁纸层；演示中用于模拟固定状态</small></div><input type="checkbox" id="main-pin"></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>锁定主组件位置</strong><small>锁定后不可拖动或调整位置</small></div><input type="checkbox" id="main-lock" ${mainLocked?'checked':''}></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>退出主程序后保留独立卡片</strong><small>全局统一开关，默认开启；不提供逐卡片覆盖</small></div><input type="checkbox" id="keep-cards" ${keepCards?'checked':''}></div></div>
     <div class="settings-section"><div class="settings-row"><div><strong>背景透明度</strong><small>仅调整主组件背景，文字和图标保持不透明</small></div><span class="range-value" id="opacity-value">${opacity}%</span></div><div class="range-row"><input id="opacity-range" type="range" min="20" max="100" value="${opacity}"></div></div>
     <div class="form-actions"><button class="modal-primary" data-close>完成</button></div>`);
+    syncThemeUi();
+    $('#theme-light').addEventListener('click',()=>applyTheme('light'));
+    $('#theme-dark').addEventListener('click',()=>applyTheme('dark'));
     $('#main-pin').addEventListener('change',e=>{toast(e.target.checked?'主组件固定到桌面：开启（演示）':'主组件固定到桌面：关闭（演示）');});
     $('#main-lock').addEventListener('change',e=>{mainLocked=e.target.checked;toast(mainLocked?'主组件位置已锁定':'主组件位置已解锁');});
     $('#keep-cards').addEventListener('change',e=>{keepCards=e.target.checked;toast(keepCards?'退出后保留独立卡片：开启':'退出后保留独立卡片：关闭');});
-    $('#opacity-range').addEventListener('input',e=>{opacity=Number(e.target.value);$('#opacity-value').textContent=opacity+'%';$('#app-window').style.background=`rgba(255,255,255,${opacity/100})`;});
+    $('#opacity-range').addEventListener('input',e=>{opacity=Number(e.target.value);$('#opacity-value').textContent=opacity+'%';applyWindowOpacity();});
   }
   function contextMenu(id,x,y){selectedId=id;const f=folders.find(v=>v.id===id);const m=$('#context-menu');m.innerHTML=`<button data-action="open" data-id="${id}">↗　打开文件夹</button><button data-action="edit" data-id="${id}">✎　编辑记录</button><button data-action="pin" data-id="${id}">${f.pinned?'⊖　取消固定':'⊕　固定到桌面'}</button><button class="danger" data-action="delete" data-id="${id}">×　删除记录</button>`;m.style.left=Math.min(x,innerWidth-175)+'px';m.style.top=Math.min(y,innerHeight-160)+'px';m.classList.remove('hidden');}
   function hideMain(){ $('#app-window').classList.add('hidden-window');$('#tray-popover').classList.add('hidden');toast('主组件已隐藏；可从托盘图标重新打开'); }
@@ -75,6 +110,8 @@
   $('#add-folder-btn').addEventListener('click',()=>folderForm(null));
   $('#add-category-btn').addEventListener('click',()=>showModal(`<div class="modal-header"><div><h2 id="modal-title">新增分类</h2><p>分类为平级列表，不支持嵌套</p></div><button class="modal-close" data-close>×</button></div><form id="category-form"><div class="form-field"><label>分类名称 *</label><input name="name" required maxlength="20" placeholder="输入分类名称"></div><div class="form-actions"><button type="button" class="secondary-button" data-close>取消</button><button class="modal-primary">创建分类</button></div></form>`));
   $('#modal').addEventListener('submit',e=>{if(e.target.id!=='category-form')return;e.preventDefault();const name=new FormData(e.target).get('name').trim();if(!name||categories.includes(name)||name==='全部文件夹'){toast('分类名称为空或已存在','error');return;}categories.push(name);closeModal();renderFolders();toast(`已创建分类「${name}」`);});
+  $('#theme-btn').addEventListener('click',e=>{e.stopPropagation();toggleTheme();});
+  $('#theme-chip').addEventListener('click',toggleTheme);
   $('#settings-btn').addEventListener('click',settingsModal);$('#hide-btn').addEventListener('click',hideMain);$('#minimize-btn').addEventListener('click',hideMain);
   const appWindow=$('#app-window'), dragHandle=$('#window-drag-handle');let windowDrag=null;dragHandle.addEventListener('pointerdown',e=>{if(mainLocked||e.target.closest('button'))return;const r=appWindow.getBoundingClientRect();windowDrag={x:e.clientX,y:e.clientY,left:r.left,top:r.top};appWindow.style.transform='none';appWindow.style.left=r.left+'px';appWindow.style.top=r.top+'px';dragHandle.setPointerCapture(e.pointerId);});dragHandle.addEventListener('pointermove',e=>{if(!windowDrag)return;appWindow.style.left=Math.max(0,Math.min(innerWidth-appWindow.offsetWidth,windowDrag.left+e.clientX-windowDrag.x))+'px';appWindow.style.top=Math.max(0,Math.min(innerHeight-appWindow.offsetHeight-44,windowDrag.top+e.clientY-windowDrag.y))+'px';});dragHandle.addEventListener('pointerup',()=>{if(windowDrag)toast('主组件位置已调整（仅本次演示会话）');windowDrag=null;});
   $('#tray-button').addEventListener('click',()=>$('#tray-popover').classList.toggle('hidden'));
@@ -86,5 +123,7 @@
   $('#list-view-btn').addEventListener('click',()=>{listMode=!listMode;grid.style.gridTemplateColumns=listMode?'1fr':'repeat(3,minmax(0,1fr))';toast(listMode?'已切换为紧凑列表布局预览':'已切换为网格布局');});
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search-input').focus();}if(e.key==='Escape'){closeModal();$('#context-menu').classList.add('hidden');$('#tray-popover').classList.add('hidden');}});
   function tick(){const d=new Date();const t=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});$('#clock').textContent=t;$('#taskbar-clock').textContent=t;}tick();setInterval(tick,15000);
+  syncThemeUi();
+  applyWindowOpacity();
   renderFolders();
 })();
