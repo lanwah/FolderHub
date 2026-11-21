@@ -19,12 +19,13 @@
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP5 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0～WP5 DONE；托盘/开机启动/单实例；审核 PASS_WITH_NOTES 后已修拖窗启动项、Dispatcher、最小化与单实例；Domain 14 + Infra 14 | #12 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
+| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP6 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0～WP6 DONE；IPC 帧/白名单/握手+Logon SID DACL；审核 PASS_WITH_NOTES 后已修 ReadWrite、协议 Decode、握手失败重置、confirm 重校验；Domain 14 + Infra 31 | #13 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
 
 ## 3. 任务状态历史（追加式）
 
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP6 IPC 契约 v0 完成并经用户确认提交；继续 WP7 | 用户：「修复上述4条，然后提交」；开发计划 WP6=DONE；测试 45 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP5 托盘+开机启动完成并经用户确认提交；继续 WP6 | 用户：「1-3都修复，然后提交」；开发计划 WP5=DONE；测试 28 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP4 Shell 适配完成并经用户确认提交；继续 WP5 | 用户：「修复第 1 条，然后提交代码」；开发计划 WP4=DONE；测试 26 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP3 Main UI 完成并经用户确认提交；继续 WP4 | 用户：「更新文档并提交。」；开发计划 WP3=DONE；测试 19 通过 |

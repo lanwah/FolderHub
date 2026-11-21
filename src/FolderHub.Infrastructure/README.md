@@ -5,9 +5,9 @@
 | 能力 | 状态 | 说明 |
 |---|---|---|
 | SQLite | WP2 | Schema v1、迁移、`FolderCatalog` / Main 设置 / CardDefinition 仓储 |
-| Named Pipes | WP6 | 待实现 |
+| Named Pipes | WP6 | 帧格式/白名单/握手 + Logon SID DACL 骨架（未接 App/CardHost） |
 | Shell/Explorer | WP4 | `WindowsShellFolderService`：路径检查 + explorer.exe 打开 |
-| 托盘与启动项 | WP5 | 待实现 |
+| 托盘与启动项 | WP5 | `WindowsStartupRegistrationService`（HKCU Run） |
 
 默认库路径：`%LocalAppData%\FolderHub\folderhub.db`。
 `card_presentation_states` 表已预建，写入权属 CardHost（ADR-035），Main 业务仓储不写该表。
