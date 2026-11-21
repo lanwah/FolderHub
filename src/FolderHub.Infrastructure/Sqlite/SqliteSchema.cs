@@ -1,12 +1,12 @@
 namespace FolderHub.Infrastructure.Sqlite;
 
 /// <summary>
-/// Schema v1：Main 权威聚合表 + CardHost 展示状态表占位（ADR-035/039）。
+/// Schema：Main 权威聚合表 + CardHost 展示状态表（ADR-035/039/040）。
 /// CardPresentationState 仅由 CardHost 写入，Main 不得通过业务仓储改写。
 /// </summary>
 internal static class SqliteSchema
 {
-    public const int CurrentVersion = 1;
+    public const int CurrentVersion = 2;
 
     public const string CreateSql = """
         PRAGMA foreign_keys = ON;
@@ -65,7 +65,9 @@ internal static class SqliteSchema
             height REAL NOT NULL,
             locked INTEGER NOT NULL CHECK (locked IN (0, 1)),
             opacity REAL NOT NULL,
-            startup_enabled INTEGER NOT NULL CHECK (startup_enabled IN (0, 1))
+            startup_enabled INTEGER NOT NULL CHECK (startup_enabled IN (0, 1)),
+            monitor_reference TEXT NULL,
+            dpi_reference REAL NULL
         );
 
         CREATE TABLE IF NOT EXISTS card_definitions (
@@ -75,7 +77,7 @@ internal static class SqliteSchema
             FOREIGN KEY (folder_id) REFERENCES folders(id) ON DELETE CASCADE
         );
 
-        -- CardHost 唯一写入（ADR-035）；WP2 仅建表，业务写入口在 WP7。
+        -- CardHost 唯一写入（ADR-035）。
         CREATE TABLE IF NOT EXISTS card_presentation_states (
             card_id TEXT PRIMARY KEY NOT NULL,
             left REAL NOT NULL,
@@ -87,5 +89,11 @@ internal static class SqliteSchema
             updated_at_utc TEXT NOT NULL,
             FOREIGN KEY (card_id) REFERENCES card_definitions(card_id) ON DELETE CASCADE
         );
+        """;
+
+    /// <summary>v1→v2：主组件设置补齐 ADR-040 显示器身份与 DPI 参考。</summary>
+    public const string MigrateV1ToV2Sql = """
+        ALTER TABLE main_component_settings ADD COLUMN monitor_reference TEXT NULL;
+        ALTER TABLE main_component_settings ADD COLUMN dpi_reference REAL NULL;
         """;
 }

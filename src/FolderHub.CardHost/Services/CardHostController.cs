@@ -1,6 +1,7 @@
 using System.Windows;
 using FolderHub.CardHost.Views;
 using FolderHub.Infrastructure.Ipc;
+using FolderHub.UseCases.Display;
 using FolderHub.UseCases.Ipc;
 using FolderHub.UseCases.Persistence;
 
@@ -85,11 +86,13 @@ public sealed class CardHostController
                 state ??= _runtime.Presentations.Load(payload.CardId);
                 var index = indexHint ?? _windows.Count;
                 var model = CardModel.FromUpsert(payload, state, index);
+                ApplyRestoredPlacement(model, state, index);
                 var window = new CardWindow(this, model);
                 _windows[payload.CardId] = window;
                 window.Show();
 
-                if (state is null)
+                // 首次创建或恢复发生迁移时，立即按 ADR-040 写回归一化坐标。
+                if (state is null || model.NeedsPlacementPersist)
                     PersistPresentation(window);
             }
         });
@@ -105,18 +108,27 @@ public sealed class CardHostController
         model.Top = window.Top;
         model.StateVersion += 1;
 
-        var snapshot = new CardPresentationStateSnapshot(
-            model.CardId,
+        var monitors = _runtime.Displays.GetWorkAreas();
+        var captured = DisplayPlacement.Capture(
             model.Left,
             model.Top,
+            window.Width,
+            window.Height,
+            monitors);
+
+        var snapshot = new CardPresentationStateSnapshot(
+            model.CardId,
+            captured.NormX,
+            captured.NormY,
             model.Locked,
-            MonitorReference: null,
-            DpiReference: null,
+            MonitorReference: captured.MonitorId,
+            DpiReference: captured.DpiReference,
             model.StateVersion,
             DateTimeOffset.UtcNow);
 
         _runtime.Presentations.Upsert(snapshot);
         model.StateVersion = snapshot.StateVersion;
+        model.NeedsPlacementPersist = false;
         window.ApplyModel();
 
         _ = TryNotifyMainAsync(new CardStateChangedNoticePayload(
@@ -126,6 +138,40 @@ public sealed class CardHostController
             Top: model.Top,
             Locked: model.Locked,
             StateVersion: model.StateVersion));
+    }
+
+    private void ApplyRestoredPlacement(CardModel model, CardPresentationStateSnapshot? state, int index)
+    {
+        // 与 CardWindow.xaml 设计尺寸一致，供 ADR-033 可见性判定使用。
+        const double cardWidth = 190;
+        const double cardHeight = 128;
+        var monitors = _runtime.Displays.GetWorkAreas();
+
+        if (state is null)
+        {
+            var left = 24 + (index % 3) * 205;
+            var top = 120 + Math.Floor(index / 3.0) * 140;
+            var absolute = DisplayPlacement.RestoreAbsolute(left, top, cardWidth, cardHeight, monitors);
+            model.Left = absolute.Left;
+            model.Top = absolute.Top;
+            model.NeedsPlacementPersist = true;
+            return;
+        }
+
+        var restored = DisplayPlacement.Restore(
+            state.MonitorReference,
+            state.Left,
+            state.Top,
+            cardWidth,
+            cardHeight,
+            state.DpiReference,
+            monitors,
+            _runtime.Displays.PrimaryMonitorId);
+
+        model.Left = restored.Left;
+        model.Top = restored.Top;
+        model.NeedsPlacementPersist = restored.MigratedToPrimary
+            || string.IsNullOrWhiteSpace(state.MonitorReference);
     }
 
     public void OpenFolder(CardModel model)

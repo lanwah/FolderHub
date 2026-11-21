@@ -62,8 +62,9 @@ public partial class CardWindow : Window
         if (Math.Abs(dx) > 2 || Math.Abs(dy) > 2)
             _moved = true;
 
-        Left = Math.Max(0, _windowOrigin.X + dx);
-        Top = Math.Max(0, _windowOrigin.Y + dy);
+        // 允许负虚拟屏坐标（多显示器左侧/上方扩展屏）。
+        Left = _windowOrigin.X + dx;
+        Top = _windowOrigin.Y + dy;
     }
 
     private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

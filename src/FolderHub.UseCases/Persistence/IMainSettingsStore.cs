@@ -19,4 +19,6 @@ public sealed record MainSettingsSnapshot(
     double MainHeight,
     bool MainLocked,
     double MainOpacity,
-    bool StartupEnabled);
+    bool StartupEnabled,
+    string? MainMonitorReference = null,
+    double? MainDpiReference = null);

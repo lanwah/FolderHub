@@ -77,9 +77,16 @@ public sealed class SqliteDb : IDisposable
         }
         else if (version < SqliteSchema.CurrentVersion)
         {
-            // 后续 WP 在此追加增量迁移。
-            throw new InvalidOperationException(
-                $"缺少从版本 {version} 到 {SqliteSchema.CurrentVersion} 的迁移脚本。");
+            if (version == 1)
+            {
+                ApplyV1ToV2(connection, tx);
+                WriteVersion(connection, tx, 2);
+            }
+            else
+            {
+                throw new InvalidOperationException(
+                    $"缺少从版本 {version} 到 {SqliteSchema.CurrentVersion} 的迁移脚本。");
+            }
         }
 
         tx.Commit();
@@ -134,6 +141,14 @@ public sealed class SqliteDb : IDisposable
         cmd.ExecuteNonQuery();
     }
 
+    private static void ApplyV1ToV2(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using var cmd = connection.CreateCommand();
+        cmd.Transaction = transaction;
+        cmd.CommandText = SqliteSchema.MigrateV1ToV2Sql;
+        cmd.ExecuteNonQuery();
+    }
+
     private static void SeedDefaults(SqliteConnection connection, SqliteTransaction transaction)
     {
         using (var cmd = connection.CreateCommand())
@@ -151,8 +166,8 @@ public sealed class SqliteDb : IDisposable
             cmd.Transaction = transaction;
             cmd.CommandText = """
                 INSERT OR IGNORE INTO main_component_settings
-                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled)
-                VALUES (1, 0, 80, 80, 420, 560, 0, 1.0, 0);
+                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled, monitor_reference, dpi_reference)
+                VALUES (1, 0, 80, 80, 420, 560, 0, 1.0, 0, NULL, NULL);
                 """;
             cmd.ExecuteNonQuery();
         }

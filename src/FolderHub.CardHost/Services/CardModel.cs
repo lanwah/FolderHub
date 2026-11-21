@@ -17,13 +17,16 @@ public sealed class CardModel
     public bool Locked { get; set; }
     public long StateVersion { get; set; }
 
+    /// <summary>恢复后需按 ADR-040 重新落盘归一化坐标。</summary>
+    public bool NeedsPlacementPersist { get; set; }
+
     public string Title => string.IsNullOrWhiteSpace(Alias) ? DisplayName : Alias!;
     public string Hint => Locked ? "位置已锁定" : "拖动卡片可调整位置";
 
     public static CardModel FromUpsert(CardDefinitionUpsertPayload payload, CardPresentationStateSnapshot? state, int index)
     {
-        var left = state?.Left ?? 24 + (index % 3) * 205;
-        var top = state?.Top ?? 120 + Math.Floor(index / 3.0) * 140;
+        // 位置由 CardHostController.ApplyRestoredPlacement 统一按 ADR-040 恢复。
+        _ = index;
         return new CardModel
         {
             CardId = payload.CardId,
@@ -33,8 +36,8 @@ public sealed class CardModel
             Description = payload.Description,
             Path = payload.Path,
             IsPathUnavailable = payload.IsPathUnavailable,
-            Left = left,
-            Top = top,
+            Left = 0,
+            Top = 0,
             Locked = state?.Locked ?? false,
             StateVersion = state?.StateVersion ?? 0
         };

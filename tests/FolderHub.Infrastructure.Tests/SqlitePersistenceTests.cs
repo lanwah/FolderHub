@@ -7,12 +7,12 @@ namespace FolderHub.Infrastructure.Tests;
 public class SqlitePersistenceTests
 {
     [Fact]
-    public void Migrate_CreatesSchemaVersion1_AndSeedsUncategorized()
+    public void Migrate_CreatesSchemaVersion2_AndSeedsUncategorized()
     {
         using var db = SqliteDb.OpenInMemory();
         db.Migrate();
 
-        Assert.Equal(1, db.GetSchemaVersion());
+        Assert.Equal(2, db.GetSchemaVersion());
 
         var catalog = new SqliteFolderCatalogStore(db).Load();
         Assert.Single(catalog.Categories);
@@ -256,19 +256,23 @@ public class SqlitePersistenceTests
         {
             KeepCardsAfterMainExit = false,
             MainPinned = true,
-            MainLeft = 12,
-            MainTop = 34,
+            MainLeft = 0.25,
+            MainTop = 0.1,
             MainOpacity = 0.85,
-            StartupEnabled = true
+            StartupEnabled = true,
+            MainMonitorReference = @"\\.\DISPLAY1",
+            MainDpiReference = 1.25
         });
 
         var loaded = store.Load();
         Assert.False(loaded.KeepCardsAfterMainExit);
         Assert.True(loaded.MainPinned);
-        Assert.Equal(12, loaded.MainLeft);
-        Assert.Equal(34, loaded.MainTop);
+        Assert.Equal(0.25, loaded.MainLeft);
+        Assert.Equal(0.1, loaded.MainTop);
         Assert.Equal(0.85, loaded.MainOpacity);
         Assert.True(loaded.StartupEnabled);
+        Assert.Equal(@"\\.\DISPLAY1", loaded.MainMonitorReference);
+        Assert.Equal(1.25, loaded.MainDpiReference);
     }
 
     [Fact]
@@ -280,9 +284,9 @@ public class SqlitePersistenceTests
             using (var db = new SqliteDb(path))
             {
                 db.Migrate();
-                Assert.Equal(1, db.GetSchemaVersion());
+                Assert.Equal(2, db.GetSchemaVersion());
                 db.Migrate();
-                Assert.Equal(1, db.GetSchemaVersion());
+                Assert.Equal(2, db.GetSchemaVersion());
             }
 
             using (var db = new SqliteDb(path))

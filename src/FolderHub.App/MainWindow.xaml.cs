@@ -4,12 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using FolderHub.App.Dialogs;
+using FolderHub.App.Services;
 using FolderHub.App.ViewModels;
 
 namespace FolderHub.App;
 
 public partial class MainWindow : Window
 {
+    private readonly MainDesktopHost _desktopHost = new();
     private MainViewModel? _vm;
     private FolderListItem? _contextFolder;
     private DateTime _lastClickUtc;
@@ -21,6 +23,7 @@ public partial class MainWindow : Window
         AllowDrop = true;
         DragOver += Window_DragOver;
         Drop += Window_Drop;
+        IsVisibleChanged += MainWindow_IsVisibleChanged;
     }
 
     public void Attach(MainViewModel viewModel)
@@ -32,6 +35,7 @@ public partial class MainWindow : Window
         viewModel.RequestEditFolder += OnEditFolder;
         viewModel.RequestOpenSettings += OnOpenSettings;
         viewModel.RequestRetargetUnavailablePath += OnRetargetUnavailablePath;
+        viewModel.ApplyMainPinnedVisual += OnApplyMainPinnedVisual;
         viewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(MainViewModel.PanelOpacity) or nameof(MainViewModel.MainLocked))
@@ -41,13 +45,11 @@ public partial class MainWindow : Window
         var s = viewModel.CurrentSettings;
         Width = Math.Max(720, s.MainWidth);
         Height = Math.Max(420, s.MainHeight);
-        Left = s.MainLeft;
-        Top = s.MainTop;
-        if (Left < 0 || Top < 0 || Left > SystemParameters.VirtualScreenWidth - 80
-            || Top > SystemParameters.VirtualScreenHeight - 80)
-        {
-            WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        }
+        var restored = viewModel.ResolveMainPlacement(Width, Height);
+        Left = restored.Left;
+        Top = restored.Top;
+        if (restored.MigratedToPrimary)
+            PersistBounds();
 
         ApplyChrome();
         Closed += (_, _) => PersistBounds();
@@ -58,6 +60,10 @@ public partial class MainWindow : Window
 
     /// <summary>退出前由 App 调用，确保隐藏态下也能落盘窗口位置。</summary>
     public void PersistBoundsIfNeeded() => PersistBounds();
+
+    /// <summary>按 MainPinned 尝试壁纸层；返回失败说明（成功 null）。</summary>
+    public string? ApplyDesktopPinState(bool pinned)
+        => _desktopHost.ApplyPinnedState(this, pinned);
 
     private void ApplyChrome()
     {
@@ -88,6 +94,32 @@ public partial class MainWindow : Window
     private void Minimize_Click(object sender, RoutedEventArgs e) => Hide();
 
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private string? OnApplyMainPinnedVisual(bool pinned)
+    {
+        // 隐藏态下先不嵌入；显示时由 IsVisibleChanged 再应用。
+        if (!IsVisible)
+            return pinned ? null : ApplyDesktopPinState(pinned: false);
+
+        return ApplyDesktopPinState(pinned);
+    }
+
+    private void MainWindow_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (_vm is null)
+            return;
+
+        if (IsVisible)
+        {
+            var error = ApplyDesktopPinState(_vm.MainPinned);
+            if (_vm.MainPinned && error is not null)
+                _vm.StatusMessage = "壁纸层嵌入失败，已回退普通窗口：" + error;
+        }
+        else
+        {
+            ApplyDesktopPinState(pinned: false);
+        }
+    }
 
     private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
     {

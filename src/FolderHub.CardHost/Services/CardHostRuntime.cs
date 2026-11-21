@@ -1,7 +1,9 @@
 using FolderHub.Domain.Catalog;
+using FolderHub.Infrastructure.Display;
 using FolderHub.Infrastructure.Ipc;
 using FolderHub.Infrastructure.Shell;
 using FolderHub.Infrastructure.Sqlite;
+using FolderHub.UseCases.Display;
 using FolderHub.UseCases.Persistence;
 using FolderHub.UseCases.Shell;
 
@@ -20,7 +22,8 @@ public sealed class CardHostRuntime : IDisposable
         ICardDefinitionStore definitions,
         ICardPresentationStateStore presentations,
         IFolderCatalogStore catalogStore,
-        IShellFolderService shell)
+        IShellFolderService shell,
+        IDisplayMonitorCatalog displays)
     {
         _db = db;
         IpcOptions = ipcOptions;
@@ -28,6 +31,7 @@ public sealed class CardHostRuntime : IDisposable
         Presentations = presentations;
         CatalogStore = catalogStore;
         Shell = shell;
+        Displays = displays;
     }
 
     public static CardHostRuntime OpenDefault(IpcConnectionOptions ipcOptions)
@@ -40,7 +44,8 @@ public sealed class CardHostRuntime : IDisposable
             new SqliteCardDefinitionStore(db),
             new SqliteCardPresentationStateStore(db),
             new SqliteFolderCatalogStore(db),
-            new WindowsShellFolderService());
+            new WindowsShellFolderService(),
+            new WindowsDisplayMonitorCatalog());
     }
 
     public IpcConnectionOptions IpcOptions { get; }
@@ -52,6 +57,8 @@ public sealed class CardHostRuntime : IDisposable
     public IFolderCatalogStore CatalogStore { get; }
 
     public IShellFolderService Shell { get; }
+
+    public IDisplayMonitorCatalog Displays { get; }
 
     public FolderCatalog LoadCatalog() => CatalogStore.Load();
 

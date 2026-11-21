@@ -5,6 +5,7 @@ using System.Windows.Input;
 using FolderHub.App.Services;
 using FolderHub.Domain.Entities;
 using FolderHub.Infrastructure.Ipc;
+using FolderHub.UseCases.Display;
 using FolderHub.UseCases.Ipc;
 using FolderHub.UseCases.Persistence;
 
@@ -378,28 +379,30 @@ public sealed class MainViewModel : ObservableObject
         Rect bounds)
     {
         opacity = Math.Clamp(opacity, 0.20, 1.0);
-        var next = new MainSettingsSnapshot(
-            KeepCardsAfterMainExit: keepCards,
-            MainPinned: mainPinned,
-            MainLeft: bounds.Left,
-            MainTop: bounds.Top,
-            MainWidth: Math.Max(360, bounds.Width),
-            MainHeight: Math.Max(420, bounds.Height),
-            MainLocked: mainLocked,
-            MainOpacity: opacity,
-            StartupEnabled: startupEnabled);
+        var next = BuildSettingsWithPlacement(
+            keepCards,
+            mainPinned,
+            mainLocked,
+            opacity,
+            startupEnabled,
+            bounds);
 
         var startupOk = _session.SaveSettingsWithStartup(next, out var startupError);
         ApplySettingsSnapshot(next);
+        var wallpaperError = ApplyMainPinnedVisual?.Invoke(mainPinned);
+
         if (!startupOk)
         {
             StatusMessage = $"设置已保存，但开机启动同步失败：{startupError}";
             return;
         }
 
-        StatusMessage = mainPinned
-            ? "设置已保存（固定到桌面将在 WP9 壁纸层实现）"
-            : "设置已保存";
+        if (mainPinned && wallpaperError is not null)
+            StatusMessage = "设置已保存；壁纸层嵌入失败，已回退普通窗口：" + wallpaperError;
+        else if (mainPinned)
+            StatusMessage = "设置已保存（已嵌入桌面壁纸层）";
+        else
+            StatusMessage = "设置已保存";
     }
 
     public void PersistWindowBounds(Rect bounds)
@@ -408,14 +411,62 @@ public sealed class MainViewModel : ObservableObject
         if (s.MainLocked)
             return;
 
-        var next = s with
-        {
-            MainLeft = bounds.Left,
-            MainTop = bounds.Top,
-            MainWidth = Math.Max(360, bounds.Width),
-            MainHeight = Math.Max(420, bounds.Height)
-        };
+        var next = BuildSettingsWithPlacement(
+            s.KeepCardsAfterMainExit,
+            s.MainPinned,
+            s.MainLocked,
+            s.MainOpacity,
+            s.StartupEnabled,
+            bounds);
         _session.SaveSettings(next);
+    }
+
+    /// <summary>
+    /// 设置中切换「固定到桌面」后，由窗口层应用壁纸层；返回失败说明（成功 null）。
+    /// </summary>
+    public event Func<bool, string?>? ApplyMainPinnedVisual;
+
+    /// <summary>按 ADR-040 将持久化主组件位置恢复为当前 DIP 绝对坐标。</summary>
+    public AbsoluteWindowPlacement ResolveMainPlacement(double width, double height)
+    {
+        var s = _session.Settings;
+        var monitors = _session.Displays.GetWorkAreas();
+        return DisplayPlacement.Restore(
+            s.MainMonitorReference,
+            s.MainLeft,
+            s.MainTop,
+            width,
+            height,
+            s.MainDpiReference,
+            monitors,
+            _session.Displays.PrimaryMonitorId);
+    }
+
+    private MainSettingsSnapshot BuildSettingsWithPlacement(
+        bool keepCards,
+        bool mainPinned,
+        bool mainLocked,
+        double opacity,
+        bool startupEnabled,
+        Rect bounds)
+    {
+        var width = Math.Max(360, bounds.Width);
+        var height = Math.Max(420, bounds.Height);
+        var monitors = _session.Displays.GetWorkAreas();
+        var captured = DisplayPlacement.Capture(bounds.Left, bounds.Top, width, height, monitors);
+
+        return new MainSettingsSnapshot(
+            KeepCardsAfterMainExit: keepCards,
+            MainPinned: mainPinned,
+            MainLeft: captured.NormX,
+            MainTop: captured.NormY,
+            MainWidth: width,
+            MainHeight: height,
+            MainLocked: mainLocked,
+            MainOpacity: opacity,
+            StartupEnabled: startupEnabled,
+            MainMonitorReference: captured.MonitorId,
+            MainDpiReference: captured.DpiReference);
     }
 
     private void OpenFolder(FolderListItem? item)

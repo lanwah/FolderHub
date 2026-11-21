@@ -63,8 +63,8 @@ public partial class App : Application
             // ADR-037：启动时按权威 CardDefinition 恢复/重连 CardHost（含主程序退出后崩溃场景）。
             _ = TryResumeCardHostAsync();
 
-            // ADR-012：启动后主组件默认隐藏，仅托盘常驻；`--show` 便于开发调试。
-            if (ShouldShowMainOnStartup(e.Args))
+            // ADR-012：默认托盘常驻；FR-014 固定到桌面或 `--show` 时显示主组件。
+            if (_session.Settings.MainPinned || ShouldShowMainOnStartup(e.Args))
                 ShowMainWindow();
         }
         catch (Exception ex)
@@ -243,8 +243,13 @@ public partial class App : Application
             _mainWindow.WindowState = WindowState.Normal;
 
         _mainWindow.Activate();
-        _mainWindow.Topmost = true;
-        _mainWindow.Topmost = false;
+        // 壁纸层嵌入后勿用 Topmost 抢焦点层；普通窗口仍短暂置顶以唤起。
+        if (_viewModel?.MainPinned != true)
+        {
+            _mainWindow.Topmost = true;
+            _mainWindow.Topmost = false;
+        }
+
         _mainWindow.Focus();
     }
 
