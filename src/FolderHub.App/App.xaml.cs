@@ -39,6 +39,12 @@ public partial class App : Application
             _cardHost = new CardHostProcessManager(_session);
             _viewModel = new MainViewModel(_session, _cardHost);
             _cardHost.CardNoticeReceived += notice => _viewModel.HandleCardNotice(notice);
+            _cardHost.RecoveryDegraded += OnCardHostRecoveryDegraded;
+            _cardHost.RecoveryStatusChanged += message =>
+            {
+                if (_viewModel is not null)
+                    DispatchToUi(() => _viewModel.StatusMessage = message);
+            };
 
             _mainWindow = new MainWindow();
             _mainWindow.Attach(_viewModel);
@@ -49,11 +55,12 @@ public partial class App : Application
             _tray = new TrayIconHost();
             _tray.OpenMainRequested += () => DispatchToUi(ShowMainWindow);
             _tray.OpenSettingsRequested += () => DispatchToUi(OpenSettingsFromTray);
+            _tray.RecoverCardsRequested += () => DispatchToUi(() => _ = RecoverCardsFromTrayAsync());
             _tray.ExitRequested += () => DispatchToUi(() => _ = ExitApplicationAsync());
 
             StartShowMainWatcher();
 
-            // 若已有启用卡片且 CardHost 因 Keep=ON 仍在，尝试重连并同步。
+            // ADR-037：启动时按权威 CardDefinition 恢复/重连 CardHost（含主程序退出后崩溃场景）。
             _ = TryResumeCardHostAsync();
 
             // ADR-012：启动后主组件默认隐藏，仅托盘常驻；`--show` 便于开发调试。
@@ -85,19 +92,56 @@ public partial class App : Application
 
     private async Task TryResumeCardHostAsync()
     {
-        if (_session is null || _cardHost is null)
+        if (_cardHost is null)
             return;
 
         try
         {
-            if (_session.CardDefinitions.LoadAll().All(c => !c.Enabled))
-                return;
-
-            await _cardHost.SyncAllEnabledAsync();
+            await _cardHost.RestoreOnMainStartupAsync();
         }
         catch
         {
-            // 启动期重连失败不阻断主程序；用户再次固定时会重试。
+            // 启动期恢复失败不阻断主程序；ADR-038 运行期/手动恢复继续接管。
+        }
+    }
+
+    private void OnCardHostRecoveryDegraded(string reason)
+    {
+        DispatchToUi(() =>
+        {
+            if (_viewModel is not null)
+                _viewModel.StatusMessage = "卡片宿主恢复失败：" + reason;
+
+            // 托盘气泡作常驻提示；不叠阻塞 MessageBox（避免与重复事件/后台线程竞态叠窗）。
+            _tray?.ShowBalloon(
+                "FolderHub",
+                "桌面卡片多次恢复失败，已停止自动重启。请在托盘选择「恢复桌面卡片」，或再次固定文件夹。\n"
+                + reason);
+        });
+    }
+
+    private async Task RecoverCardsFromTrayAsync()
+    {
+        if (_cardHost is null)
+            return;
+
+        try
+        {
+            await _cardHost.ManualRecoverAsync();
+            if (_viewModel is not null)
+                _viewModel.StatusMessage = "桌面卡片已恢复";
+            _tray?.ShowBalloon(
+                "FolderHub",
+                "桌面卡片已恢复。",
+                System.Windows.Forms.ToolTipIcon.Info);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                "恢复桌面卡片失败：\n" + ex.Message,
+                "FolderHub",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
     }
 
