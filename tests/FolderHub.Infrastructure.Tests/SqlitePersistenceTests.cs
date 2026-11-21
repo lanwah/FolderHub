@@ -190,6 +190,59 @@ public class SqlitePersistenceTests
     }
 
     [Fact]
+    public void CardPresentationState_UpsertLoadAndVersionBump()
+    {
+        using var db = SqliteDb.OpenInMemory();
+        db.Migrate();
+        var catalogStore = new SqliteFolderCatalogStore(db);
+        var cardStore = new SqliteCardDefinitionStore(db);
+        var presentationStore = new SqliteCardPresentationStateStore(db);
+
+        var catalog = catalogStore.Load();
+        var work = catalog.AddCategory("工作");
+        var folder = catalog.AddFolder(@"D:\Present", "Present", work.Id).Folder;
+        catalogStore.Save(catalog);
+
+        var cardId = Guid.NewGuid();
+        cardStore.ReplaceAll([new CardDefinitionSnapshot(cardId, folder.Id, true)]);
+
+        presentationStore.Upsert(new CardPresentationStateSnapshot(
+            cardId, 40, 80, Locked: false, null, null, StateVersion: 1, DateTimeOffset.UtcNow));
+
+        var loaded = presentationStore.Load(cardId);
+        Assert.NotNull(loaded);
+        Assert.Equal(40, loaded!.Left);
+        Assert.Equal(80, loaded.Top);
+        Assert.False(loaded.Locked);
+        Assert.Equal(1, loaded.StateVersion);
+
+        presentationStore.Upsert(loaded with
+        {
+            Left = 120,
+            Locked = true,
+            StateVersion = 2,
+            UpdatedAtUtc = DateTimeOffset.UtcNow
+        });
+
+        var again = presentationStore.Load(cardId)!;
+        Assert.Equal(120, again.Left);
+        Assert.True(again.Locked);
+        Assert.Equal(2, again.StateVersion);
+    }
+
+    [Fact]
+    public void CardPresentationState_RequiresExistingDefinition()
+    {
+        using var db = SqliteDb.OpenInMemory();
+        db.Migrate();
+        var presentationStore = new SqliteCardPresentationStateStore(db);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            presentationStore.Upsert(new CardPresentationStateSnapshot(
+                Guid.NewGuid(), 1, 2, false, null, null, 1, DateTimeOffset.UtcNow)));
+    }
+
+    [Fact]
     public void MainSettings_RoundTrip()
     {
         using var db = SqliteDb.OpenInMemory();

@@ -18,12 +18,14 @@ public sealed class AppSession : IDisposable
         SqliteDb db,
         IFolderCatalogStore catalogStore,
         IMainSettingsStore settingsStore,
+        ICardDefinitionStore cardDefinitions,
         IShellFolderService shell,
         IStartupRegistrationService startup)
     {
         _db = db;
         CatalogStore = catalogStore;
         SettingsStore = settingsStore;
+        CardDefinitions = cardDefinitions;
         Shell = shell;
         Startup = startup;
         Catalog = catalogStore.Load();
@@ -38,6 +40,7 @@ public sealed class AppSession : IDisposable
             db,
             new SqliteFolderCatalogStore(db),
             new SqliteMainSettingsStore(db),
+            new SqliteCardDefinitionStore(db),
             new WindowsShellFolderService(),
             new WindowsStartupRegistrationService());
     }
@@ -47,6 +50,8 @@ public sealed class AppSession : IDisposable
     public IFolderCatalogStore CatalogStore { get; }
 
     public IMainSettingsStore SettingsStore { get; }
+
+    public ICardDefinitionStore CardDefinitions { get; }
 
     public IShellFolderService Shell { get; }
 

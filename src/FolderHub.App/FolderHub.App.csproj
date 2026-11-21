@@ -4,6 +4,10 @@
     <ProjectReference Include="..\FolderHub.Infrastructure\FolderHub.Infrastructure.csproj" />
     <ProjectReference Include="..\FolderHub.Domain\FolderHub.Domain.csproj" />
     <ProjectReference Include="..\FolderHub.UseCases\FolderHub.UseCases.csproj" />
+    <!-- 确保 `dotnet build/run` App 时一并编译 CardHost，便于按相对路径启动。 -->
+    <ProjectReference Include="..\FolderHub.CardHost\FolderHub.CardHost.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
   <PropertyGroup>

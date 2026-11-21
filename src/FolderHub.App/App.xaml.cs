@@ -14,6 +14,7 @@ public partial class App : Application
     private EventWaitHandle? _showMainEvent;
     private CancellationTokenSource? _showMainWatchCts;
     private AppSession? _session;
+    private CardHostProcessManager? _cardHost;
     private MainViewModel? _viewModel;
     private MainWindow? _mainWindow;
     private TrayIconHost? _tray;
@@ -35,7 +36,10 @@ public partial class App : Application
             _session = AppSession.OpenDefault();
             _session.SyncStartupRegistration();
 
-            _viewModel = new MainViewModel(_session);
+            _cardHost = new CardHostProcessManager(_session);
+            _viewModel = new MainViewModel(_session, _cardHost);
+            _cardHost.CardNoticeReceived += notice => _viewModel.HandleCardNotice(notice);
+
             _mainWindow = new MainWindow();
             _mainWindow.Attach(_viewModel);
             _mainWindow.Closing += MainWindow_Closing;
@@ -45,9 +49,12 @@ public partial class App : Application
             _tray = new TrayIconHost();
             _tray.OpenMainRequested += () => DispatchToUi(ShowMainWindow);
             _tray.OpenSettingsRequested += () => DispatchToUi(OpenSettingsFromTray);
-            _tray.ExitRequested += () => DispatchToUi(ExitApplication);
+            _tray.ExitRequested += () => DispatchToUi(() => _ = ExitApplicationAsync());
 
             StartShowMainWatcher();
+
+            // 若已有启用卡片且 CardHost 因 Keep=ON 仍在，尝试重连并同步。
+            _ = TryResumeCardHostAsync();
 
             // ADR-012：启动后主组件默认隐藏，仅托盘常驻；`--show` 便于开发调试。
             if (ShouldShowMainOnStartup(e.Args))
@@ -74,6 +81,24 @@ public partial class App : Application
         _singleInstanceMutex?.ReleaseMutex();
         _singleInstanceMutex?.Dispose();
         base.OnExit(e);
+    }
+
+    private async Task TryResumeCardHostAsync()
+    {
+        if (_session is null || _cardHost is null)
+            return;
+
+        try
+        {
+            if (_session.CardDefinitions.LoadAll().All(c => !c.Enabled))
+                return;
+
+            await _cardHost.SyncAllEnabledAsync();
+        }
+        catch
+        {
+            // 启动期重连失败不阻断主程序；用户再次固定时会重试。
+        }
     }
 
     private bool TryAcquireSingleInstance()
@@ -188,7 +213,7 @@ public partial class App : Application
         _mainWindow.OpenSettings();
     }
 
-    private void ExitApplication()
+    private async Task ExitApplicationAsync()
     {
         if (_exiting)
             return;
@@ -197,6 +222,21 @@ public partial class App : Application
         _mainWindow?.PersistBoundsIfNeeded();
         _tray?.Dispose();
         _tray = null;
+
+        var keepCards = _session?.Settings.KeepCardsAfterMainExit ?? true;
+        if (_cardHost is not null)
+        {
+            try
+            {
+                await _cardHost.HandleMainExitAsync(keepCards);
+                await _cardHost.DisposeAsync();
+            }
+            catch
+            {
+                // 退出尽量不阻断。
+            }
+        }
+
         Shutdown(0);
     }
 

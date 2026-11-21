@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Input;
 using FolderHub.App.Services;
 using FolderHub.Domain.Entities;
+using FolderHub.Infrastructure.Ipc;
+using FolderHub.UseCases.Ipc;
 using FolderHub.UseCases.Persistence;
 
 namespace FolderHub.App.ViewModels;
@@ -11,6 +13,7 @@ namespace FolderHub.App.ViewModels;
 public sealed class MainViewModel : ObservableObject
 {
     private readonly AppSession _session;
+    private readonly CardHostProcessManager _cardHost;
     private string _searchText = string.Empty;
     private string _statusMessage = "就绪";
     private CategoryListItem? _selectedCategory;
@@ -24,9 +27,10 @@ public sealed class MainViewModel : ObservableObject
     private bool _mainPinned;
     private bool _keepCardsAfterMainExit;
 
-    public MainViewModel(AppSession session)
+    public MainViewModel(AppSession session, CardHostProcessManager cardHost)
     {
         _session = session;
+        _cardHost = cardHost;
         Categories = new ObservableCollection<CategoryListItem>();
         Folders = new ObservableCollection<FolderListItem>();
 
@@ -41,8 +45,9 @@ public sealed class MainViewModel : ObservableObject
                 SelectFolder(item);
         });
         OpenFolderCommand = new RelayCommand(p => OpenFolder(ResolveFolder(p)));
-        PinFolderCommand = new RelayCommand(_ =>
-            StatusMessage = "固定到桌面卡片将在 WP7 实现");
+        PinFolderCommand = new RelayCommand(
+            p => _ = TogglePinAsync(ResolveFolder(p)),
+            p => ResolveFolder(p) is not null);
         AddCategoryCommand = new RelayCommand(_ => RequestAddCategory?.Invoke());
         RenameCategoryCommand = new RelayCommand(
             _ => RequestRenameCategory?.Invoke(SelectedCategory!),
@@ -485,12 +490,88 @@ public sealed class MainViewModel : ObservableObject
 
         try
         {
+            var cards = _session.CardDefinitions.LoadAll();
+            var removedCard = cards.FirstOrDefault(c => c.FolderId == item.Id);
             _session.Catalog.DeleteFolder(item.Id);
             PersistCatalog("记录已删除，磁盘目录不受影响");
+            if (removedCard is not null)
+                _ = _cardHost.CloseCardAsync(removedCard.CardId);
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.Message, "无法删除", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    public void HandleCardNotice(CardStateChangedNoticePayload notice)
+    {
+        if (!string.Equals(notice.Action, "closeRequested", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        var cards = _session.CardDefinitions.LoadAll().ToList();
+        var next = cards.Where(c => c.CardId != notice.CardId).ToList();
+        if (next.Count != cards.Count)
+            _session.CardDefinitions.ReplaceAll(next);
+
+        CardHostPendingClosesFile.Remove(notice.CardId);
+        StatusMessage = "已取消桌面卡片固定";
+        RefreshFolders();
+    }
+
+    private async Task TogglePinAsync(FolderListItem? item)
+    {
+        if (item is null)
+            return;
+
+        var cardsBefore = _session.CardDefinitions.LoadAll().ToList();
+        try
+        {
+            var existing = cardsBefore.FirstOrDefault(c => c.FolderId == item.Id);
+
+            if (existing is { Enabled: true })
+            {
+                // 取消固定：移除定义（展示态随外键级联删除）。
+                var next = cardsBefore.Where(c => c.FolderId != item.Id).ToList();
+                _session.CardDefinitions.ReplaceAll(next);
+                await _cardHost.CloseCardAsync(existing.CardId);
+                StatusMessage = $"已取消固定「{item.Title}」";
+                RefreshFolders();
+                return;
+            }
+
+            var cardId = existing?.CardId ?? Guid.NewGuid();
+            var definition = new CardDefinitionSnapshot(cardId, item.Id, Enabled: true);
+            var merged = cardsBefore.Where(c => c.FolderId != item.Id).Append(definition).ToList();
+            _session.CardDefinitions.ReplaceAll(merged);
+
+            var payload = _cardHost.BuildUpsertPayload(definition);
+            if (payload is null)
+            {
+                _session.CardDefinitions.ReplaceAll(cardsBefore);
+                StatusMessage = "无法固定：找不到文件夹记录。";
+                RefreshFolders();
+                return;
+            }
+
+            await _cardHost.PushDefinitionAsync(payload);
+            StatusMessage = $"已固定到桌面卡片：「{item.Title}」";
+            RefreshFolders();
+        }
+        catch (Exception ex)
+        {
+            // IPC/启动失败回滚定义，避免列表显示已固定但桌面无卡。
+            try
+            {
+                _session.CardDefinitions.ReplaceAll(cardsBefore);
+            }
+            catch
+            {
+                // ignore rollback failure
+            }
+
+            RefreshFolders();
+            StatusMessage = $"固定卡片失败：{ex.Message}";
+            MessageBox.Show(ex.Message, "固定到桌面", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -554,6 +635,11 @@ public sealed class MainViewModel : ObservableObject
             source = Array.Empty<FolderRecord>();
         }
 
+        var pinnedFolderIds = _session.CardDefinitions.LoadAll()
+            .Where(c => c.Enabled)
+            .Select(c => c.FolderId)
+            .ToHashSet();
+
         foreach (var folder in source)
         {
             var cats = _session.Catalog.GetCategoriesForFolder(folder.Id);
@@ -569,7 +655,8 @@ public sealed class MainViewModel : ObservableObject
                 string.IsNullOrWhiteSpace(folder.Description) ? "暂无用途说明" : folder.Description!,
                 folder.Path,
                 catsLabel,
-                folder.IsPathUnavailable));
+                folder.IsPathUnavailable,
+                isPinned: pinnedFolderIds.Contains(folder.Id)));
         }
 
         ResultCountText = $"{Folders.Count} 个项目";
