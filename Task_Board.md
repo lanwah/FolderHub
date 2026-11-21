@@ -1,7 +1,7 @@
 # Task Board
 
 - 项目名称：FolderHub
-- 台账版本：5.2
+- 台账版本：5.3
 - 最后更新：2026-11-21
 - 工作流规范：已退出 V2.6.1 阶段门禁；工程实现以 `docs/05_Development/开发计划_v0.1.md` 为准
 - 当前阶段：ENGINEERING_IMPLEMENTATION
@@ -19,12 +19,13 @@
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0/WP1 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0 脚手架编译通过；WP1 Domain 8 测通过；`src/FolderHub.sln` | #8 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
+| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP2 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0/WP1 DONE；WP2 Schema/仓储/迁移 DONE（Domain 10 + Infra 8 测）；审核 PASS_WITH_NOTES 后已修 ReplaceAll 差分 | #9 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
 
 ## 3. 任务状态历史（追加式）
 
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP2 SQLite 持久化完成并经用户确认提交；继续 WP3 | 用户：「更新文档并提交。」；开发计划 WP2=DONE；测试 18 通过 |
 | 2026-11-21 | TASK-017 | IN_PROGRESS | CANCELLED | 用户退出原 P3/P4 工作流门禁，改走工程实现；设计文档保留参考 | 用户明确要求不再按现有流程推进并开始编码 |
 | 2026-11-21 | TASK-018 | IN_PROGRESS | CANCELLED | 同上；CardHost 边界改在实现中按 ADR-034～038 落地 | 同上 |
 | 2026-11-21 | TASK-020 | — | IN_PROGRESS | 建立工程实现任务；已完成 WP0/WP1 | `开发计划_v0.1.md`；`src/`；Domain 单测 |

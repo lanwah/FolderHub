@@ -22,9 +22,50 @@ public sealed class FolderCatalog
     public static FolderCatalog CreateEmpty()
     {
         var catalog = new FolderCatalog();
-        catalog._categories.Add(
-            Category.CreateUncategorized().Id,
-            Category.CreateUncategorized());
+        var uncategorized = Category.CreateUncategorized();
+        catalog._categories.Add(uncategorized.Id, uncategorized);
+        return catalog;
+    }
+
+    /// <summary>
+    /// 从持久化快照恢复聚合；必须包含且仅包含一个内建“未分类”。
+    /// </summary>
+    public static FolderCatalog Restore(
+        IEnumerable<Category> categories,
+        IEnumerable<FolderRecord> folders,
+        IEnumerable<FolderCategoryLink> links)
+    {
+        var catalog = new FolderCatalog();
+        foreach (var category in categories)
+        {
+            if (catalog._categories.ContainsKey(category.Id))
+                throw new InvalidOperationException($"重复的分类 Id：{category.Id}");
+            catalog._categories.Add(category.Id, category);
+        }
+
+        if (catalog._categories.Values.Count(c => c.IsUncategorized) != 1)
+            throw new InvalidOperationException("必须恰好包含一个内建“未分类”分类。");
+
+        foreach (var folder in folders)
+        {
+            if (catalog._folders.ContainsKey(folder.Id))
+                throw new InvalidOperationException($"重复的文件夹 Id：{folder.Id}");
+            if (catalog._folders.Values.Any(f => FolderPathComparer.Equals(f.Path, folder.Path)))
+                throw new InvalidOperationException($"重复的文件夹路径：{folder.Path}");
+            catalog._folders.Add(folder.Id, folder);
+        }
+
+        foreach (var link in links)
+        {
+            if (!catalog._folders.ContainsKey(link.FolderId))
+                throw new InvalidOperationException($"链接引用了不存在的文件夹：{link.FolderId}");
+            if (!catalog._categories.ContainsKey(link.CategoryId))
+                throw new InvalidOperationException($"链接引用了不存在的分类：{link.CategoryId}");
+            if (catalog._links.Any(l => l.FolderId == link.FolderId && l.CategoryId == link.CategoryId))
+                throw new InvalidOperationException("重复的分类归属链接。");
+            catalog._links.Add(link);
+        }
+
         return catalog;
     }
 

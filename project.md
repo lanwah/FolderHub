@@ -9,7 +9,7 @@ FolderHub 是一款 Windows 文件夹快速访问工具，通过桌面主组件�
 ## 2. 当前状态
 - 当前阶段：`ENGINEERING_IMPLEMENTATION`（已退出原 P3/P4 工作流门禁）。
 - 需求输入：REQ-BL-1.0（SRS v0.11）；交互参考：`p3-demo-v0.1`；架构约束：ADR-034～ADR-040。
-- 编码进度：WP0 解决方案脚手架 DONE；WP1 Domain 核心（分类/文件夹/搜索/路径唯一）DONE，8 项单测通过。
+- 编码进度：WP0/WP1 DONE；WP2 SQLite Schema/仓储/迁移 DONE（Domain 10 + Infrastructure 8 测通过；ReplaceAll 差分保留展示态）。
 - 技术假定：WPF + .NET 8；Main + CardHost 双进程；SQLite；Named Pipes。
 - 历史快照：P1/P2 曾 APPROVED；P3 曾 REVIEW_PENDING / HLD 未建立；该路径不再作为推进条件。
 - RISK-001 兼容性验证义务仍有效；RISK-002 安全缓解未验证——本机开发允许，真实用户数据/部署/发布前仍须完成安全验证。
@@ -18,19 +18,22 @@ FolderHub 是一款 Windows 文件夹快速访问工具，通过桌面主组件�
 ADR-001～ADR-040 的详细内容以 `docs/00_Project_Management/Decision_Log.md` 为准。ADR-037 仅适用于 Main Process 已退出且 Keep Cards=ON；ADR-038 仅适用于 Main Process 仍运行期间。
 
 ## 4. 待办事项
-- 按 `docs/05_Development/开发计划_v0.1.md` 继续 WP2（SQLite）→ WP3（Main UI 对齐 Demo）。
+- 按 `docs/05_Development/开发计划_v0.1.md` 继续 WP3（Main UI 对齐 Demo）。
 - TASK-017/TASK-018：因退出原流程，状态改为 CANCELLED（设计文档保留作参考）。
-- TASK-020：工程实现按开发计划推进（活跃）。
+- TASK-020：工程实现按开发计划推进（活跃；WP0～WP2 已完成）。
 
 ## 5. 风险
 - RISK-001：Windows Server 2012+ GUI/Desktop Experience 兼容性尚未逐版本验证；用户接受的剩余风险及验证义务不变。
 - RISK-002：Named Pipes 安全缓解未验证；允许本机开发库调试；禁止未验证前对外部署/发布及接入真实生产用户数据。
 
 ## 6. 下一步
-- 下一步行动：实现 WP2 SQLite Schema/仓储，再推进 WP3 Main UI。
+- 下一步行动：实现 WP3 Main UI（对齐 Demo）。
 - 依据/关联：REQ-BL-1.0；ADR-034～040；`开发计划_v0.1.md`；`src/FolderHub.sln`。
 
 维护规则：本文件仅为管理摘要，不是阶段/任务/决策/风险权威台账。
+
+## 2026-11-21 WP2 完成并提交
+- 用户审核通过（含修复 CardDefinition ReplaceAll 级联展示态问题）；文档已同步；进入 WP3。
 
 ## 7. 2026-11-12 Q-151 同步
 - Q-151 / CLQ-151：CLOSED / CONFIRMED；新增 ADR-031。

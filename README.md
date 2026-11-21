@@ -19,5 +19,5 @@ dotnet test src\FolderHub.sln
 ## 目录
 
 - `src/`：应用程序源代码
-- `tests/`：单元测试
+- `tests/`：单元测试（Domain / Infrastructure）
 - `docs/`：需求、架构、Demo 与开发文档
