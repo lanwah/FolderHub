@@ -28,3 +28,6 @@ Desktop.ini
 # Test and coverage outputs
 TestResults/
 coverage/
+
+# Publish / install / smoke artifacts (WP10)
+artifacts/

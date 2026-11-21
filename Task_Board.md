@@ -1,11 +1,11 @@
 # Task Board
 
 - 项目名称：FolderHub
-- 台账版本：5.6
-- 最后更新：2026-11-21
+- 台账版本：5.7
+- 最后更新：2026-11-22
 - 工作流规范：已退出 V2.6.1 阶段门禁；工程实现以 `docs/05_Development/开发计划_v0.1.md` 为准
 - 当前阶段：ENGINEERING_IMPLEMENTATION
-- 活跃任务数：1
+- 活跃任务数：0
 - 阻塞任务数：0
 - 编号规则：TASK-001 起，全局递增，永不复用
 
@@ -19,12 +19,13 @@
 ## 2. 活跃任务
 | TASK_ID | 任务名称/目标 | 主阶段 | 类型 | 优先级 | 状态 | 完成条件 | 关联 RAW/Q/ADR/CR/RISK/AC | 负责人 | 阻塞原因 | 完成证据 | Git Commit | Git Tag | 创建日期 | 最后更新 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| TASK-020 | 按开发计划实现 FolderHub（WP0～WP10） | DEV | DEVELOPMENT | P1 | IN_PROGRESS | 按 `docs/05_Development/开发计划_v0.1.md` 推进；WP0～WP9 已完成；持续交付可编译可测切片 | REQ-BL-1.0；ADR-034～040；p3-demo-v0.1 | 助手/用户 | — | WP0～WP9 DONE；壁纸层 spike + ADR-040；审核 4 项已修（失败文案、SetParent LastError、禁 Progman、卡片 190×128）；Domain 14 + Infra 50 | #16 | NOT_CHECKED | 2026-11-21 | 2026-11-21 |
+| — | （无） | — | — | — | — | — | — | — | — | — | — | — | — | — |
 
 ## 3. 任务状态历史（追加式）
 
 | 日期 | TASK_ID | 原状态 | 新状态 | 原因 | 证据/用户表达 |
 |---|---|---|---|---|---|
+| 2026-11-22 | TASK-020 | IN_PROGRESS | DONE | WP10 打包与兼容冒烟完成；开发计划 WP0～WP10 全部 DONE | 用户：「文档并提交」；审核 1–4 已修；Publish+CompatSmoke PASS；Domain 14 + Infra 50；归档 plans/done.md |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP9 桌面/显示器完成并经用户确认提交；继续 WP10 | 用户：「更新文档并提交」；开发计划 WP9=DONE；测试 64 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP8 恢复协调完成并经用户确认提交；继续 WP9 | 用户：「更新文档并提交」；开发计划 WP8=DONE；测试 57 通过 |
 | 2026-11-21 | TASK-020 | IN_PROGRESS | IN_PROGRESS | WP7 CardHost UI 完成并经用户确认提交；继续 WP8 | 用户：「更新文档提交」；开发计划 WP7=DONE；测试 50 通过 |

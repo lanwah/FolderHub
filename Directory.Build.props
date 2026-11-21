@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <!-- 产品版本：App / CardHost 发布与安装骨架共用（WP10）。 -->
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0</InformationalVersion>
+    <Product>FolderHub</Product>
+    <Company>FolderHub</Company>
+    <Authors>FolderHub</Authors>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
+  </PropertyGroup>
+</Project>

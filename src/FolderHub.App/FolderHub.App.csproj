@@ -27,4 +27,19 @@
     <Using Remove="System.Drawing.Printing" />
   </ItemGroup>
 
+  <!-- 发布/本机运行时 CardHost 须与 App 同目录（ResolveCardHostExePath 优先 sibling）；保留 runtimes 等子目录。 -->
+  <Target Name="CopyCardHostBesideApp" AfterTargets="Build">
+    <PropertyGroup>
+      <_CardHostOutDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\FolderHub.CardHost\bin\$(Configuration)\$(TargetFramework)\'))</_CardHostOutDir>
+    </PropertyGroup>
+    <ItemGroup Condition="Exists('$(_CardHostOutDir)')">
+      <_CardHostFiles Include="$(_CardHostOutDir)**\*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(_CardHostFiles)"
+      DestinationFiles="@(_CardHostFiles->'$(TargetDir)%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'@(_CardHostFiles)' != ''" />
+  </Target>
+
 </Project>
