@@ -5,12 +5,18 @@ using System.Windows.Input;
 using System.Windows.Media;
 using FolderHub.App.Dialogs;
 using FolderHub.App.Services;
+using FolderHub.App.Themes;
 using FolderHub.App.ViewModels;
+using FolderHub.UseCases.Persistence;
 
 namespace FolderHub.App;
 
 public partial class MainWindow : Window
 {
+    /// <summary>RootChrome Margin，持久化/恢复时按内容区几何换算。</summary>
+    private const double ChromeShadowPad = 20;
+    private const double ChromeShadowPadTotal = ChromeShadowPad * 2;
+
     private readonly MainDesktopHost _desktopHost = new();
     private MainViewModel? _vm;
     private FolderListItem? _contextFolder;
@@ -24,6 +30,12 @@ public partial class MainWindow : Window
         DragOver += Window_DragOver;
         Drop += Window_Drop;
         IsVisibleChanged += MainWindow_IsVisibleChanged;
+        AppTheme.Changed += OnAppThemeChanged;
+        Closed += (_, _) =>
+        {
+            AppTheme.Changed -= OnAppThemeChanged;
+            PersistBounds();
+        };
     }
 
     public void Attach(MainViewModel viewModel)
@@ -38,21 +50,33 @@ public partial class MainWindow : Window
         viewModel.ApplyMainPinnedVisual += OnApplyMainPinnedVisual;
         viewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName is nameof(MainViewModel.PanelOpacity) or nameof(MainViewModel.MainLocked))
+            if (e.PropertyName is nameof(MainViewModel.PanelOpacity)
+                or nameof(MainViewModel.MainLocked)
+                or nameof(MainViewModel.UiTheme))
                 ApplyChrome();
         };
 
         var s = viewModel.CurrentSettings;
-        Width = Math.Max(720, s.MainWidth);
-        Height = Math.Max(420, s.MainHeight);
-        var restored = viewModel.ResolveMainPlacement(Width, Height);
-        Left = restored.Left;
-        Top = restored.Top;
+        var contentW = Math.Max(720, s.MainWidth);
+        var contentH = Math.Max(520, s.MainHeight);
+        Width = contentW + ChromeShadowPadTotal;
+        Height = contentH + ChromeShadowPadTotal;
+        var restored = viewModel.ResolveMainPlacement(contentW, contentH);
+        Left = restored.Left - ChromeShadowPad;
+        Top = restored.Top - ChromeShadowPad;
         if (restored.MigratedToPrimary)
             PersistBounds();
 
+        SyncThemeToggleGlyph();
         ApplyChrome();
-        Closed += (_, _) => PersistBounds();
+    }
+
+    private void OnAppThemeChanged()
+    {
+        if (Dispatcher.CheckAccess())
+            ApplyChrome();
+        else
+            Dispatcher.BeginInvoke(ApplyChrome);
     }
 
     /// <summary>托盘「设置」入口：确保可在主窗口已显示时打开。</summary>
@@ -70,17 +94,36 @@ public partial class MainWindow : Window
         if (_vm is null)
             return;
 
+        var (r, g, b) = AppTheme.GetPanelRgb();
         var alpha = (byte)Math.Clamp((int)Math.Round(_vm.PanelOpacity * 255), 51, 255);
-        ContentPanel.Background = new SolidColorBrush(Color.FromArgb(alpha, 255, 255, 255));
-        RootChrome.Background = new SolidColorBrush(Color.FromArgb(alpha, 255, 255, 255));
+        var brush = new SolidColorBrush(Color.FromArgb(alpha, r, g, b));
+        ContentPanel.Background = brush;
+        RootChrome.Background = brush;
         ResizeMode = _vm.MainLocked ? ResizeMode.NoResize : ResizeMode.CanResize;
+        SyncThemeToggleGlyph();
     }
+
+    private void SyncThemeToggleGlyph()
+    {
+        if (ThemeToggleBtn is null)
+            return;
+        var dark = UiTheme.IsDark(_vm?.UiTheme ?? AppTheme.Current);
+        ThemeToggleBtn.Content = dark ? "☀" : "☾";
+        ThemeToggleBtn.ToolTip = dark ? "切换到浅色主题" : "切换到深色主题";
+    }
+
+    private Rect ContentBoundsRect()
+        => new(
+            Left + ChromeShadowPad,
+            Top + ChromeShadowPad,
+            Math.Max(720, Width - ChromeShadowPadTotal),
+            Math.Max(520, Height - ChromeShadowPadTotal));
 
     private void PersistBounds()
     {
         if (_vm is null || WindowState != WindowState.Normal)
             return;
-        _vm.PersistWindowBounds(new Rect(Left, Top, Width, Height));
+        _vm.PersistWindowBounds(ContentBoundsRect());
     }
 
     private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -91,9 +134,66 @@ public partial class MainWindow : Window
             DragMove();
     }
 
+    private void ThemeToggle_Click(object sender, RoutedEventArgs e)
+        => _vm?.ToggleTheme();
+
     private void Minimize_Click(object sender, RoutedEventArgs e) => Hide();
 
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void SearchBorder_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        SearchBorder.BorderBrush = (Brush)FindResource("AccentMidBrush");
+        SearchBorder.Background = (Brush)FindResource("InputFocusBgBrush");
+    }
+
+    private void SearchBorder_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        SearchBorder.BorderBrush = (Brush)FindResource("LineStrongBrush");
+        SearchBorder.Background = (Brush)FindResource("PanelSoftBrush");
+        SearchBorder.Effect = null;
+    }
+
+    private void FolderCard_MouseEnter(object sender, MouseEventArgs e)
+    {
+        if (sender is not Border border || border.Tag is not FolderListItem item)
+            return;
+        if (item.IsPathUnavailable)
+            return;
+
+        // demo: translateY(-2px) + card-hover-border + soft shadow（选中时保留 ring，只抬升）
+        border.RenderTransform = new TranslateTransform(0, -2);
+        if (!item.IsSelected)
+            border.BorderBrush = (Brush)FindResource("CardHoverBorderBrush");
+        border.Effect = new System.Windows.Media.Effects.DropShadowEffect
+        {
+            BlurRadius = 24,
+            ShadowDepth = 10,
+            Opacity = 0.08,
+            Color = Color.FromRgb(0x0d, 0x2a, 0x24)
+        };
+    }
+
+    private void FolderCard_MouseLeave(object sender, MouseEventArgs e)
+    {
+        if (sender is not Border border || border.Tag is not FolderListItem item)
+            return;
+        border.RenderTransform = null;
+        border.Effect = null;
+        if (item.IsSelected)
+        {
+            border.BorderBrush = (Brush)FindResource("AccentMidBrush");
+            return;
+        }
+
+        if (item.IsPathUnavailable)
+        {
+            border.BorderBrush = (Brush)FindResource("UnavailableBorderBrush");
+            return;
+        }
+
+        border.BorderBrush = (Brush)FindResource("LineBrush");
+    }
 
     private string? OnApplyMainPinnedVisual(bool pinned)
     {
@@ -214,7 +314,8 @@ public partial class MainWindow : Window
             dialog.KeepCardsAfterMainExit,
             dialog.MainOpacity,
             dialog.StartupEnabled,
-            new Rect(Left, Top, Width, Height));
+            dialog.SelectedUiTheme,
+            ContentBoundsRect());
         ApplyChrome();
     }
 

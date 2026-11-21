@@ -17,7 +17,7 @@ public sealed class SqliteMainSettingsStore : IMainSettingsStore
             SELECT
                 g.keep_cards_after_main_exit,
                 m.pinned, m.left, m.top, m.width, m.height, m.locked, m.opacity, m.startup_enabled,
-                m.monitor_reference, m.dpi_reference
+                m.monitor_reference, m.dpi_reference, m.ui_theme
             FROM global_settings g
             CROSS JOIN main_component_settings m
             WHERE g.id = 1 AND m.id = 1;
@@ -49,7 +49,8 @@ public sealed class SqliteMainSettingsStore : IMainSettingsStore
             MainOpacity: reader.GetDouble(7),
             StartupEnabled: reader.GetInt32(8) == 1,
             MainMonitorReference: reader.IsDBNull(9) ? null : reader.GetString(9),
-            MainDpiReference: reader.IsDBNull(10) ? null : reader.GetDouble(10));
+            MainDpiReference: reader.IsDBNull(10) ? null : reader.GetDouble(10),
+            UiTheme: UiTheme.Normalize(reader.IsDBNull(11) ? null : reader.GetString(11)));
     }
 
     public void Save(MainSettingsSnapshot settings)
@@ -76,8 +77,8 @@ public sealed class SqliteMainSettingsStore : IMainSettingsStore
             cmd.Transaction = tx;
             cmd.CommandText = """
                 INSERT INTO main_component_settings
-                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled, monitor_reference, dpi_reference)
-                VALUES (1, $pinned, $left, $top, $width, $height, $locked, $opacity, $startup, $monitor, $dpi)
+                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled, monitor_reference, dpi_reference, ui_theme)
+                VALUES (1, $pinned, $left, $top, $width, $height, $locked, $opacity, $startup, $monitor, $dpi, $theme)
                 ON CONFLICT(id) DO UPDATE SET
                     pinned = excluded.pinned,
                     left = excluded.left,
@@ -88,7 +89,8 @@ public sealed class SqliteMainSettingsStore : IMainSettingsStore
                     opacity = excluded.opacity,
                     startup_enabled = excluded.startup_enabled,
                     monitor_reference = excluded.monitor_reference,
-                    dpi_reference = excluded.dpi_reference;
+                    dpi_reference = excluded.dpi_reference,
+                    ui_theme = excluded.ui_theme;
                 """;
             cmd.Parameters.AddWithValue("$pinned", settings.MainPinned ? 1 : 0);
             cmd.Parameters.AddWithValue("$left", settings.MainLeft);
@@ -100,6 +102,7 @@ public sealed class SqliteMainSettingsStore : IMainSettingsStore
             cmd.Parameters.AddWithValue("$startup", settings.StartupEnabled ? 1 : 0);
             cmd.Parameters.AddWithValue("$monitor", (object?)settings.MainMonitorReference ?? DBNull.Value);
             cmd.Parameters.AddWithValue("$dpi", (object?)settings.MainDpiReference ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("$theme", UiTheme.Normalize(settings.UiTheme));
             cmd.ExecuteNonQuery();
         }
 

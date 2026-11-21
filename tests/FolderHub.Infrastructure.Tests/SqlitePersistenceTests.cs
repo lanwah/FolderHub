@@ -7,12 +7,12 @@ namespace FolderHub.Infrastructure.Tests;
 public class SqlitePersistenceTests
 {
     [Fact]
-    public void Migrate_CreatesSchemaVersion2_AndSeedsUncategorized()
+    public void Migrate_CreatesSchemaVersion3_AndSeedsUncategorized()
     {
         using var db = SqliteDb.OpenInMemory();
         db.Migrate();
 
-        Assert.Equal(2, db.GetSchemaVersion());
+        Assert.Equal(3, db.GetSchemaVersion());
 
         var catalog = new SqliteFolderCatalogStore(db).Load();
         Assert.Single(catalog.Categories);
@@ -261,7 +261,8 @@ public class SqlitePersistenceTests
             MainOpacity = 0.85,
             StartupEnabled = true,
             MainMonitorReference = @"\\.\DISPLAY1",
-            MainDpiReference = 1.25
+            MainDpiReference = 1.25,
+            UiTheme = "dark"
         });
 
         var loaded = store.Load();
@@ -273,6 +274,7 @@ public class SqlitePersistenceTests
         Assert.True(loaded.StartupEnabled);
         Assert.Equal(@"\\.\DISPLAY1", loaded.MainMonitorReference);
         Assert.Equal(1.25, loaded.MainDpiReference);
+        Assert.Equal("dark", loaded.UiTheme);
     }
 
     [Fact]
@@ -284,9 +286,9 @@ public class SqlitePersistenceTests
             using (var db = new SqliteDb(path))
             {
                 db.Migrate();
-                Assert.Equal(2, db.GetSchemaVersion());
+                Assert.Equal(3, db.GetSchemaVersion());
                 db.Migrate();
-                Assert.Equal(2, db.GetSchemaVersion());
+                Assert.Equal(3, db.GetSchemaVersion());
             }
 
             using (var db = new SqliteDb(path))

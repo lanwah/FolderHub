@@ -113,6 +113,29 @@ public sealed class CardHostProcessManager : IAsyncDisposable
         }
     }
 
+    /// <summary>向已连接 CardHost 同步浅/深色主题；未连接时忽略。</summary>
+    public async Task NotifyThemeAsync(string uiTheme, CancellationToken cancellationToken = default)
+    {
+        if (!IsReady || _client is null || _options is null)
+            return;
+
+        try
+        {
+            var envelope = IpcEnvelope.Create(
+                IpcMessageType.HostHello,
+                IpcSenderRole.MainProcess,
+                _options.SessionId,
+                _options.HostInstanceId,
+                payloadJson: CardIpcJson.Serialize(
+                    new HostHelloPayload(HostHelloPayload.SetTheme, UiTheme.Normalize(uiTheme))));
+            await _client.SendAsync(envelope, cancellationToken).ConfigureAwait(false);
+        }
+        catch
+        {
+            // 主题同步失败不阻断主流程；下次 CardHost 启动会从设置读取。
+        }
+    }
+
     /// <summary>
     /// 按待处理取消固定队列权威删除 CardDefinition（ADR-035）；队列条目在 CardClose 成功后再移除。
     /// </summary>

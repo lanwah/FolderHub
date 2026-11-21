@@ -1,0 +1,78 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+  <!-- design-demo html[data-theme=dark] tokens -->
+  <Color x:Key="InkColor">#FFE8F1EF</Color>
+  <Color x:Key="InkSoftColor">#FFC5D5D0</Color>
+  <Color x:Key="MutedColor">#FF9AAFA8</Color>
+  <Color x:Key="MutedSoftColor">#FF7F9690</Color>
+  <Color x:Key="LineColor">#FF2A3F44</Color>
+  <Color x:Key="LineStrongColor">#FF3A5258</Color>
+  <Color x:Key="PanelColor">#FF15262C</Color>
+  <Color x:Key="PanelSoftColor">#FF1B2F35</Color>
+  <Color x:Key="PanelSidebarColor">#FF112126</Color>
+  <Color x:Key="HoverColor">#FF24383F</Color>
+  <Color x:Key="AccentColor">#FF3DBAA4</Color>
+  <Color x:Key="AccentDarkColor">#FF2F9A88</Color>
+  <Color x:Key="AccentSoftColor">#FF1D3F3A</Color>
+  <Color x:Key="AccentMidColor">#FF4ECBB4</Color>
+  <Color x:Key="FocusColor">#403DBAA4</Color>
+  <Color x:Key="WindowBorderColor">#FF3A555C</Color>
+  <Color x:Key="WidgetBgColor">#F21A2D34</Color>
+  <Color x:Key="WidgetBorderColor">#FF4A646C</Color>
+  <Color x:Key="KbdBgColor">#FF24383F</Color>
+  <Color x:Key="InputBgColor">#FF1B2F35</Color>
+  <Color x:Key="InputFocusBgColor">#FF20363D</Color>
+  <Color x:Key="DangerHoverBgColor">#FF3A2222</Color>
+  <Color x:Key="DangerHoverInkColor">#FFF0A39C</Color>
+  <Color x:Key="PinBorderColor">#FF2F6B60</Color>
+  <Color x:Key="CardHoverBorderColor">#FF3D8F7F</Color>
+  <Color x:Key="StatusDotColor">#FF4FD4A8</Color>
+  <Color x:Key="BrandMarkStartColor">#FF3CB29E</Color>
+  <Color x:Key="BrandMarkEndColor">#FF1A6D60</Color>
+  <Color x:Key="OnAccentColor">#FFFFFFFF</Color>
+  <Color x:Key="ShadowColor">#70000000</Color>
+  <Color x:Key="UnavailableBorderColor">#FF8A6A40</Color>
+  <Color x:Key="UnavailableBgColor">#FF2A2418</Color>
+  <Color x:Key="UnavailableInkColor">#FFE0B070</Color>
+  <Color x:Key="FolderIconToneColor">#FF24383F</Color>
+  <sys:Byte x:Key="PanelR">21</sys:Byte>
+  <sys:Byte x:Key="PanelG">38</sys:Byte>
+  <sys:Byte x:Key="PanelB">44</sys:Byte>
+
+  <SolidColorBrush x:Key="InkBrush" Color="{StaticResource InkColor}"/>
+  <SolidColorBrush x:Key="InkSoftBrush" Color="{StaticResource InkSoftColor}"/>
+  <SolidColorBrush x:Key="MutedBrush" Color="{StaticResource MutedColor}"/>
+  <SolidColorBrush x:Key="MutedSoftBrush" Color="{StaticResource MutedSoftColor}"/>
+  <SolidColorBrush x:Key="LineBrush" Color="{StaticResource LineColor}"/>
+  <SolidColorBrush x:Key="LineStrongBrush" Color="{StaticResource LineStrongColor}"/>
+  <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource PanelColor}"/>
+  <SolidColorBrush x:Key="PanelSoftBrush" Color="{StaticResource PanelSoftColor}"/>
+  <SolidColorBrush x:Key="PanelSidebarBrush" Color="{StaticResource PanelSidebarColor}"/>
+  <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource HoverColor}"/>
+  <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+  <SolidColorBrush x:Key="AccentDarkBrush" Color="{StaticResource AccentDarkColor}"/>
+  <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource AccentSoftColor}"/>
+  <SolidColorBrush x:Key="AccentMidBrush" Color="{StaticResource AccentMidColor}"/>
+  <SolidColorBrush x:Key="FocusBrush" Color="{StaticResource FocusColor}"/>
+  <SolidColorBrush x:Key="WindowBorderBrush" Color="{StaticResource WindowBorderColor}"/>
+  <SolidColorBrush x:Key="WidgetBgBrush" Color="{StaticResource WidgetBgColor}"/>
+  <SolidColorBrush x:Key="WidgetBorderBrush" Color="{StaticResource WidgetBorderColor}"/>
+  <SolidColorBrush x:Key="KbdBgBrush" Color="{StaticResource KbdBgColor}"/>
+  <SolidColorBrush x:Key="InputBgBrush" Color="{StaticResource InputBgColor}"/>
+  <SolidColorBrush x:Key="InputFocusBgBrush" Color="{StaticResource InputFocusBgColor}"/>
+  <SolidColorBrush x:Key="DangerHoverBgBrush" Color="{StaticResource DangerHoverBgColor}"/>
+  <SolidColorBrush x:Key="DangerHoverInkBrush" Color="{StaticResource DangerHoverInkColor}"/>
+  <SolidColorBrush x:Key="PinBorderBrush" Color="{StaticResource PinBorderColor}"/>
+  <SolidColorBrush x:Key="CardHoverBorderBrush" Color="{StaticResource CardHoverBorderColor}"/>
+  <SolidColorBrush x:Key="StatusDotBrush" Color="{StaticResource StatusDotColor}"/>
+  <SolidColorBrush x:Key="OnAccentBrush" Color="{StaticResource OnAccentColor}"/>
+  <SolidColorBrush x:Key="UnavailableBorderBrush" Color="{StaticResource UnavailableBorderColor}"/>
+  <SolidColorBrush x:Key="UnavailableBgBrush" Color="{StaticResource UnavailableBgColor}"/>
+  <SolidColorBrush x:Key="UnavailableInkBrush" Color="{StaticResource UnavailableInkColor}"/>
+  <SolidColorBrush x:Key="FolderIconToneBrush" Color="{StaticResource FolderIconToneColor}"/>
+  <LinearGradientBrush x:Key="BrandMarkBrush" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="{StaticResource BrandMarkStartColor}" Offset="0"/>
+    <GradientStop Color="{StaticResource BrandMarkEndColor}" Offset="1"/>
+  </LinearGradientBrush>
+</ResourceDictionary>

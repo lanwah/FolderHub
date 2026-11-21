@@ -23,7 +23,8 @@ public sealed class CardHostRuntime : IDisposable
         ICardPresentationStateStore presentations,
         IFolderCatalogStore catalogStore,
         IShellFolderService shell,
-        IDisplayMonitorCatalog displays)
+        IDisplayMonitorCatalog displays,
+        IMainSettingsStore settings)
     {
         _db = db;
         IpcOptions = ipcOptions;
@@ -32,6 +33,7 @@ public sealed class CardHostRuntime : IDisposable
         CatalogStore = catalogStore;
         Shell = shell;
         Displays = displays;
+        Settings = settings;
     }
 
     public static CardHostRuntime OpenDefault(IpcConnectionOptions ipcOptions)
@@ -45,7 +47,8 @@ public sealed class CardHostRuntime : IDisposable
             new SqliteCardPresentationStateStore(db),
             new SqliteFolderCatalogStore(db),
             new WindowsShellFolderService(),
-            new WindowsDisplayMonitorCatalog());
+            new WindowsDisplayMonitorCatalog(),
+            new SqliteMainSettingsStore(db));
     }
 
     public IpcConnectionOptions IpcOptions { get; }
@@ -60,7 +63,11 @@ public sealed class CardHostRuntime : IDisposable
 
     public IDisplayMonitorCatalog Displays { get; }
 
+    public IMainSettingsStore Settings { get; }
+
     public FolderCatalog LoadCatalog() => CatalogStore.Load();
+
+    public string LoadUiTheme() => UiTheme.Normalize(Settings.Load().UiTheme);
 
     public void Dispose() => _db.Dispose();
 }

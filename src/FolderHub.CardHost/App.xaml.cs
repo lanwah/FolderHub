@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
 using FolderHub.CardHost.Services;
+using FolderHub.CardHost.Themes;
 using FolderHub.Infrastructure.Ipc;
 
 namespace FolderHub.CardHost;
@@ -39,6 +40,7 @@ public partial class App : Application
             }
 
             _runtime = CardHostRuntime.OpenDefault(options);
+            AppTheme.Apply(_runtime.LoadUiTheme());
             _controller = new CardHostController(_runtime);
             _controller.ShutdownRequested += () => Dispatcher.BeginInvoke(ExitHost);
 

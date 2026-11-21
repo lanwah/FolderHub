@@ -360,6 +360,14 @@ public sealed class CardHostController
                     _mainConnected = false;
                 }
 
+                if (hello is not null
+                    && string.Equals(hello.Action, HostHelloPayload.SetTheme, StringComparison.OrdinalIgnoreCase))
+                {
+                    var theme = hello.UiTheme;
+                    _ = Application.Current.Dispatcher.BeginInvoke(() =>
+                        Themes.AppTheme.Apply(theme));
+                }
+
                 break;
             }
 

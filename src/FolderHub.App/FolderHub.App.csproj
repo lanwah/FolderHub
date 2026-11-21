@@ -22,6 +22,10 @@
     <Product>FolderHub</Product>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Resource Include="Fonts\DMSans-Regular.ttf"/>
+  </ItemGroup>
+
   <!-- WinForms 全局 using 与 WPF 类型冲突；托盘代码使用完整限定名。 -->
   <ItemGroup>
     <Using Remove="System.Windows.Forms" />

@@ -81,8 +81,17 @@ public sealed class SqliteDb : IDisposable
             {
                 ApplyV1ToV2(connection, tx);
                 WriteVersion(connection, tx, 2);
+                version = 2;
             }
-            else
+
+            if (version == 2)
+            {
+                ApplyV2ToV3(connection, tx);
+                WriteVersion(connection, tx, 3);
+                version = 3;
+            }
+
+            if (version != SqliteSchema.CurrentVersion)
             {
                 throw new InvalidOperationException(
                     $"缺少从版本 {version} 到 {SqliteSchema.CurrentVersion} 的迁移脚本。");
@@ -149,6 +158,14 @@ public sealed class SqliteDb : IDisposable
         cmd.ExecuteNonQuery();
     }
 
+    private static void ApplyV2ToV3(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using var cmd = connection.CreateCommand();
+        cmd.Transaction = transaction;
+        cmd.CommandText = SqliteSchema.MigrateV2ToV3Sql;
+        cmd.ExecuteNonQuery();
+    }
+
     private static void SeedDefaults(SqliteConnection connection, SqliteTransaction transaction)
     {
         using (var cmd = connection.CreateCommand())
@@ -166,8 +183,8 @@ public sealed class SqliteDb : IDisposable
             cmd.Transaction = transaction;
             cmd.CommandText = """
                 INSERT OR IGNORE INTO main_component_settings
-                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled, monitor_reference, dpi_reference)
-                VALUES (1, 0, 80, 80, 420, 560, 0, 1.0, 0, NULL, NULL);
+                    (id, pinned, left, top, width, height, locked, opacity, startup_enabled, monitor_reference, dpi_reference, ui_theme)
+                VALUES (1, 0, 80, 80, 420, 560, 0, 1.0, 0, NULL, NULL, 'light');
                 """;
             cmd.ExecuteNonQuery();
         }

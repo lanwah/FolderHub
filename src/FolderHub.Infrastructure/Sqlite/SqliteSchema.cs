@@ -6,7 +6,7 @@ namespace FolderHub.Infrastructure.Sqlite;
 /// </summary>
 internal static class SqliteSchema
 {
-    public const int CurrentVersion = 2;
+    public const int CurrentVersion = 3;
 
     public const string CreateSql = """
         PRAGMA foreign_keys = ON;
@@ -67,7 +67,8 @@ internal static class SqliteSchema
             opacity REAL NOT NULL,
             startup_enabled INTEGER NOT NULL CHECK (startup_enabled IN (0, 1)),
             monitor_reference TEXT NULL,
-            dpi_reference REAL NULL
+            dpi_reference REAL NULL,
+            ui_theme TEXT NOT NULL DEFAULT 'light'
         );
 
         CREATE TABLE IF NOT EXISTS card_definitions (
@@ -95,5 +96,10 @@ internal static class SqliteSchema
     public const string MigrateV1ToV2Sql = """
         ALTER TABLE main_component_settings ADD COLUMN monitor_reference TEXT NULL;
         ALTER TABLE main_component_settings ADD COLUMN dpi_reference REAL NULL;
+        """;
+
+    /// <summary>v2→v3：界面主题（light/dark），对齐 design-demo。</summary>
+    public const string MigrateV2ToV3Sql = """
+        ALTER TABLE main_component_settings ADD COLUMN ui_theme TEXT NOT NULL DEFAULT 'light';
         """;
 }

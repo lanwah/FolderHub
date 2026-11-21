@@ -3,11 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:FolderHub.App.ViewModels"
         Title="FolderHub"
-        Height="560" Width="920"
-        MinHeight="420" MinWidth="720"
+        Height="720" Width="1100"
+        MinHeight="560" MinWidth="760"
         WindowStartupLocation="Manual"
-        Background="#F3F6F4"
-        FontFamily="Segoe UI, Microsoft YaHei UI"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        Background="Transparent"
+        FontFamily="{DynamicResource AppFontFamily}"
+        FontSize="14"
+        Foreground="{DynamicResource InkBrush}"
         PreviewKeyDown="Window_PreviewKeyDown">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -19,91 +24,47 @@
       <Separator/>
       <MenuItem Header="删除记录" Click="ContextDelete_Click"/>
     </ContextMenu>
-    <Style x:Key="IconButton" TargetType="Button">
-      <Setter Property="Width" Value="30"/>
-      <Setter Property="Height" Value="28"/>
-      <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="BorderThickness" Value="0"/>
-      <Setter Property="Foreground" Value="#68747D"/>
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="7">
-              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Bd" Property="Background" Value="#F0F4F3"/>
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-    <Style x:Key="CategoryButton" TargetType="Button">
-      <Setter Property="Background" Value="Transparent"/>
-      <Setter Property="BorderThickness" Value="0"/>
-      <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-      <Setter Property="Padding" Value="10,0"/>
-      <Setter Property="Height" Value="39"/>
-      <Setter Property="Margin" Value="0,0,0,4"/>
-      <Setter Property="Cursor" Value="Hand"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="9"
-                    Padding="{TemplateBinding Padding}">
-              <ContentPresenter VerticalAlignment="Center"/>
-            </Border>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="Bd" Property="Background" Value="#EDF3F0"/>
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Style.Triggers>
-        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-          <Setter Property="Background" Value="#E5F1ED"/>
-          <Setter Property="Foreground" Value="#236B5E"/>
-          <Setter Property="FontWeight" Value="Bold"/>
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
   </Window.Resources>
 
-  <Border x:Name="RootChrome" CornerRadius="12" BorderBrush="#DDE6E2" BorderThickness="1" Background="#FFFFFFFF">
+  <!-- Margin 留给窗外阴影；窗口客户区 = 内容 + 40 -->
+  <Border x:Name="RootChrome" Margin="20" CornerRadius="18"
+          BorderBrush="{DynamicResource WindowBorderBrush}" BorderThickness="1"
+          Background="{DynamicResource PanelBrush}">
     <Border.Effect>
-      <DropShadowEffect BlurRadius="24" ShadowDepth="4" Opacity="0.18" Color="#102B3B"/>
+      <DropShadowEffect BlurRadius="64" ShadowDepth="24" Opacity="0.33" Color="#061820"/>
     </Border.Effect>
     <Grid>
       <Grid.RowDefinitions>
-        <RowDefinition Height="54"/>
+        <RowDefinition Height="52"/>
         <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
       </Grid.RowDefinitions>
 
-      <!-- Title bar -->
-      <Border Grid.Row="0" BorderBrush="#EDF0F1" BorderThickness="0,0,0,1" Background="#FFFFFF"
+      <!-- Title bar (demo .window-titlebar) -->
+      <Border Grid.Row="0" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,0,1"
+              Background="{DynamicResource PanelBrush}"
               MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
-        <Grid Margin="20,0,12,0">
+        <Grid Margin="18,0,14,0">
           <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <Border Width="24" Height="24" CornerRadius="7"
-                    Background="#287C70" Margin="0,0,10,0">
-              <TextBlock Text="F" Foreground="White" FontWeight="Bold" FontSize="13"
+            <Border Width="24" Height="24" CornerRadius="7" Margin="0,0,10,0"
+                    Background="{DynamicResource BrandMarkBrush}">
+              <TextBlock Text="F" Foreground="White" FontWeight="ExtraBold" FontSize="13"
                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
-            <TextBlock Text="FolderHub" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center"/>
-            <TextBlock Text="文件夹快速访问" Margin="12,0,0,0" FontSize="11" Foreground="#9AA4AB"
+            <TextBlock Text="FolderHub" FontWeight="Bold" FontSize="14" VerticalAlignment="Center"
+                       Foreground="{DynamicResource InkBrush}"/>
+            <Border Width="1" Height="12" Background="{DynamicResource LineBrush}" Margin="12,0,10,0"
+                    VerticalAlignment="Center"/>
+            <TextBlock Text="文件夹快速访问" FontSize="12" Foreground="{DynamicResource MutedBrush}"
                        VerticalAlignment="Center"/>
           </StackPanel>
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-            <Button Style="{StaticResource IconButton}" Content="⚙" ToolTip="设置"
+            <Button Style="{DynamicResource IconButton}" x:Name="ThemeToggleBtn" Content="☾"
+                    ToolTip="切换浅色/深色主题" Click="ThemeToggle_Click"/>
+            <Button Style="{DynamicResource IconButton}" Content="—" ToolTip="隐藏主组件" Click="Minimize_Click"/>
+            <Button Style="{DynamicResource IconButton}" Content="⚙" ToolTip="设置"
                     Command="{Binding OpenSettingsCommand}"/>
-            <Button Style="{StaticResource IconButton}" Content="—" ToolTip="最小化" Click="Minimize_Click"/>
-            <Button Style="{StaticResource IconButton}" Content="×" ToolTip="关闭" Click="Close_Click"/>
+            <Button Style="{DynamicResource IconButton}" Content="×" ToolTip="隐藏主组件" Tag="close"
+                    Click="Close_Click"/>
           </StackPanel>
         </Grid>
       </Border>
@@ -111,60 +72,72 @@
       <!-- Body -->
       <Grid Grid.Row="1">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="226"/>
+          <ColumnDefinition Width="228"/>
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Sidebar -->
-        <Border Grid.Column="0" Background="#F7F9F8" BorderBrush="#EDF0EF" BorderThickness="0,0,1,0">
-          <DockPanel Margin="14,24,14,16">
-            <Grid DockPanel.Dock="Top" Margin="9,0,9,13">
-              <TextBlock Text="工作空间" FontSize="10" FontWeight="Bold" Foreground="#8B979B"
+        <Border Grid.Column="0" Background="{DynamicResource PanelSidebarBrush}"
+                BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,0,1,0">
+          <DockPanel Margin="12,22,12,14">
+            <Grid DockPanel.Dock="Top" Margin="8,0,8,12">
+              <TextBlock Text="工作空间" FontSize="11" FontWeight="Bold"
+                         Foreground="{DynamicResource MutedBrush}"
                          VerticalAlignment="Center"/>
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Content="＋" ToolTip="新增分类" Command="{Binding AddCategoryCommand}"
-                        Width="25" Height="25" Background="Transparent" BorderThickness="0"
-                        Foreground="#74827F" FontSize="16" Cursor="Hand"/>
-                <Button Content="✎" ToolTip="重命名分类" Command="{Binding RenameCategoryCommand}"
-                        Width="25" Height="25" Background="Transparent" BorderThickness="0"
-                        Foreground="#74827F" Cursor="Hand"/>
-                <Button Content="×" ToolTip="删除分类" Command="{Binding DeleteCategoryCommand}"
-                        Width="25" Height="25" Background="Transparent" BorderThickness="0"
-                        Foreground="#74827F" Cursor="Hand"/>
+                <Button Style="{DynamicResource TextIconButton}" Content="＋" ToolTip="新增分类"
+                        Command="{Binding AddCategoryCommand}"/>
+                <Button Style="{DynamicResource TextIconButton}" Content="✎" ToolTip="重命名分类"
+                        FontSize="14" Command="{Binding RenameCategoryCommand}"/>
+                <Button Style="{DynamicResource TextIconButton}" Content="×" ToolTip="删除分类"
+                        FontSize="16" Command="{Binding DeleteCategoryCommand}"/>
               </StackPanel>
             </Grid>
 
-            <Border DockPanel.Dock="Bottom" BorderBrush="#E7ECE9" BorderThickness="1" CornerRadius="12"
-                    Background="White" Padding="10,13" Margin="0,12,0,0">
-              <StackPanel Orientation="Horizontal">
-                <Border Width="31" Height="31" CornerRadius="9" Background="#EDF5F2" Margin="0,0,10,0">
-                  <TextBlock Text="▦" Foreground="#287C70" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                </Border>
-                <StackPanel VerticalAlignment="Center">
-                  <TextBlock Text="文件夹库" FontSize="11" FontWeight="SemiBold"/>
-                  <TextBlock FontSize="10" Foreground="#9AA4A1" Margin="0,3,0,0">
-                    <Run Text="{Binding TotalFolderCount, Mode=OneWay}"/>
-                    <Run Text=" 个文件夹记录"/>
-                  </TextBlock>
+            <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"
+                    CornerRadius="12" Background="{DynamicResource PanelBrush}" Padding="10,12" Margin="0,12,0,0">
+              <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <Border Width="34" Height="34" CornerRadius="10" Margin="0,0,10,0"
+                          Background="{DynamicResource AccentSoftBrush}">
+                    <TextBlock Text="▦" Foreground="{DynamicResource AccentBrush}" FontSize="16"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  </Border>
+                  <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="文件夹库" FontSize="13" FontWeight="Bold"
+                               Foreground="{DynamicResource InkBrush}"/>
+                    <TextBlock FontSize="11" Foreground="{DynamicResource MutedBrush}" Margin="0,3,0,0">
+                      <Run Text="{Binding TotalFolderCount, Mode=OneWay}"/>
+                      <Run Text=" 个文件夹记录"/>
+                    </TextBlock>
+                  </StackPanel>
                 </StackPanel>
+                <TextBlock Text="REQ-BL-1.0 · FolderHub" FontSize="11"
+                           Foreground="{DynamicResource MutedSoftBrush}" Margin="6,12,0,0"/>
               </StackPanel>
             </Border>
 
             <ItemsControl ItemsSource="{Binding Categories}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:CategoryListItem}">
-                  <Button Style="{StaticResource CategoryButton}"
+                  <Button Style="{DynamicResource CategoryButton}"
                           Command="{Binding DataContext.SelectCategoryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                           CommandParameter="{Binding}">
                     <Grid>
                       <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                       </Grid.ColumnDefinitions>
-                      <TextBlock Text="{Binding Name}" FontSize="12" VerticalAlignment="Center"
+                      <TextBlock Text="{Binding Icon}" Width="18" FontSize="14" TextAlignment="Center"
+                                 VerticalAlignment="Center"
                                  Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
-                      <TextBlock Grid.Column="1" Text="{Binding Count}" FontSize="10" Foreground="#9AA5A2"
-                                 VerticalAlignment="Center"/>
+                      <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"
+                                 Margin="10,0,0,0"
+                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+                      <TextBlock Grid.Column="2" Text="{Binding Count}" FontSize="11"
+                                 Foreground="{DynamicResource MutedSoftBrush}" VerticalAlignment="Center"
+                                 FontWeight="Medium"/>
                     </Grid>
                   </Button>
                 </DataTemplate>
@@ -174,57 +147,74 @@
         </Border>
 
         <!-- Content -->
-        <Border x:Name="ContentPanel" Grid.Column="1" Background="#FFFFFFFF" Padding="32,29,32,17">
+        <Border x:Name="ContentPanel" Grid.Column="1" Background="{DynamicResource PanelBrush}"
+                Padding="30,26,30,16">
           <DockPanel>
-            <Grid DockPanel.Dock="Top" Margin="0,0,0,22">
+            <Grid DockPanel.Dock="Top" Margin="0,0,0,20">
               <StackPanel>
-                <TextBlock Text="YOUR WORKSPACE" FontSize="9" FontWeight="Bold" Foreground="#8FA19B"/>
-                <TextBlock Text="{Binding CurrentCategoryTitle}" FontSize="25" FontWeight="SemiBold"
-                           Foreground="#1B2B31" Margin="0,7,0,0"/>
-                <TextBlock Text="{Binding CurrentCategorySubtitle}" FontSize="11" Foreground="#8C989B" Margin="0,7,0,0"/>
+                <TextBlock Text="YOUR WORKSPACE" FontSize="11" FontWeight="Bold"
+                           Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,6"/>
+                <TextBlock Text="{Binding CurrentCategoryTitle}" FontSize="26" FontWeight="Bold"
+                           Foreground="{DynamicResource InkBrush}"/>
+                <TextBlock Text="{Binding CurrentCategorySubtitle}" FontSize="13"
+                           Foreground="{DynamicResource MutedBrush}" Margin="0,6,0,0"/>
               </StackPanel>
-              <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="37" Padding="14,0"
-                      Background="#287C70" Foreground="White" BorderThickness="0" Cursor="Hand"
-                      FontWeight="SemiBold" FontSize="11" Command="{Binding AddFolderCommand}">
+              <Button HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                      Style="{DynamicResource PrimaryButton}" Command="{Binding AddFolderCommand}">
                 <StackPanel Orientation="Horizontal">
-                  <TextBlock Text="＋" FontSize="16" Margin="0,0,4,0"/>
+                  <TextBlock Text="＋" FontSize="16" Margin="0,0,4,0" VerticalAlignment="Center"/>
                   <TextBlock Text="添加文件夹" VerticalAlignment="Center"/>
                 </StackPanel>
               </Button>
             </Grid>
 
-            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,18" LastChildFill="True">
-              <TextBlock DockPanel.Dock="Right" Text="{Binding ResultCountText}" VerticalAlignment="Center"
-                         Margin="12,0,0,0" FontSize="10" Foreground="#9AA5A1"/>
-              <Border Height="38" BorderBrush="#E7ECEB" BorderThickness="1" CornerRadius="9" Background="#FAFCFB">
-                <DockPanel Margin="11,0">
-                  <TextBlock DockPanel.Dock="Left" Text="⌕" FontSize="16" Foreground="#8B9995"
-                             VerticalAlignment="Center" Margin="0,0,9,0"/>
-                  <TextBlock DockPanel.Dock="Right" Text="Ctrl+K" FontSize="9" Foreground="#A5AEAB"
-                             VerticalAlignment="Center" Margin="8,0,0,0"
-                             Background="#F0F3F2" Padding="5,3"/>
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16" LastChildFill="True">
+              <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                <TextBlock Text="{Binding ResultCountText}" FontSize="12" FontWeight="Medium"
+                           Foreground="{DynamicResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <Border Width="30" Height="30" CornerRadius="8" Background="{DynamicResource AccentSoftBrush}">
+                  <TextBlock Text="▦" FontSize="14" Foreground="{DynamicResource AccentBrush}"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+              </StackPanel>
+              <Border x:Name="SearchBorder" Height="40" BorderBrush="{DynamicResource LineStrongBrush}"
+                      BorderThickness="1" CornerRadius="10" Background="{DynamicResource PanelSoftBrush}"
+                      GotKeyboardFocus="SearchBorder_GotKeyboardFocus"
+                      LostKeyboardFocus="SearchBorder_LostKeyboardFocus">
+                <DockPanel Margin="12,0">
+                  <TextBlock DockPanel.Dock="Left" Text="⌕" FontSize="18"
+                             Foreground="{DynamicResource MutedBrush}"
+                             VerticalAlignment="Center" Margin="0,0,8,0"/>
+                  <Border DockPanel.Dock="Right" Background="{DynamicResource KbdBgBrush}"
+                          BorderBrush="{DynamicResource LineBrush}" BorderThickness="1"
+                          CornerRadius="5" Padding="6,3" Margin="8,0,0,0" VerticalAlignment="Center">
+                    <TextBlock Text="Ctrl+K" FontSize="10" Foreground="{DynamicResource MutedBrush}"/>
+                  </Border>
                   <TextBox x:Name="SearchBox" BorderThickness="0" Background="Transparent"
-                           VerticalContentAlignment="Center" FontSize="12"
-                           Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                           Tag="搜索文件夹名称或别名…"/>
+                           VerticalContentAlignment="Center" FontSize="13"
+                           Foreground="{DynamicResource InkBrush}" CaretBrush="{DynamicResource InkBrush}"
+                           Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
                 </DockPanel>
               </Border>
             </DockPanel>
 
-            <Border DockPanel.Dock="Bottom" BorderBrush="#EFF2F1" BorderThickness="0,1,0,0" Padding="0,12,0,0"
-                    Margin="0,10,0,0">
+            <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0"
+                    Padding="0,12,0,0" Margin="0,10,0,0">
               <DockPanel>
                 <StackPanel Orientation="Horizontal">
-                  <Ellipse Width="6" Height="6" Fill="#63C6A6" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                  <TextBlock Text="{Binding StatusMessage}" FontSize="10" Foreground="#A2ACA8"/>
+                  <Ellipse Width="7" Height="7" Fill="{DynamicResource StatusDotBrush}"
+                           Margin="0,0,6,0" VerticalAlignment="Center"/>
+                  <TextBlock Text="{Binding StatusMessage}" FontSize="12"
+                             Foreground="{DynamicResource MutedBrush}"/>
                 </StackPanel>
-                <TextBlock DockPanel.Dock="Right" Text="WP4 · Shell" FontSize="10" Foreground="#A2ACA8"
-                           HorizontalAlignment="Right"/>
+                <TextBlock DockPanel.Dock="Right" Text="交互原型对齐 · design-demo" FontSize="12"
+                           Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Right"/>
               </DockPanel>
             </Border>
 
             <Grid>
-              <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+              <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                            Padding="2,2,2,10">
                 <ItemsControl ItemsSource="{Binding Folders}">
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -233,63 +223,105 @@
                   </ItemsControl.ItemsPanel>
                   <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:FolderListItem}">
-                      <Border Margin="6" Padding="14" MinHeight="140" CornerRadius="12" Cursor="Hand"
-                              BorderThickness="1" Background="White"
-                              MouseLeftButtonUp="FolderCard_MouseLeftButtonUp"
-                              MouseRightButtonUp="FolderCard_MouseRightButtonUp"
-                              MouseLeftButtonDown="FolderCard_MouseLeftButtonDown"
-                              Tag="{Binding}">
+                      <!-- 外环：选中时 2px accent-soft（对齐 demo box-shadow ring） -->
+                      <Border Margin="6" Padding="2" CornerRadius="14" VerticalAlignment="Top"
+                              SnapsToDevicePixels="True">
                         <Border.Style>
                           <Style TargetType="Border">
-                            <Setter Property="BorderBrush" Value="#E9EEEC"/>
+                            <Setter Property="Background" Value="Transparent"/>
                             <Style.Triggers>
                               <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                <Setter Property="BorderBrush" Value="#7BB5A6"/>
-                              </DataTrigger>
-                              <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
-                                <Setter Property="BorderBrush" Value="#D9A06A"/>
-                                <Setter Property="Background" Value="#FFFBF6"/>
+                                <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                               </DataTrigger>
                             </Style.Triggers>
                           </Style>
                         </Border.Style>
-                        <DockPanel>
-                          <DockPanel DockPanel.Dock="Top">
-                            <Border Width="37" Height="37" CornerRadius="11" Background="#EDF3FF">
-                              <TextBlock Text="📁" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <Button DockPanel.Dock="Right" Content="···" Width="24" Height="24"
-                                    Background="Transparent" BorderThickness="0" Foreground="#A7B0AE"
-                                    HorizontalAlignment="Right" Click="FolderMore_Click"
-                                    Tag="{Binding}"/>
+                        <Border MinHeight="148" Padding="14" CornerRadius="12" Cursor="Hand"
+                                BorderThickness="1" Background="{DynamicResource PanelBrush}"
+                                MouseLeftButtonUp="FolderCard_MouseLeftButtonUp"
+                                MouseRightButtonUp="FolderCard_MouseRightButtonUp"
+                                MouseLeftButtonDown="FolderCard_MouseLeftButtonDown"
+                                MouseEnter="FolderCard_MouseEnter"
+                                MouseLeave="FolderCard_MouseLeave"
+                                Tag="{Binding}"
+                                RenderTransformOrigin="0.5,0.5">
+                          <Border.Style>
+                            <Style TargetType="Border">
+                              <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                  <Setter Property="BorderBrush" Value="{DynamicResource AccentMidBrush}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
+                                  <Setter Property="BorderBrush" Value="{DynamicResource UnavailableBorderBrush}"/>
+                                  <Setter Property="Background" Value="{DynamicResource UnavailableBgBrush}"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </Border.Style>
+                          <DockPanel LastChildFill="True">
+                            <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                              <Border Width="40" Height="40" CornerRadius="11"
+                                      Background="{Binding IconTone}">
+                                <TextBlock Text="{Binding Icon}" FontSize="20"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                              </Border>
+                              <Button DockPanel.Dock="Right" Content="···" Width="26" Height="26"
+                                      Background="Transparent" BorderThickness="0"
+                                      Foreground="{DynamicResource MutedSoftBrush}" FontSize="16"
+                                      VerticalAlignment="Top" Click="FolderMore_Click"
+                                      Cursor="Hand" Tag="{Binding}">
+                                <Button.Template>
+                                  <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
+                                      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                      <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PanelSoftBrush}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource InkSoftBrush}"/>
+                                      </Trigger>
+                                    </ControlTemplate.Triggers>
+                                  </ControlTemplate>
+                                </Button.Template>
+                              </Button>
+                            </DockPanel>
+
+                            <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0" LastChildFill="True">
+                              <Button DockPanel.Dock="Right" Content="{Binding PinLabel}"
+                                      Style="{DynamicResource PinToggleButton}"
+                                      Margin="8,0,0,0" Click="Pin_Click" Tag="{Binding}"/>
+                              <TextBlock Text="{Binding PathStatusLabel}" FontSize="12"
+                                         TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                         Opacity="0.72">
+                                <TextBlock.Style>
+                                  <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource InkSoftBrush}"/>
+                                    <Style.Triggers>
+                                      <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource UnavailableInkBrush}"/>
+                                        <Setter Property="Opacity" Value="1"/>
+                                      </DataTrigger>
+                                    </Style.Triggers>
+                                  </Style>
+                                </TextBlock.Style>
+                              </TextBlock>
+                            </DockPanel>
+
+                            <StackPanel Margin="0,12,0,0">
+                              <TextBlock Text="{Binding Title}" FontSize="14" FontWeight="Bold"
+                                         Foreground="{DynamicResource InkBrush}"
+                                         TextTrimming="CharacterEllipsis"/>
+                              <TextBlock Text="{Binding Subtitle}" FontSize="12"
+                                         Foreground="{DynamicResource InkSoftBrush}" Opacity="0.78"
+                                         Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                              <TextBlock Text="{Binding Description}" FontSize="12" LineHeight="18"
+                                         Foreground="{DynamicResource MutedBrush}"
+                                         TextWrapping="Wrap" MaxHeight="36" Margin="0,8,0,0"
+                                         TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
                           </DockPanel>
-                          <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
-                            <TextBlock Text="{Binding PathStatusLabel}" FontSize="9"
-                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center">
-                              <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                  <Setter Property="Foreground" Value="#AAB4B0"/>
-                                  <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
-                                      <Setter Property="Foreground" Value="#B8753A"/>
-                                    </DataTrigger>
-                                  </Style.Triggers>
-                                </Style>
-                              </TextBlock.Style>
-                            </TextBlock>
-                            <Button DockPanel.Dock="Right" Content="{Binding PinLabel}" FontSize="9" Padding="7,4"
-                                    Margin="8,0,0,0" Background="White" BorderBrush="#E8EEEB"
-                                    Foreground="#82908B" Click="Pin_Click" Tag="{Binding}"/>
-                          </DockPanel>
-                          <StackPanel Margin="0,13,0,0">
-                            <TextBlock Text="{Binding Title}" FontSize="12" FontWeight="Bold" Foreground="#2A3936"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="{Binding Subtitle}" FontSize="9" Foreground="#9BA7A3" Margin="0,3,0,0"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="{Binding Description}" FontSize="10" Foreground="#8A9793"
-                                       TextWrapping="Wrap" MaxHeight="36" Margin="0,8,0,0"/>
-                          </StackPanel>
-                        </DockPanel>
+                        </Border>
                       </Border>
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
@@ -298,16 +330,22 @@
 
               <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
                           Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVis}}">
-                <TextBlock Text="⌕" FontSize="30" HorizontalAlignment="Center" Foreground="#87938F"/>
-                <TextBlock Text="没有找到匹配的文件夹" FontWeight="SemiBold" FontSize="13"
-                           Foreground="#87938F" HorizontalAlignment="Center" Margin="0,8,0,0"/>
-                <TextBlock Text="可从资源管理器拖入文件夹，或点击「添加文件夹」" FontSize="10" Foreground="#87938F"
+                <TextBlock Text="⌕" FontSize="32" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource MutedBrush}" Margin="0,0,0,8"/>
+                <TextBlock Text="没有找到匹配的文件夹" FontWeight="SemiBold" FontSize="15"
+                           Foreground="{DynamicResource InkSoftBrush}" HorizontalAlignment="Center"/>
+                <TextBlock Text="试试其他名称或别名" FontSize="13"
+                           Foreground="{DynamicResource MutedBrush}"
                            HorizontalAlignment="Center" Margin="0,4,0,0"/>
               </StackPanel>
             </Grid>
           </DockPanel>
         </Border>
       </Grid>
+
+      <TextBlock Grid.Row="1" Text="⋰" FontSize="14" Foreground="{DynamicResource MutedSoftBrush}"
+                 HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,6,2"
+                 IsHitTestVisible="False"/>
     </Grid>
   </Border>
 </Window>

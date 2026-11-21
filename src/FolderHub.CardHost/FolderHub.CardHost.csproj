@@ -6,6 +6,11 @@
     <ProjectReference Include="..\FolderHub.UseCases\FolderHub.UseCases.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Include="..\FolderHub.App\Themes\LightTheme.xaml" Link="Themes\LightTheme.xaml"/>
+    <Page Include="..\FolderHub.App\Themes\DarkTheme.xaml" Link="Themes\DarkTheme.xaml"/>
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>

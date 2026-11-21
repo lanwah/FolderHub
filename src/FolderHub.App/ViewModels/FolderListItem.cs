@@ -1,3 +1,6 @@
+using System.Windows.Media;
+using FolderHub.App.Themes;
+
 namespace FolderHub.App.ViewModels;
 
 public sealed class FolderListItem : ObservableObject
@@ -13,7 +16,8 @@ public sealed class FolderListItem : ObservableObject
         string path,
         string categoriesLabel,
         bool isPathUnavailable = false,
-        bool isPinned = false)
+        bool isPinned = false,
+        string icon = "📁")
     {
         Id = id;
         Title = title;
@@ -23,6 +27,8 @@ public sealed class FolderListItem : ObservableObject
         CategoriesLabel = categoriesLabel;
         IsPathUnavailable = isPathUnavailable;
         _isPinned = isPinned;
+        Icon = icon;
+        IconTone = FolderIconTones.For(id);
     }
 
     public Guid Id { get; }
@@ -31,9 +37,11 @@ public sealed class FolderListItem : ObservableObject
     public string Description { get; }
     public string Path { get; }
     public string CategoriesLabel { get; }
+    public string Icon { get; }
+    public Brush IconTone { get; }
     public bool IsPathUnavailable { get; }
     public string PathStatusLabel => IsPathUnavailable ? "路径异常 · 请重新指定" : Path;
-    public string PinLabel => IsPinned ? "已固定" : "固定";
+    public string PinLabel => IsPinned ? "✓ 已固定" : "＋ 固定到桌面";
 
     public bool IsSelected
     {

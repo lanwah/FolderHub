@@ -3,11 +3,13 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using FolderHub.App.Services;
+using FolderHub.App.Themes;
 using FolderHub.Domain.Entities;
 using FolderHub.Infrastructure.Ipc;
 using FolderHub.UseCases.Display;
 using FolderHub.UseCases.Ipc;
 using FolderHub.UseCases.Persistence;
+using ThemeId = FolderHub.UseCases.Persistence.UiTheme;
 
 namespace FolderHub.App.ViewModels;
 
@@ -27,6 +29,7 @@ public sealed class MainViewModel : ObservableObject
     private bool _mainLocked;
     private bool _mainPinned;
     private bool _keepCardsAfterMainExit;
+    private string _uiTheme = ThemeId.Light;
 
     public MainViewModel(AppSession session, CardHostProcessManager cardHost)
     {
@@ -174,6 +177,12 @@ public sealed class MainViewModel : ObservableObject
     {
         get => _keepCardsAfterMainExit;
         private set => SetProperty(ref _keepCardsAfterMainExit, value);
+    }
+
+    public string UiTheme
+    {
+        get => _uiTheme;
+        private set => SetProperty(ref _uiTheme, value);
     }
 
     public MainSettingsSnapshot CurrentSettings => _session.Settings;
@@ -376,6 +385,7 @@ public sealed class MainViewModel : ObservableObject
         bool keepCards,
         double opacity,
         bool startupEnabled,
+        string uiTheme,
         Rect bounds)
     {
         opacity = Math.Clamp(opacity, 0.20, 1.0);
@@ -385,11 +395,13 @@ public sealed class MainViewModel : ObservableObject
             mainLocked,
             opacity,
             startupEnabled,
+            uiTheme,
             bounds);
 
         var startupOk = _session.SaveSettingsWithStartup(next, out var startupError);
         ApplySettingsSnapshot(next);
         var wallpaperError = ApplyMainPinnedVisual?.Invoke(mainPinned);
+        _ = _cardHost.NotifyThemeAsync(next.UiTheme);
 
         if (!startupOk)
         {
@@ -405,6 +417,17 @@ public sealed class MainViewModel : ObservableObject
             StatusMessage = "设置已保存";
     }
 
+    public void ToggleTheme()
+    {
+        var nextTheme = ThemeId.IsDark(_uiTheme) ? ThemeId.Light : ThemeId.Dark;
+        var s = _session.Settings;
+        var next = s with { UiTheme = nextTheme };
+        _session.SaveSettings(next);
+        ApplySettingsSnapshot(next);
+        StatusMessage = nextTheme == ThemeId.Dark ? "已切换到深色主题" : "已切换到浅色主题";
+        _ = _cardHost.NotifyThemeAsync(nextTheme);
+    }
+
     public void PersistWindowBounds(Rect bounds)
     {
         var s = _session.Settings;
@@ -417,6 +440,7 @@ public sealed class MainViewModel : ObservableObject
             s.MainLocked,
             s.MainOpacity,
             s.StartupEnabled,
+            s.UiTheme,
             bounds);
         _session.SaveSettings(next);
     }
@@ -448,6 +472,7 @@ public sealed class MainViewModel : ObservableObject
         bool mainLocked,
         double opacity,
         bool startupEnabled,
+        string uiTheme,
         Rect bounds)
     {
         var width = Math.Max(360, bounds.Width);
@@ -466,7 +491,8 @@ public sealed class MainViewModel : ObservableObject
             MainOpacity: opacity,
             StartupEnabled: startupEnabled,
             MainMonitorReference: captured.MonitorId,
-            MainDpiReference: captured.DpiReference);
+            MainDpiReference: captured.DpiReference,
+            UiTheme: ThemeId.Normalize(uiTheme));
     }
 
     private void OpenFolder(FolderListItem? item)
@@ -740,10 +766,15 @@ public sealed class MainViewModel : ObservableObject
 
     private void ApplySettingsSnapshot(MainSettingsSnapshot settings)
     {
+        // 先换主题字典再改 UiTheme：主窗 ApplyChrome 依赖 AppTheme.Current 的 panel RGB。
+        var theme = ThemeId.Normalize(settings.UiTheme);
+        AppTheme.Apply(theme);
+
         MainPinned = settings.MainPinned;
         MainLocked = settings.MainLocked;
         KeepCardsAfterMainExit = settings.KeepCardsAfterMainExit;
         PanelOpacity = Math.Clamp(settings.MainOpacity, 0.20, 1.0);
+        UiTheme = theme;
     }
 
     private FolderListItem? ResolveFolder(object? parameter)

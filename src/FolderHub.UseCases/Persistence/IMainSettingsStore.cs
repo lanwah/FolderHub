@@ -21,4 +21,5 @@ public sealed record MainSettingsSnapshot(
     double MainOpacity,
     bool StartupEnabled,
     string? MainMonitorReference = null,
-    double? MainDpiReference = null);
+    double? MainDpiReference = null,
+    string UiTheme = "light");
