@@ -31,13 +31,19 @@
     </ContextMenu>
   </Window.Resources>
 
-  <!-- Margin 留给窗外阴影；窗口客户区 = 内容 + 40 -->
-  <Border x:Name="RootChrome" Margin="20" CornerRadius="18"
-          BorderBrush="{DynamicResource WindowBorderBrush}" BorderThickness="1"
-          Background="{DynamicResource PanelBrush}">
-    <Border.Effect>
-      <DropShadowEffect BlurRadius="64" ShadowDepth="24" Opacity="0.33" Color="#061820"/>
-    </Border.Effect>
+  <!-- Margin 留给窗外阴影；窗口客户区 = 内容 + 40。
+       阴影与内容分两层：Effect 不能与 Clip 同层，否则圆角外阴影被裁掉；
+       RootChrome 在 SizeChanged 里按 CornerRadius 裁剪，避免标题栏/侧栏直角露出。 -->
+  <Grid Margin="20">
+    <Border CornerRadius="18" Background="#01061820" IsHitTestVisible="False">
+      <Border.Effect>
+        <DropShadowEffect BlurRadius="64" ShadowDepth="24" Opacity="0.33" Color="#061820"/>
+      </Border.Effect>
+    </Border>
+    <Border x:Name="RootChrome" CornerRadius="18"
+            BorderBrush="{DynamicResource WindowBorderBrush}" BorderThickness="1"
+            Background="{DynamicResource PanelBrush}"
+            SizeChanged="RootChrome_SizeChanged">
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="52"/>
@@ -224,16 +230,12 @@
 
             <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource LineBrush}" BorderThickness="0,1,0,0"
                     Padding="0,12,0,0" Margin="0,10,0,0">
-              <DockPanel>
-                <StackPanel Orientation="Horizontal">
-                  <Ellipse Width="7" Height="7" Fill="{DynamicResource StatusDotBrush}"
-                           Margin="0,0,6,0" VerticalAlignment="Center"/>
-                  <TextBlock Text="{Binding StatusMessage}" FontSize="12"
-                             Foreground="{DynamicResource MutedBrush}"/>
-                </StackPanel>
-                <TextBlock DockPanel.Dock="Right" Text="交互原型对齐 · design-demo" FontSize="12"
-                           Foreground="{DynamicResource MutedBrush}" HorizontalAlignment="Right"/>
-              </DockPanel>
+              <StackPanel Orientation="Horizontal">
+                <Ellipse Width="7" Height="7" Fill="{DynamicResource StatusDotBrush}"
+                         Margin="0,0,6,0" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding StatusMessage}" FontSize="12"
+                           Foreground="{DynamicResource MutedBrush}"/>
+              </StackPanel>
             </Border>
 
             <Grid>
@@ -415,5 +417,6 @@
                  HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,6,2"
                  IsHitTestVisible="False"/>
     </Grid>
-  </Border>
+    </Border>
+  </Grid>
 </Window>

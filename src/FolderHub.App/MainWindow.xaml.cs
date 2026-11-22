@@ -13,9 +13,10 @@ namespace FolderHub.App;
 
 public partial class MainWindow : Window
 {
-    /// <summary>RootChrome Margin，持久化/恢复时按内容区几何换算。</summary>
+    /// <summary>RootChrome 外层 Margin，持久化/恢复时按内容区几何换算。</summary>
     private const double ChromeShadowPad = 20;
     private const double ChromeShadowPadTotal = ChromeShadowPad * 2;
+    private const double ChromeCornerRadius = 18;
 
     private readonly MainDesktopHost _desktopHost = new();
     private MainViewModel? _vm;
@@ -104,6 +105,17 @@ public partial class MainWindow : Window
         RootChrome.Background = brush;
         ResizeMode = _vm.MainLocked ? ResizeMode.NoResize : ResizeMode.CanResize;
         SyncThemeToggleGlyph();
+    }
+
+    /// <summary>按圆角裁剪子元素（对齐 design-demo overflow:hidden），消除四角直角露出。</summary>
+    private void RootChrome_SizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        if (RootChrome.ActualWidth <= 0 || RootChrome.ActualHeight <= 0)
+            return;
+        RootChrome.Clip = new RectangleGeometry(
+            new Rect(0, 0, RootChrome.ActualWidth, RootChrome.ActualHeight),
+            ChromeCornerRadius,
+            ChromeCornerRadius);
     }
 
     private void SyncThemeToggleGlyph()

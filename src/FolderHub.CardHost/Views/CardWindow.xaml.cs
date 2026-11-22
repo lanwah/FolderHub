@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using FolderHub.CardHost.Services;
 
 namespace FolderHub.CardHost.Views;
@@ -31,7 +32,12 @@ public partial class CardWindow : Window
         TitleText.Text = Model.Title;
         DescText.Text = string.IsNullOrWhiteSpace(Model.Description) ? "暂无用途说明" : Model.Description;
         HintText.Text = Model.Hint;
-        LockButton.Content = Model.Locked ? "🔒" : "⌑";
+        LockShacklePath.Data = Geometry.Parse(Model.Locked
+            ? "M5,7.25 L5,5 A3,3 0 0 1 11,5 L11,7.25"
+            : "M5,7.25 L5,5 A3,3 0 0 1 10.7,3.65");
+        LockButton.ToolTip = Model.Locked ? "解锁位置" : "锁定位置";
+        LockButton.SetResourceReference(Control.ForegroundProperty,
+            Model.Locked ? "AccentBrush" : "InkSoftBrush");
         RootBorder.Cursor = Model.Locked ? Cursors.Arrow : Cursors.SizeAll;
         if (Model.IsPathUnavailable)
             HintText.Text = "路径异常 · 请在主程序中重新指定";

@@ -53,14 +53,32 @@
           </Viewbox>
         </Border>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-          <Button x:Name="LockButton" Content="⌑" Width="22" Height="22" Margin="0,0,2,0"
-                  ToolTip="锁定/解锁" Click="Lock_Click"
+          <!-- 开锁/关锁图标，替代难辨认的 ⌑；与 design-demo .widget-lock 对齐 -->
+          <Button x:Name="LockButton" Width="24" Height="24" Margin="0,0,4,0"
+                  ToolTip="锁定位置" Click="Lock_Click"
                   Background="Transparent" BorderThickness="0"
-                  Foreground="{DynamicResource MutedBrush}" Cursor="Hand" FontSize="13"/>
-          <Button Content="×" Width="22" Height="22"
+                  Foreground="{DynamicResource InkSoftBrush}" Cursor="Hand"
+                  Padding="0">
+            <Viewbox Width="14" Height="14" Stretch="Uniform">
+              <Canvas Width="16" Height="16">
+                <Path x:Name="LockShacklePath"
+                      Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                      StrokeThickness="1.75" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round" Fill="Transparent"
+                      Data="M5,7.25 L5,5 A3,3 0 0 1 10.7,3.65"/>
+                <Rectangle Canvas.Left="3.25" Canvas.Top="7.25"
+                           Width="9.5" Height="6.5" RadiusX="1.75" RadiusY="1.75"
+                           Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"
+                           StrokeThickness="1.75" Fill="Transparent"/>
+                <Ellipse Width="2" Height="2" Canvas.Left="7" Canvas.Top="9.5"
+                         Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+              </Canvas>
+            </Viewbox>
+          </Button>
+          <Button Content="×" Width="24" Height="24"
                   ToolTip="取消固定" Click="CloseCard_Click"
                   Background="Transparent" BorderThickness="0"
-                  Foreground="{DynamicResource MutedBrush}" Cursor="Hand" FontSize="14"/>
+                  Foreground="{DynamicResource MutedBrush}" Cursor="Hand" FontSize="16" FontWeight="SemiBold"/>
         </StackPanel>
       </DockPanel>
 

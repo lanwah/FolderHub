@@ -69,7 +69,10 @@
     renderCategories();renderWidgets();
   }
   function renderWidgets(){
-    widgets.innerHTML=folders.filter(f=>f.pinned).map((f,i)=>`<article class="desktop-widget ${f.locked?'locked':''}" data-widget="${f.id}" style="left:${24+(i%3)*205}px;top:${125+Math.floor(i/3)*140}px"><div class="widget-head"><span class="widget-icon" style="background:${f.tone}">${f.icon}</span><div class="widget-controls"><button data-widget-lock="${f.id}" title="${f.locked?'解锁':'锁定'}">${f.locked?'🔒':'⌑'}</button><button data-widget-close="${f.id}" title="取消固定">×</button></div></div><div class="widget-name">${esc(f.alias||f.name)}</div><div class="widget-desc">${esc(f.desc||'')}</div><div class="widget-hint">${f.locked?'位置已锁定':'拖动卡片可调整位置'}</div></article>`).join('');
+    const lockIcon=locked=>locked
+      ?`<svg class="widget-lock-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 7.25V5a3 3 0 0 1 6 0v2.25"/><rect x="3.25" y="7.25" width="9.5" height="6.5" rx="1.75"/><circle cx="8" cy="10.5" r="1"/></svg>`
+      :`<svg class="widget-lock-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 7.25V5a3 3 0 0 1 5.7-1.35"/><rect x="3.25" y="7.25" width="9.5" height="6.5" rx="1.75"/><circle cx="8" cy="10.5" r="1"/></svg>`;
+    widgets.innerHTML=folders.filter(f=>f.pinned).map((f,i)=>`<article class="desktop-widget ${f.locked?'locked':''}" data-widget="${f.id}" style="left:${24+(i%3)*205}px;top:${125+Math.floor(i/3)*140}px"><div class="widget-head"><span class="widget-icon" style="background:${f.tone}">${f.icon}</span><div class="widget-controls"><button class="widget-lock${f.locked?' is-locked':''}" data-widget-lock="${f.id}" type="button" title="${f.locked?'解锁位置':'锁定位置'}" aria-label="${f.locked?'解锁位置':'锁定位置'}" aria-pressed="${f.locked?'true':'false'}">${lockIcon(f.locked)}</button><button class="widget-close" data-widget-close="${f.id}" type="button" title="取消固定" aria-label="取消固定">×</button></div></div><div class="widget-name">${esc(f.alias||f.name)}</div><div class="widget-desc">${esc(f.desc||'')}</div><div class="widget-hint">${f.locked?'位置已锁定':'拖动卡片可调整位置'}</div></article>`).join('');
     enableWidgetDrag();
   }
   function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
