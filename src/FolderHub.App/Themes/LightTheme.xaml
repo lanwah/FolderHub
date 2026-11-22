@@ -35,7 +35,7 @@
   <Color x:Key="UnavailableBorderColor">#FFD9A06A</Color>
   <Color x:Key="UnavailableBgColor">#FFFFFBF6</Color>
   <Color x:Key="UnavailableInkColor">#FFB8753A</Color>
-  <Color x:Key="FolderIconToneColor">#FFEAF2FF</Color>
+  <Color x:Key="FolderIconToneColor">#FFEDF3FF</Color>
   <sys:Byte x:Key="PanelR">255</sys:Byte>
   <sys:Byte x:Key="PanelG">255</sys:Byte>
   <sys:Byte x:Key="PanelB">255</sys:Byte>

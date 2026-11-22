@@ -63,8 +63,26 @@ public sealed class DisplayPlacementTests
 
         Assert.True(restored.MigratedToPrimary);
         Assert.Equal(Primary.MonitorId, restored.MonitorId);
-        Assert.Equal(DisplayPlacement.PrimaryFallbackMargin, restored.Left);
-        Assert.Equal(DisplayPlacement.PrimaryFallbackMargin, restored.Top);
+        Assert.Equal(Primary.Left + (Primary.Width - 200) / 2.0, restored.Left, 3);
+        Assert.Equal(Primary.Top + (Primary.Height - 100) / 2.0, restored.Top, 3);
+    }
+
+    [Fact]
+    public void Restore_FactoryDefault_NullMonitor_CentersOnPrimary()
+    {
+        var restored = DisplayPlacement.Restore(
+            monitorId: null,
+            storedLeftOrNormX: DisplayPlacement.FactoryDefaultLeft,
+            storedTopOrNormY: DisplayPlacement.FactoryDefaultTop,
+            windowWidth: 720,
+            windowHeight: 520,
+            dpiReference: null,
+            monitors: [Primary],
+            primaryMonitorId: Primary.MonitorId);
+
+        Assert.True(restored.MigratedToPrimary);
+        Assert.Equal(Primary.Left + (Primary.Width - 720) / 2.0, restored.Left, 3);
+        Assert.Equal(Primary.Top + (Primary.Height - 520) / 2.0, restored.Top, 3);
     }
 
     [Fact]

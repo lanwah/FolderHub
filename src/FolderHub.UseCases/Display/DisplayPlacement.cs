@@ -6,8 +6,12 @@ namespace FolderHub.UseCases.Display;
 /// </summary>
 public static class DisplayPlacement
 {
-    /// <summary>主显示器上默认边距（DIP），迁移时避免贴边。</summary>
+    /// <summary>主显示器上默认边距（DIP），居中时避免贴边。</summary>
     public const double PrimaryFallbackMargin = 24;
+
+    /// <summary>SQLite 种子 / 未初始化占位坐标（绝对 DIP）。</summary>
+    public const double FactoryDefaultLeft = 80;
+    public const double FactoryDefaultTop = 80;
 
     public static NormalizedWindowPlacement Capture(
         double left,
@@ -52,6 +56,10 @@ public static class DisplayPlacement
 
         if (string.IsNullOrWhiteSpace(monitorId))
         {
+            // 种子默认 80,80：首次启动主屏居中（随后 Persist 会写入 monitor_reference）。
+            if (IsFactoryDefaultPlacement(storedLeftOrNormX, storedTopOrNormY))
+                return CenterOnPrimary(primary, windowWidth, windowHeight, migrated: true);
+
             // Legacy：Left/Top 为绝对 DIP。
             return RestoreAbsolute(
                 storedLeftOrNormX,
@@ -128,15 +136,28 @@ public static class DisplayPlacement
         double windowWidth,
         double windowHeight,
         bool migrated)
+        => CenterOnPrimary(primary, windowWidth, windowHeight, migrated);
+
+    /// <summary>将窗口置于主显示器工作区居中（带边距钳制）。</summary>
+    public static AbsoluteWindowPlacement CenterOnPrimary(
+        DisplayWorkArea primary,
+        double windowWidth,
+        double windowHeight,
+        bool migrated = false)
     {
-        var left = primary.Left + PrimaryFallbackMargin;
-        var top = primary.Top + PrimaryFallbackMargin;
+        var left = primary.Left + (primary.Width - windowWidth) / 2.0;
+        var top = primary.Top + (primary.Height - windowHeight) / 2.0;
+        var minLeft = primary.Left + PrimaryFallbackMargin;
+        var minTop = primary.Top + PrimaryFallbackMargin;
         var maxLeft = primary.Left + Math.Max(PrimaryFallbackMargin, primary.Width - windowWidth - PrimaryFallbackMargin);
         var maxTop = primary.Top + Math.Max(PrimaryFallbackMargin, primary.Height - windowHeight - PrimaryFallbackMargin);
-        left = Math.Clamp(left, primary.Left + PrimaryFallbackMargin, maxLeft);
-        top = Math.Clamp(top, primary.Top + PrimaryFallbackMargin, maxTop);
+        left = Math.Clamp(left, minLeft, maxLeft);
+        top = Math.Clamp(top, minTop, maxTop);
         return new AbsoluteWindowPlacement(left, top, primary.MonitorId, primary.DpiScale, migrated);
     }
+
+    public static bool IsFactoryDefaultPlacement(double left, double top)
+        => Math.Abs(left - FactoryDefaultLeft) < 0.5 && Math.Abs(top - FactoryDefaultTop) < 0.5;
 
     private static DisplayWorkArea ResolvePrimary(IReadOnlyList<DisplayWorkArea> monitors, string? primaryMonitorId)
     {

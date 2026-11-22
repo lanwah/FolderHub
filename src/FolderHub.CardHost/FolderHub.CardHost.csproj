@@ -9,6 +9,7 @@
   <ItemGroup>
     <Page Include="..\FolderHub.App\Themes\LightTheme.xaml" Link="Themes\LightTheme.xaml"/>
     <Page Include="..\FolderHub.App\Themes\DarkTheme.xaml" Link="Themes\DarkTheme.xaml"/>
+    <Page Include="..\FolderHub.App\Themes\FolderIconResources.xaml" Link="Themes\FolderIconResources.xaml"/>
   </ItemGroup>
 
   <PropertyGroup>

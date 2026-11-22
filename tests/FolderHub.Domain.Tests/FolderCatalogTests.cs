@@ -15,6 +15,25 @@ public class FolderCatalogTests
     }
 
     [Fact]
+    public void Categories_KeepUncategorizedLast_AfterAddAndReorder()
+    {
+        var catalog = FolderCatalog.CreateEmpty();
+        catalog.AddCategory("工作");
+        catalog.AddCategory("项目");
+        catalog.AddCategory("个人");
+
+        Assert.Equal("未分类", catalog.Categories.Last().Name);
+        Assert.Equal(new[] { "工作", "项目", "个人", "未分类" },
+            catalog.Categories.Select(c => c.Name).ToArray());
+
+        var ids = catalog.Categories.Select(c => c.Id).Reverse().ToList();
+        catalog.ReorderCategories(ids);
+
+        Assert.Equal("未分类", catalog.Categories.Last().Name);
+        Assert.DoesNotContain(catalog.Categories.Take(catalog.Categories.Count - 1), c => c.IsUncategorized);
+    }
+
+    [Fact]
     public void AddFolder_CreatesRecord_AndLinksCategory()
     {
         var catalog = FolderCatalog.CreateEmpty();

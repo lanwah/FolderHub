@@ -30,6 +30,7 @@ public sealed class MainViewModel : ObservableObject
     private bool _mainPinned;
     private bool _keepCardsAfterMainExit;
     private string _uiTheme = ThemeId.Light;
+    private bool _isListMode;
 
     public MainViewModel(AppSession session, CardHostProcessManager cardHost)
     {
@@ -74,6 +75,8 @@ public sealed class MainViewModel : ObservableObject
             p => DeleteFolder(ResolveFolder(p)),
             p => ResolveFolder(p) is not null);
         OpenSettingsCommand = new RelayCommand(_ => RequestOpenSettings?.Invoke());
+        SetGridViewCommand = new RelayCommand(_ => SetListMode(false));
+        SetListViewCommand = new RelayCommand(_ => SetListMode(true));
 
         ApplySettingsSnapshot(_session.Settings);
         RefreshAll(selectAll: true);
@@ -93,6 +96,8 @@ public sealed class MainViewModel : ObservableObject
     public ICommand EditFolderCommand { get; }
     public ICommand DeleteFolderCommand { get; }
     public ICommand OpenSettingsCommand { get; }
+    public ICommand SetGridViewCommand { get; }
+    public ICommand SetListViewCommand { get; }
 
     public event Action? RequestAddCategory;
     public event Action<CategoryListItem>? RequestRenameCategory;
@@ -184,6 +189,19 @@ public sealed class MainViewModel : ObservableObject
         get => _uiTheme;
         private set => SetProperty(ref _uiTheme, value);
     }
+
+    /// <summary>false = 网格（demo 默认），true = 单列紧凑列表。</summary>
+    public bool IsListMode
+    {
+        get => _isListMode;
+        private set
+        {
+            if (SetProperty(ref _isListMode, value))
+                OnPropertyChanged(nameof(IsGridMode));
+        }
+    }
+
+    public bool IsGridMode => !IsListMode;
 
     public MainSettingsSnapshot CurrentSettings => _session.Settings;
 
@@ -426,6 +444,14 @@ public sealed class MainViewModel : ObservableObject
         ApplySettingsSnapshot(next);
         StatusMessage = nextTheme == ThemeId.Dark ? "已切换到深色主题" : "已切换到浅色主题";
         _ = _cardHost.NotifyThemeAsync(nextTheme);
+    }
+
+    public void SetListMode(bool listMode)
+    {
+        if (IsListMode == listMode)
+            return;
+        IsListMode = listMode;
+        StatusMessage = listMode ? "已切换为紧凑列表布局" : "已切换为网格布局";
     }
 
     public void PersistWindowBounds(Rect bounds)

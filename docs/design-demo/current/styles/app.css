@@ -242,15 +242,18 @@ html[data-theme="dark"] .wallpaper-glow{opacity:.1;background:#7a9e96}
 }
 .view-button.active,.view-button:hover{background:var(--accent-soft);color:var(--accent)}
 .folder-grid{
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
-  overflow:auto;padding:2px 2px 10px;align-content:start;flex:1;
+  display:flex;flex-wrap:wrap;gap:12px;align-content:start;
+  overflow:auto;padding:2px 2px 10px;flex:1;
 }
+.folder-grid.list-mode{flex-direction:column;flex-wrap:nowrap}
 .folder-card{
-  position:relative;min-height:148px;border:1px solid var(--line);border-radius:12px;padding:14px;
+  position:relative;box-sizing:border-box;width:250px;height:150px;
+  border:1px solid var(--line);border-radius:12px;padding:14px;
   background:var(--panel);cursor:pointer;
   transition:transform .16s,border-color .16s,box-shadow .16s;
   display:flex;flex-direction:column;
 }
+.folder-grid.list-mode .folder-card{width:100%}
 .folder-card:hover{transform:translateY(-2px);border-color:var(--card-hover-border);box-shadow:0 10px 24px #0d2a2414}
 .folder-card.selected{border-color:var(--accent-mid);box-shadow:0 0 0 2px var(--accent-soft)}
 .folder-top{display:flex;align-items:flex-start;justify-content:space-between}
@@ -418,7 +421,7 @@ html[data-theme="dark"] .theme-toggle-btn.active{box-shadow:0 1px 4px #00000040}
   .app-window{width:calc(100vw - 28px);height:calc(100vh - 125px)}
   .sidebar{width:180px}
   .content-area{padding:22px 18px 14px}
-  .folder-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .folder-card{width:220px}
   .desktop-note{display:none}
 }
 @media(max-width:620px){
@@ -434,8 +437,8 @@ html[data-theme="dark"] .theme-toggle-btn.active{box-shadow:0 1px 4px #00000040}
   .content-area{padding:18px 12px 12px}
   .content-heading h1{font-size:20px}
   .content-heading p{font-size:12px}
-  .folder-grid{grid-template-columns:1fr 1fr;gap:8px}
-  .folder-card{padding:10px;min-height:132px}
+  .folder-grid{gap:8px}
+  .folder-card{width:calc(50% - 4px);height:140px;padding:10px}
   .folder-desc{font-size:11px}
   .view-tools{gap:4px}
   .view-tools>span{display:none}

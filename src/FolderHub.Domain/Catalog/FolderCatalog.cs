@@ -12,7 +12,9 @@ public sealed class FolderCatalog
     private readonly Dictionary<Guid, FolderRecord> _folders = new();
     private readonly List<FolderCategoryLink> _links = new();
 
-    public IReadOnlyCollection<Category> Categories => _categories.Values.OrderBy(c => c.SortOrder).ToList();
+    /// <summary>用户分类按 SortOrder；内建「未分类」始终在末尾（对齐 design-demo 侧栏）。</summary>
+    public IReadOnlyCollection<Category> Categories =>
+        _categories.Values.OrderBy(c => c.IsUncategorized).ThenBy(c => c.SortOrder).ToList();
     public IReadOnlyCollection<FolderRecord> Folders => _folders.Values.ToList();
     public IReadOnlyCollection<FolderCategoryLink> Links => _links.AsReadOnly();
 
@@ -123,6 +125,9 @@ public sealed class FolderCatalog
 
         for (var i = 0; i < orderedIds.Count; i++)
             _categories[orderedIds[i]].SetSortOrder(i);
+
+        // 设计稿：未分类固定在侧栏末尾，排序后仍强制置底。
+        ReindexCategorySortOrders();
     }
 
     public AddFolderResult AddFolder(
@@ -265,8 +270,18 @@ public sealed class FolderCatalog
             ? f
             : throw new KeyNotFoundException("文件夹记录不存在。");
 
+    /// <summary>新分类插在「未分类」之前，保持未分类在末尾。</summary>
     private int NextCategorySortOrder()
-        => _categories.Count == 0 ? 0 : _categories.Values.Max(c => c.SortOrder) + 1;
+    {
+        var unc = _categories.Values.FirstOrDefault(c => c.IsUncategorized);
+        if (unc is null)
+            return _categories.Count == 0 ? 0 : _categories.Values.Max(c => c.SortOrder) + 1;
+
+        var insertAt = unc.SortOrder;
+        foreach (var c in _categories.Values.Where(c => c.SortOrder >= insertAt).ToList())
+            c.SetSortOrder(c.SortOrder + 1);
+        return insertAt;
+    }
 
     private int NextFolderSortOrder(Guid categoryId)
     {
@@ -276,7 +291,10 @@ public sealed class FolderCatalog
 
     private void ReindexCategorySortOrders()
     {
-        var ordered = _categories.Values.OrderBy(c => c.SortOrder).ToList();
+        var ordered = _categories.Values
+            .OrderBy(c => c.IsUncategorized)
+            .ThenBy(c => c.SortOrder)
+            .ToList();
         for (var i = 0; i < ordered.Count; i++)
             ordered[i].SetSortOrder(i);
     }

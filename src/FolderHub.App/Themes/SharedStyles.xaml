@@ -2,6 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <!-- design-demo: DM Sans + CJK fallback -->
   <FontFamily x:Key="AppFontFamily">pack://application:,,,/Fonts/DMSans-Regular.ttf#DM Sans, Microsoft YaHei UI</FontFamily>
+  <!-- 📁 等 emoji：勿继承 DM Sans（会显示为空白方框） -->
+  <FontFamily x:Key="EmojiFontFamily">Segoe UI Emoji, Segoe UI Symbol, Microsoft YaHei UI</FontFamily>
+  <!-- 卡片中文标题/副标题：雅黑优先，避免 DM Sans 行盒裁切字形 -->
+  <FontFamily x:Key="CardTextFontFamily">Microsoft YaHei UI, Segoe UI</FontFamily>
 
   <Style x:Key="IconButton" TargetType="Button">
     <Setter Property="Width" Value="32"/>
@@ -269,6 +273,38 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+  </Style>
+
+  <!-- design-demo .view-button -->
+  <Style x:Key="ViewButton" TargetType="Button">
+    <Setter Property="Width" Value="30"/>
+    <Setter Property="Height" Value="30"/>
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Foreground" Value="{DynamicResource MutedSoftBrush}"/>
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Cursor" Value="Hand"/>
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="8">
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+              <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="Tag" Value="active">
+        <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+      </Trigger>
+    </Style.Triggers>
   </Style>
 
   <Style x:Key="PinToggleButton" TargetType="Button">

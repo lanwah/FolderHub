@@ -46,7 +46,11 @@
       <DockPanel Grid.Row="0" LastChildFill="False">
         <Border Width="30" Height="30" CornerRadius="9"
                 Background="{DynamicResource FolderIconToneBrush}" DockPanel.Dock="Left">
-          <TextBlock Text="📁" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          <Viewbox Width="16" Height="13" Stretch="Uniform"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Path Data="{StaticResource FolderIconGeometry}"
+                  Fill="{StaticResource FolderIconGlyphBrush}"/>
+          </Viewbox>
         </Border>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
           <Button x:Name="LockButton" Content="⌑" Width="22" Height="22" Margin="0,0,2,0"

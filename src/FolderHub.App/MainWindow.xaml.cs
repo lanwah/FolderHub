@@ -54,7 +54,10 @@ public partial class MainWindow : Window
                 or nameof(MainViewModel.MainLocked)
                 or nameof(MainViewModel.UiTheme))
                 ApplyChrome();
+            if (e.PropertyName is nameof(MainViewModel.IsListMode))
+                SyncFolderItemsPanel();
         };
+        SyncFolderItemsPanel();
 
         var s = viewModel.CurrentSettings;
         var contentW = Math.Max(720, s.MainWidth);
@@ -110,6 +113,17 @@ public partial class MainWindow : Window
         var dark = UiTheme.IsDark(_vm?.UiTheme ?? AppTheme.Current);
         ThemeToggleBtn.Content = dark ? "☀" : "☾";
         ThemeToggleBtn.ToolTip = dark ? "切换到浅色主题" : "切换到深色主题";
+    }
+
+    /// <summary>列表=单列 StackPanel；网格=WrapPanel。须在代码里换板，Style Trigger 改 ItemsPanel 不生效。</summary>
+    private void SyncFolderItemsPanel()
+    {
+        if (FolderItems is null || _vm is null)
+            return;
+
+        var panelType = _vm.IsListMode ? typeof(StackPanel) : typeof(WrapPanel);
+        var factory = new FrameworkElementFactory(panelType);
+        FolderItems.ItemsPanel = new ItemsPanelTemplate { VisualTree = factory };
     }
 
     private Rect ContentBoundsRect()

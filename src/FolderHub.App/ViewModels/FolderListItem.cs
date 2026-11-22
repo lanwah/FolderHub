@@ -17,7 +17,7 @@ public sealed class FolderListItem : ObservableObject
         string categoriesLabel,
         bool isPathUnavailable = false,
         bool isPinned = false,
-        string icon = "📁")
+        string? icon = null)
     {
         Id = id;
         Title = title;
@@ -27,7 +27,7 @@ public sealed class FolderListItem : ObservableObject
         CategoriesLabel = categoriesLabel;
         IsPathUnavailable = isPathUnavailable;
         _isPinned = isPinned;
-        Icon = icon;
+        Icon = string.IsNullOrEmpty(icon) ? FolderIconTones.DefaultIcon : icon;
         IconTone = FolderIconTones.For(id);
     }
 

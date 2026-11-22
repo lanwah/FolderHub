@@ -120,7 +120,13 @@
   $('#context-menu').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const id=Number(b.dataset.id),f=folders.find(x=>x.id===id);$('#context-menu').classList.add('hidden');if(b.dataset.action==='open')openFolder(id);if(b.dataset.action==='edit')folderForm(f);if(b.dataset.action==='pin'){f.pinned=!f.pinned;renderFolders();toast(f.pinned?'已固定到桌面':'已取消固定');}if(b.dataset.action==='delete'){if(confirm(`删除 FolderHub 中的「${f.name}」记录？\n仅删除应用登记，不删除磁盘真实目录。`)){folders.splice(folders.indexOf(f),1);renderFolders();toast('记录已删除，磁盘目录不受影响');}}});
   $('#modal-backdrop').addEventListener('click',e=>{if(e.target===e.currentTarget||e.target.closest('[data-close]'))closeModal();});
   document.addEventListener('click',e=>{if(!e.target.closest('#context-menu')&&!e.target.closest('.folder-more'))$('#context-menu').classList.add('hidden');if(!e.target.closest('#tray-popover')&&!e.target.closest('#tray-button'))$('#tray-popover').classList.add('hidden');});
-  $('#list-view-btn').addEventListener('click',()=>{listMode=!listMode;grid.style.gridTemplateColumns=listMode?'1fr':'repeat(3,minmax(0,1fr))';toast(listMode?'已切换为紧凑列表布局预览':'已切换为网格布局');});
+  function syncViewModeUi(){
+    grid.classList.toggle('list-mode',listMode);
+    $('#grid-view-btn').classList.toggle('active',!listMode);
+    $('#list-view-btn').classList.toggle('active',listMode);
+  }
+  $('#grid-view-btn').addEventListener('click',()=>{if(listMode){listMode=false;syncViewModeUi();toast('已切换为网格布局');}});
+  $('#list-view-btn').addEventListener('click',()=>{if(!listMode){listMode=true;syncViewModeUi();toast('已切换为紧凑列表布局预览');}});
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search-input').focus();}if(e.key==='Escape'){closeModal();$('#context-menu').classList.add('hidden');$('#tray-popover').classList.add('hidden');}});
   function tick(){const d=new Date();const t=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});$('#clock').textContent=t;$('#taskbar-clock').textContent=t;}tick();setInterval(tick,15000);
   syncThemeUi();
