@@ -60,12 +60,16 @@
     $('#result-count').textContent=`${items.length} 个项目`;
     $('#folder-count').textContent=folders.length;
     grid.classList.toggle('list-mode',listMode);
-    grid.innerHTML=items.map(f=>`<article class="folder-card ${selectedId===f.id?'selected':''}" data-id="${f.id}" tabindex="0" aria-label="${esc(f.name)}">
+    grid.innerHTML=items.map(f=>{
+      const title=listMode?f.name:(f.alias||f.name);
+      const meta=listMode?`文件夹 · ${esc(f.cats.join(' / '))}`:`${f.alias?esc(f.name):'文件夹'} · ${esc(f.cats.join(' / '))}`;
+      return `<article class="folder-card ${selectedId===f.id?'selected':''}" data-id="${f.id}" tabindex="0" aria-label="${esc(f.name)}">
       <div class="folder-top"><div class="folder-icon" style="background:${f.tone}">${f.icon}</div><button class="folder-more" data-more="${f.id}" title="更多操作">···</button></div>
-      <div class="folder-name">${esc(f.alias||f.name)}</div><div class="folder-alias">${f.alias?esc(f.name):'文件夹'} · ${esc(f.cats.join(' / '))}</div><p class="folder-desc">${esc(f.desc||'暂无用途说明')}</p>
-      <div class="folder-bottom"><span class="folder-path" title="${esc(f.path)}">${esc(f.path)}</span><button class="pin-toggle ${f.pinned?'pinned':''}" data-pin="${f.id}">${f.pinned?'✓ 已固定':'＋ 固定到桌面'}</button></div></article>`).join('');
+      <div class="folder-name">${esc(title)}</div><div class="folder-alias">${meta}</div><p class="folder-desc">${esc(f.desc||'暂无用途说明')}</p>
+      <div class="folder-bottom"><span class="folder-path" title="${esc(f.path)}">${esc(f.path)}</span><button class="pin-toggle ${f.pinned?'pinned':''}" data-pin="${f.id}">${f.pinned?'✓ 已固定':'＋ 固定到桌面'}</button></div></article>`;
+    }).join('');
     $('#empty-state').classList.toggle('hidden',items.length!==0);
-    grid.style.display=items.length?'grid':'none';
+    grid.style.display=items.length?'':'none';
     renderCategories();renderWidgets();
   }
   function renderWidgets(){
@@ -128,8 +132,8 @@
     $('#grid-view-btn').classList.toggle('active',!listMode);
     $('#list-view-btn').classList.toggle('active',listMode);
   }
-  $('#grid-view-btn').addEventListener('click',()=>{if(listMode){listMode=false;syncViewModeUi();toast('已切换为网格布局');}});
-  $('#list-view-btn').addEventListener('click',()=>{if(!listMode){listMode=true;syncViewModeUi();toast('已切换为紧凑列表布局预览');}});
+  $('#grid-view-btn').addEventListener('click',()=>{if(listMode){listMode=false;syncViewModeUi();renderFolders();toast('已切换为网格布局');}});
+  $('#list-view-btn').addEventListener('click',()=>{if(!listMode){listMode=true;syncViewModeUi();renderFolders();toast('已切换为列表布局');}});
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();$('#search-input').focus();}if(e.key==='Escape'){closeModal();$('#context-menu').classList.add('hidden');$('#tray-popover').classList.add('hidden');}});
   function tick(){const d=new Date();const t=d.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});$('#clock').textContent=t;$('#taskbar-clock').textContent=t;}tick();setInterval(tick,15000);
   syncThemeUi();

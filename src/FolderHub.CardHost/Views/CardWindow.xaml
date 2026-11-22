@@ -16,11 +16,12 @@
         MouseDoubleClick="Window_MouseDoubleClick"
         ContextMenuOpening="Window_ContextMenuOpening">
   <Window.Resources>
-    <ContextMenu x:Key="CardMenu">
-      <MenuItem Header="打开文件夹" Click="Open_Click"/>
-      <MenuItem Header="锁定/解锁位置" Click="Lock_Click"/>
-      <Separator/>
-      <MenuItem Header="取消固定" Click="CloseCard_Click"/>
+    <ContextMenu x:Key="CardMenu" Style="{StaticResource AppContextMenu}">
+      <MenuItem Header="↗　打开文件夹" Click="Open_Click"/>
+      <MenuItem Header="⌖　锁定/解锁位置" Click="Lock_Click"/>
+      <Separator Style="{StaticResource AppMenuSeparator}"/>
+      <MenuItem Header="⊖　取消固定" Style="{StaticResource DangerMenuItem}"
+                Click="CloseCard_Click"/>
     </ContextMenu>
   </Window.Resources>
 

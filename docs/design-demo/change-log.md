@@ -1,5 +1,13 @@
 # FolderHub Demo Change Log
 
+## p3-demo-v0.1 - 卡片网格布局修复（2026-11-22）
+
+- 修复 `renderFolders` 把 `.folder-grid` 写成 `display:grid`、却无 `grid-template-columns`，导致每行只显示一张卡、右侧大片空白。
+- 网格改为 `repeat(auto-fill, minmax(210px, 1fr))`，卡片随内容区拉满行宽，默认窗口约 3 列，不再固定 250px 只挤出 2 列留白。
+- 卡片改为 `min-height` + 内部弹性裁切；路径与「固定到桌面」按钮用 flex 分配宽度，避免互相挤压重叠。
+- 修复列表视图：改为全宽卡片列表（上：图标/更多，中：标题与元信息，下：路径/固定），对齐参考稿；隐藏用途说明以保持紧凑。
+- 修复列表行被压扁：可滚动 grid + `min-height:0` 把行高挤到约 30px 并裁切文字；改为 `grid-auto-rows:max-content` 与 `min-height:min-content`。
+
 ## p3-demo-v0.1 - 深色主题切换（2026-11-22）
 
 - 新增浅色 / 深色主题；标题栏、桌面状态栏与设置面板均可切换。

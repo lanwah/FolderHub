@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using FolderHub.App.Dialogs;
@@ -127,14 +128,23 @@ public partial class MainWindow : Window
         ThemeToggleBtn.ToolTip = dark ? "切换到浅色主题" : "切换到深色主题";
     }
 
-    /// <summary>列表=单列 StackPanel；网格=WrapPanel。须在代码里换板，Style Trigger 改 ItemsPanel 不生效。</summary>
+    /// <summary>列表=单列 StackPanel；网格=双列 UniformGrid。须在代码里换板，Style Trigger 改 ItemsPanel 不生效。</summary>
     private void SyncFolderItemsPanel()
     {
         if (FolderItems is null || _vm is null)
             return;
 
-        var panelType = _vm.IsListMode ? typeof(StackPanel) : typeof(WrapPanel);
-        var factory = new FrameworkElementFactory(panelType);
+        if (_vm.IsListMode)
+        {
+            FolderItems.ItemsPanel = new ItemsPanelTemplate
+            {
+                VisualTree = new FrameworkElementFactory(typeof(StackPanel))
+            };
+            return;
+        }
+
+        var factory = new FrameworkElementFactory(typeof(UniformGrid));
+        factory.SetValue(UniformGrid.ColumnsProperty, 2);
         FolderItems.ItemsPanel = new ItemsPanelTemplate { VisualTree = factory };
     }
 
