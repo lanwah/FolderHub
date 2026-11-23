@@ -273,7 +273,7 @@ public partial class MainWindow : Window
         var dialog = new CategoryEditorDialog("新增分类") { Owner = this };
         if (dialog.ShowDialog() != true)
             return;
-        if (!_vm.TryAddCategory(dialog.CategoryName, out var error))
+        if (!_vm.TryAddCategory(dialog.CategoryName, dialog.SelectedIcon, out var error))
             MessageBox.Show(this, error, "无法创建分类", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
@@ -281,10 +281,10 @@ public partial class MainWindow : Window
     {
         if (_vm is null || item.CategoryId is not Guid id)
             return;
-        var dialog = new CategoryEditorDialog("重命名分类", item.Name) { Owner = this };
+        var dialog = new CategoryEditorDialog("重命名分类", item.Name, item.IconFileName) { Owner = this };
         if (dialog.ShowDialog() != true)
             return;
-        if (!_vm.TryRenameCategory(id, dialog.CategoryName, out var error))
+        if (!_vm.TryRenameCategory(id, dialog.CategoryName, dialog.SelectedIcon, out var error))
             MessageBox.Show(this, error, "无法重命名", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
@@ -292,7 +292,7 @@ public partial class MainWindow : Window
     {
         if (_vm is null) return;
 
-        string? name = null, alias = null, path = null, desc = null;
+        string? name = null, alias = null, path = null, desc = null, icon = null;
         IEnumerable<Guid>? selected = null;
         if (folderId is Guid id)
         {
@@ -302,6 +302,7 @@ public partial class MainWindow : Window
             alias = folder.Alias;
             path = folder.Path;
             desc = folder.Description;
+            icon = folder.Icon;
             selected = _vm.GetFolderCategoryIds(id);
         }
         else if (_vm.SelectedCategory is { IsVirtualAll: false, CategoryId: Guid catId })
@@ -316,7 +317,8 @@ public partial class MainWindow : Window
             name,
             alias,
             path,
-            desc)
+            desc,
+            icon)
         {
             Owner = this
         };
@@ -331,6 +333,7 @@ public partial class MainWindow : Window
                 dialog.PathValue,
                 dialog.Description,
                 dialog.SelectedCategoryIds,
+                dialog.SelectedIcon,
                 out var error))
         {
             MessageBox.Show(this, error, "无法保存", MessageBoxButton.OK, MessageBoxImage.Warning);

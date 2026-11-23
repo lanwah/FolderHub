@@ -6,7 +6,7 @@ namespace FolderHub.Infrastructure.Sqlite;
 /// </summary>
 internal static class SqliteSchema
 {
-    public const int CurrentVersion = 3;
+    public const int CurrentVersion = 4;
 
     public const string CreateSql = """
         PRAGMA foreign_keys = ON;
@@ -20,7 +20,8 @@ internal static class SqliteSchema
             id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             sort_order INTEGER NOT NULL,
-            is_uncategorized INTEGER NOT NULL CHECK (is_uncategorized IN (0, 1))
+            is_uncategorized INTEGER NOT NULL CHECK (is_uncategorized IN (0, 1)),
+            icon TEXT NULL
         );
 
         CREATE UNIQUE INDEX IF NOT EXISTS ix_categories_name_nocase
@@ -33,7 +34,8 @@ internal static class SqliteSchema
             display_name TEXT NOT NULL,
             alias TEXT NULL,
             description TEXT NULL,
-            is_path_unavailable INTEGER NOT NULL CHECK (is_path_unavailable IN (0, 1))
+            is_path_unavailable INTEGER NOT NULL CHECK (is_path_unavailable IN (0, 1)),
+            icon TEXT NULL
         );
 
         CREATE UNIQUE INDEX IF NOT EXISTS ix_folders_path_key
@@ -101,5 +103,12 @@ internal static class SqliteSchema
     /// <summary>v2→v3：界面主题（light/dark），对齐 design-demo。</summary>
     public const string MigrateV2ToV3Sql = """
         ALTER TABLE main_component_settings ADD COLUMN ui_theme TEXT NOT NULL DEFAULT 'light';
+        """;
+
+    /// <summary>v3→v4：分类/文件夹自定义图标（images/ 文件名）。</summary>
+    public const string MigrateV3ToV4Sql = """
+        ALTER TABLE categories ADD COLUMN icon TEXT NULL;
+        ALTER TABLE folders ADD COLUMN icon TEXT NULL;
+        UPDATE categories SET icon = 'category-uncategorized.png' WHERE is_uncategorized = 1 AND icon IS NULL;
         """;
 }

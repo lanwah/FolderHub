@@ -50,7 +50,8 @@ public sealed class CardHostController
                 folder.Alias,
                 folder.Description,
                 folder.Path,
-                folder.IsPathUnavailable);
+                folder.IsPathUnavailable,
+                folder.Icon);
 
             presentations.TryGetValue(def.CardId, out var state);
             UpsertCard(payload, state, index++);
@@ -79,6 +80,7 @@ public sealed class CardHostController
                     existing.Model.Description = payload.Description;
                     existing.Model.Path = payload.Path;
                     existing.Model.IsPathUnavailable = payload.IsPathUnavailable;
+                    existing.Model.Icon = payload.Icon;
                     existing.ApplyModel();
                     return;
                 }

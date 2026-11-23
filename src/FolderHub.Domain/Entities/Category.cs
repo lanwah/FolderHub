@@ -10,7 +10,10 @@ public sealed class Category
     public int SortOrder { get; private set; }
     public bool IsUncategorized { get; }
 
-    public Category(Guid id, string name, int sortOrder, bool isUncategorized = false)
+    /// <summary>程序目录 images/ 下的图标文件名；空则 UI 按名称回落默认。</summary>
+    public string? Icon { get; private set; }
+
+    public Category(Guid id, string name, int sortOrder, bool isUncategorized = false, string? icon = null)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("分类名称不能为空。", nameof(name));
@@ -19,10 +22,16 @@ public sealed class Category
         Name = name.Trim();
         SortOrder = sortOrder;
         IsUncategorized = isUncategorized;
+        Icon = NormalizeIcon(icon);
     }
 
     public static Category CreateUncategorized(int sortOrder = 0)
-        => new(Guid.Parse("00000000-0000-0000-0000-000000000001"), "未分类", sortOrder, isUncategorized: true);
+        => new(
+            Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            "未分类",
+            sortOrder,
+            isUncategorized: true,
+            icon: "category-uncategorized.png");
 
     public void Rename(string name)
     {
@@ -33,5 +42,10 @@ public sealed class Category
         Name = name.Trim();
     }
 
+    public void SetIcon(string? icon) => Icon = NormalizeIcon(icon);
+
     public void SetSortOrder(int sortOrder) => SortOrder = sortOrder;
+
+    private static string? NormalizeIcon(string? icon)
+        => string.IsNullOrWhiteSpace(icon) ? null : System.IO.Path.GetFileName(icon.Trim());
 }

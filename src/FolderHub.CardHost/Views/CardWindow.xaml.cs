@@ -41,6 +41,21 @@ public partial class CardWindow : Window
         RootBorder.Cursor = Model.Locked ? Cursors.Arrow : Cursors.SizeAll;
         if (Model.IsPathUnavailable)
             HintText.Text = "路径异常 · 请在主程序中重新指定";
+
+        IconToneBorder.Background = Model.IconToneBrush;
+        IconGlyphText.Text = Model.IconGlyph;
+        if (Model.IconImage is { } image)
+        {
+            CustomIconImage.Source = image;
+            CustomIconImage.Visibility = Visibility.Visible;
+            IconGlyphText.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            CustomIconImage.Source = null;
+            CustomIconImage.Visibility = Visibility.Collapsed;
+            IconGlyphText.Visibility = Visibility.Visible;
+        }
     }
 
     private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

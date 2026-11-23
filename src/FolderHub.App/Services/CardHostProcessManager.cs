@@ -251,7 +251,8 @@ public sealed class CardHostProcessManager : IAsyncDisposable
             folder.Alias,
             folder.Description,
             folder.Path,
-            folder.IsPathUnavailable);
+            folder.IsPathUnavailable,
+            folder.Icon);
     }
 
     /// <summary>

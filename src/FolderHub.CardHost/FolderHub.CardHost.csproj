@@ -14,6 +14,12 @@
     <Resource Include="..\FolderHub.App\Fonts\DMSans-Regular.ttf" Link="Fonts\DMSans-Regular.ttf"/>
   </ItemGroup>
 
+  <!-- 与 App 同套 demo 图标；独立启动 CardHost 时也能解析 images/ -->
+  <ItemGroup>
+    <Content Include="..\..\assets\images\*.png" Link="images\%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>

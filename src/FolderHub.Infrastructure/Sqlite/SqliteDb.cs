@@ -91,6 +91,13 @@ public sealed class SqliteDb : IDisposable
                 version = 3;
             }
 
+            if (version == 3)
+            {
+                ApplyV3ToV4(connection, tx);
+                WriteVersion(connection, tx, 4);
+                version = 4;
+            }
+
             if (version != SqliteSchema.CurrentVersion)
             {
                 throw new InvalidOperationException(
@@ -166,6 +173,14 @@ public sealed class SqliteDb : IDisposable
         cmd.ExecuteNonQuery();
     }
 
+    private static void ApplyV3ToV4(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using var cmd = connection.CreateCommand();
+        cmd.Transaction = transaction;
+        cmd.CommandText = SqliteSchema.MigrateV3ToV4Sql;
+        cmd.ExecuteNonQuery();
+    }
+
     private static void SeedDefaults(SqliteConnection connection, SqliteTransaction transaction)
     {
         using (var cmd = connection.CreateCommand())
@@ -193,8 +208,8 @@ public sealed class SqliteDb : IDisposable
         {
             cmd.Transaction = transaction;
             cmd.CommandText = """
-                INSERT OR IGNORE INTO categories (id, name, sort_order, is_uncategorized)
-                VALUES ('00000000-0000-0000-0000-000000000001', '未分类', 0, 1);
+                INSERT OR IGNORE INTO categories (id, name, sort_order, is_uncategorized, icon)
+                VALUES ('00000000-0000-0000-0000-000000000001', '未分类', 0, 1, 'category-uncategorized.png');
                 """;
             cmd.ExecuteNonQuery();
         }

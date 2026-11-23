@@ -26,6 +26,12 @@
     <Resource Include="Fonts\DMSans-Regular.ttf"/>
   </ItemGroup>
 
+  <!-- design-demo 可选图标：编译输出到程序目录 images/ -->
+  <ItemGroup>
+    <Content Include="..\..\assets\images\*.png" Link="images\%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- WinForms 全局 using 与 WPF 类型冲突；托盘代码使用完整限定名。 -->
   <ItemGroup>
     <Using Remove="System.Windows.Forms" />

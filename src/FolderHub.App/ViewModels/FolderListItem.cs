@@ -1,5 +1,7 @@
 using System.Windows.Media;
+using FolderHub.App.Services;
 using FolderHub.App.Themes;
+using FolderHub.UseCases.Icons;
 
 namespace FolderHub.App.ViewModels;
 
@@ -27,8 +29,10 @@ public sealed class FolderListItem : ObservableObject
         CategoriesLabel = categoriesLabel;
         IsPathUnavailable = isPathUnavailable;
         _isPinned = isPinned;
-        Icon = string.IsNullOrEmpty(icon) ? FolderIconTones.DefaultIcon : icon;
-        IconTone = FolderIconTones.For(id);
+        IconFileName = AppIconCatalog.NormalizeFolderIcon(icon);
+        IconGlyph = PackagedIconCatalog.GetGlyph(IconFileName);
+        IconTone = FolderIconTones.ForIcon(IconFileName);
+        IconImage = AppIconCatalog.TryLoadImage(IconFileName);
     }
 
     public Guid Id { get; }
@@ -37,7 +41,10 @@ public sealed class FolderListItem : ObservableObject
     public string Description { get; }
     public string Path { get; }
     public string CategoriesLabel { get; }
-    public string Icon { get; }
+    public string IconFileName { get; }
+    public string IconGlyph { get; }
+    public ImageSource? IconImage { get; }
+    public bool HasIconImage => IconImage is not null;
     public Brush IconTone { get; }
     public bool IsPathUnavailable { get; }
     public string PathStatusLabel => IsPathUnavailable ? "路径异常 · 请重新指定" : Path;

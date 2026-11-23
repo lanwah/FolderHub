@@ -71,12 +71,12 @@ public sealed class FolderCatalog
         return catalog;
     }
 
-    public Category AddCategory(string name)
+    public Category AddCategory(string name, string? icon = null)
     {
         if (_categories.Values.Any(c => string.Equals(c.Name, name.Trim(), StringComparison.OrdinalIgnoreCase)))
             throw new InvalidOperationException($"分类“{name.Trim()}”已存在。");
 
-        var category = new Category(Guid.NewGuid(), name, NextCategorySortOrder());
+        var category = new Category(Guid.NewGuid(), name, NextCategorySortOrder(), icon: icon);
         _categories.Add(category.Id, category);
         return category;
     }
@@ -91,6 +91,9 @@ public sealed class FolderCatalog
 
         category.Rename(name);
     }
+
+    public void SetCategoryIcon(Guid categoryId, string? icon)
+        => GetCategory(categoryId).SetIcon(icon);
 
     public void DeleteCategory(Guid categoryId)
     {
@@ -135,7 +138,8 @@ public sealed class FolderCatalog
         string displayName,
         Guid targetCategoryId,
         string? alias = null,
-        string? description = null)
+        string? description = null,
+        string? icon = null)
     {
         var category = GetCategory(targetCategoryId);
         var normalized = FolderPathComparer.Normalize(path);
@@ -150,17 +154,18 @@ public sealed class FolderCatalog
             return AddFolderResult.LinkedExisting(existing);
         }
 
-        var folder = new FolderRecord(Guid.NewGuid(), normalized, displayName, alias, description);
+        var folder = new FolderRecord(Guid.NewGuid(), normalized, displayName, alias, description, icon: icon);
         _folders.Add(folder.Id, folder);
         _links.Add(new FolderCategoryLink(folder.Id, category.Id, NextFolderSortOrder(category.Id)));
         return AddFolderResult.Created(folder);
     }
 
-    public void UpdateFolder(Guid folderId, string? alias, string? description)
+    public void UpdateFolder(Guid folderId, string? alias, string? description, string? icon = null)
     {
         var folder = GetFolder(folderId);
         folder.SetAlias(alias);
         folder.SetDescription(description);
+        folder.SetIcon(icon);
     }
 
     public void RetargetFolderPath(Guid folderId, string newPath, string displayName)

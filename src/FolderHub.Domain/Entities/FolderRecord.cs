@@ -12,13 +12,17 @@ public sealed class FolderRecord
     public string? Description { get; private set; }
     public bool IsPathUnavailable { get; private set; }
 
+    /// <summary>程序目录 images/ 下的图标文件名；空则 UI 使用默认 folder.png。</summary>
+    public string? Icon { get; private set; }
+
     public FolderRecord(
         Guid id,
         string path,
         string displayName,
         string? alias = null,
         string? description = null,
-        bool isPathUnavailable = false)
+        bool isPathUnavailable = false,
+        string? icon = null)
     {
         if (string.IsNullOrWhiteSpace(path))
             throw new ArgumentException("文件夹路径不能为空。", nameof(path));
@@ -31,6 +35,7 @@ public sealed class FolderRecord
         Alias = NormalizeOptionalText(alias);
         Description = NormalizeOptionalText(description);
         IsPathUnavailable = isPathUnavailable;
+        Icon = NormalizeIcon(icon);
     }
 
     public string ListTitle => string.IsNullOrEmpty(Alias) ? DisplayName : Alias!;
@@ -38,6 +43,8 @@ public sealed class FolderRecord
     public void SetAlias(string? alias) => Alias = NormalizeOptionalText(alias);
 
     public void SetDescription(string? description) => Description = NormalizeOptionalText(description);
+
+    public void SetIcon(string? icon) => Icon = NormalizeIcon(icon);
 
     public void SetDisplayName(string displayName)
     {
@@ -67,4 +74,7 @@ public sealed class FolderRecord
 
     private static string? NormalizeOptionalText(string? value)
         => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static string? NormalizeIcon(string? icon)
+        => string.IsNullOrWhiteSpace(icon) ? null : System.IO.Path.GetFileName(icon.Trim());
 }

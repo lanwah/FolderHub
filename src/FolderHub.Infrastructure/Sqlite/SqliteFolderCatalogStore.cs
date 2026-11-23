@@ -75,7 +75,7 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
         var categories = new List<Category>();
         using var cmd = connection.CreateCommand();
         cmd.CommandText = """
-            SELECT id, name, sort_order, is_uncategorized
+            SELECT id, name, sort_order, is_uncategorized, icon
             FROM categories
             ORDER BY sort_order;
             """;
@@ -86,7 +86,8 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
                 Guid.Parse(reader.GetString(0)),
                 reader.GetString(1),
                 reader.GetInt32(2),
-                reader.GetInt32(3) == 1));
+                reader.GetInt32(3) == 1,
+                reader.IsDBNull(4) ? null : reader.GetString(4)));
         }
 
         return categories;
@@ -97,7 +98,7 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
         var folders = new List<FolderRecord>();
         using var cmd = connection.CreateCommand();
         cmd.CommandText = """
-            SELECT id, path, display_name, alias, description, is_path_unavailable
+            SELECT id, path, display_name, alias, description, is_path_unavailable, icon
             FROM folders;
             """;
         using var reader = cmd.ExecuteReader();
@@ -109,7 +110,8 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
                 reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
                 reader.IsDBNull(4) ? null : reader.GetString(4),
-                reader.GetInt32(5) == 1));
+                reader.GetInt32(5) == 1,
+                reader.IsDBNull(6) ? null : reader.GetString(6)));
         }
 
         return folders;
@@ -152,17 +154,19 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
         using var cmd = connection.CreateCommand();
         cmd.Transaction = tx;
         cmd.CommandText = """
-            INSERT INTO categories (id, name, sort_order, is_uncategorized)
-            VALUES ($id, $name, $sort, $unc)
+            INSERT INTO categories (id, name, sort_order, is_uncategorized, icon)
+            VALUES ($id, $name, $sort, $unc, $icon)
             ON CONFLICT(id) DO UPDATE SET
                 name = excluded.name,
                 sort_order = excluded.sort_order,
-                is_uncategorized = excluded.is_uncategorized;
+                is_uncategorized = excluded.is_uncategorized,
+                icon = excluded.icon;
             """;
         cmd.Parameters.AddWithValue("$id", category.Id.ToString());
         cmd.Parameters.AddWithValue("$name", category.Name);
         cmd.Parameters.AddWithValue("$sort", category.SortOrder);
         cmd.Parameters.AddWithValue("$unc", category.IsUncategorized ? 1 : 0);
+        cmd.Parameters.AddWithValue("$icon", (object?)category.Icon ?? DBNull.Value);
         cmd.ExecuteNonQuery();
     }
 
@@ -173,15 +177,16 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
         cmd.Transaction = tx;
         cmd.CommandText = """
             INSERT INTO folders
-                (id, path, path_key, display_name, alias, description, is_path_unavailable)
-            VALUES ($id, $path, $path_key, $display, $alias, $desc, $unavailable)
+                (id, path, path_key, display_name, alias, description, is_path_unavailable, icon)
+            VALUES ($id, $path, $path_key, $display, $alias, $desc, $unavailable, $icon)
             ON CONFLICT(id) DO UPDATE SET
                 path = excluded.path,
                 path_key = excluded.path_key,
                 display_name = excluded.display_name,
                 alias = excluded.alias,
                 description = excluded.description,
-                is_path_unavailable = excluded.is_path_unavailable;
+                is_path_unavailable = excluded.is_path_unavailable,
+                icon = excluded.icon;
             """;
         cmd.Parameters.AddWithValue("$id", folder.Id.ToString());
         cmd.Parameters.AddWithValue("$path", normalized);
@@ -190,6 +195,7 @@ public sealed class SqliteFolderCatalogStore : IFolderCatalogStore
         cmd.Parameters.AddWithValue("$alias", (object?)folder.Alias ?? DBNull.Value);
         cmd.Parameters.AddWithValue("$desc", (object?)folder.Description ?? DBNull.Value);
         cmd.Parameters.AddWithValue("$unavailable", folder.IsPathUnavailable ? 1 : 0);
+        cmd.Parameters.AddWithValue("$icon", (object?)folder.Icon ?? DBNull.Value);
         cmd.ExecuteNonQuery();
     }
 

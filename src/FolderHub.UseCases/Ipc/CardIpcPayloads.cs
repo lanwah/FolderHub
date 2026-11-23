@@ -33,7 +33,8 @@ public sealed record CardDefinitionUpsertPayload(
     string? Alias,
     string? Description,
     string Path,
-    bool IsPathUnavailable);
+    bool IsPathUnavailable,
+    string? Icon = null);
 
 public sealed record CardIdPayload(Guid CardId);
 

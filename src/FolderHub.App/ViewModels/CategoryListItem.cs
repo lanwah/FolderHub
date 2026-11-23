@@ -1,3 +1,7 @@
+using System.Windows.Media;
+using FolderHub.App.Services;
+using FolderHub.UseCases.Icons;
+
 namespace FolderHub.App.ViewModels;
 
 public sealed class CategoryListItem : ObservableObject
@@ -5,12 +9,14 @@ public sealed class CategoryListItem : ObservableObject
     private bool _isSelected;
     private int _count;
 
-    public CategoryListItem(Guid? categoryId, string name, bool isVirtualAll = false)
+    public CategoryListItem(Guid? categoryId, string name, bool isVirtualAll = false, string? iconFileName = null)
     {
         CategoryId = categoryId;
         Name = name;
         IsVirtualAll = isVirtualAll;
-        Icon = ResolveIcon(name, isVirtualAll);
+        IconFileName = AppIconCatalog.ResolveCategoryIcon(iconFileName, name, isVirtualAll);
+        IconGlyph = PackagedIconCatalog.GetGlyph(IconFileName);
+        IconImage = AppIconCatalog.TryLoadImage(IconFileName);
     }
 
     /// <summary>null 表示虚拟「全部文件夹」。</summary>
@@ -18,7 +24,13 @@ public sealed class CategoryListItem : ObservableObject
 
     public string Name { get; }
 
-    public string Icon { get; }
+    public string IconFileName { get; }
+
+    public string IconGlyph { get; }
+
+    public ImageSource? IconImage { get; }
+
+    public bool HasIconImage => IconImage is not null;
 
     public bool IsVirtualAll { get; }
 
@@ -32,19 +44,5 @@ public sealed class CategoryListItem : ObservableObject
     {
         get => _isSelected;
         set => SetProperty(ref _isSelected, value);
-    }
-
-    private static string ResolveIcon(string name, bool isVirtualAll)
-    {
-        if (isVirtualAll || name == "全部文件夹")
-            return "▦";
-        return name switch
-        {
-            "工作" => "▣",
-            "项目" => "◈",
-            "个人" => "♡",
-            "未分类" => "□",
-            _ => "◇"
-        };
     }
 }

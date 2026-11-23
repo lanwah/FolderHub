@@ -45,13 +45,16 @@
       </Grid.RowDefinitions>
 
       <DockPanel Grid.Row="0" LastChildFill="False">
-        <Border Width="30" Height="30" CornerRadius="9"
+        <!-- design-demo .widget-icon：30×30 / radius 9；优先 images PNG -->
+        <Border x:Name="IconToneBorder" Width="30" Height="30" CornerRadius="9" ClipToBounds="True"
                 Background="{DynamicResource FolderIconToneBrush}" DockPanel.Dock="Left">
-          <Viewbox Width="16" Height="13" Stretch="Uniform"
-                   HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Path Data="{StaticResource FolderIconGeometry}"
-                  Fill="{StaticResource FolderIconGlyphBrush}"/>
-          </Viewbox>
+          <Grid>
+            <Image x:Name="CustomIconImage" Stretch="UniformToFill" Visibility="Collapsed"/>
+            <TextBlock x:Name="IconGlyphText" FontSize="16"
+                       FontFamily="Segoe UI Symbol, Segoe UI Emoji, Microsoft YaHei UI"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       TextAlignment="Center"/>
+          </Grid>
         </Border>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
           <!-- 开锁/关锁图标，替代难辨认的 ⌑；与 design-demo .widget-lock 对齐 -->

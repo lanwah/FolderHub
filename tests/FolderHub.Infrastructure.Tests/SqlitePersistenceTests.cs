@@ -7,16 +7,17 @@ namespace FolderHub.Infrastructure.Tests;
 public class SqlitePersistenceTests
 {
     [Fact]
-    public void Migrate_CreatesSchemaVersion3_AndSeedsUncategorized()
+    public void Migrate_CreatesSchemaVersion4_AndSeedsUncategorized()
     {
         using var db = SqliteDb.OpenInMemory();
         db.Migrate();
 
-        Assert.Equal(3, db.GetSchemaVersion());
+        Assert.Equal(4, db.GetSchemaVersion());
 
         var catalog = new SqliteFolderCatalogStore(db).Load();
         Assert.Single(catalog.Categories);
         Assert.True(catalog.Uncategorized.IsUncategorized);
+        Assert.Equal("category-uncategorized.png", catalog.Uncategorized.Icon);
     }
 
     [Fact]
@@ -27,9 +28,9 @@ public class SqlitePersistenceTests
         var store = new SqliteFolderCatalogStore(db);
 
         var catalog = store.Load();
-        var work = catalog.AddCategory("工作");
-        var personal = catalog.AddCategory("个人");
-        var a = catalog.AddFolder(@"D:\Projects\A\", "A", work.Id, alias: "项目A", description: "说明").Folder;
+        var work = catalog.AddCategory("工作", "category-work.png");
+        var personal = catalog.AddCategory("个人", "category-personal.png");
+        var a = catalog.AddFolder(@"D:\Projects\A\", "A", work.Id, alias: "项目A", description: "说明", icon: "code.png").Folder;
         catalog.AddFolder(@"d:\projects\a", "A", personal.Id);
         catalog.AddFolder(@"D:\Projects\B", "B", work.Id);
         catalog.ReorderFoldersInCategory(work.Id, [catalog.GetFoldersInCategory(work.Id)[1].Id, a.Id]);
@@ -37,6 +38,8 @@ public class SqlitePersistenceTests
 
         var loaded = store.Load();
         Assert.Equal(3, loaded.Categories.Count);
+        Assert.Equal("category-work.png", loaded.Categories.Single(c => c.Id == work.Id).Icon);
+        Assert.Equal("code.png", loaded.Folders.Single(f => f.Id == a.Id).Icon);
         Assert.Single(loaded.Folders.Where(f => f.Id == a.Id));
         Assert.Equal("项目A", loaded.Folders.Single(f => f.Id == a.Id).Alias);
         Assert.Equal(2, loaded.GetCategoriesForFolder(a.Id).Count);
@@ -286,9 +289,9 @@ public class SqlitePersistenceTests
             using (var db = new SqliteDb(path))
             {
                 db.Migrate();
-                Assert.Equal(3, db.GetSchemaVersion());
+                Assert.Equal(4, db.GetSchemaVersion());
                 db.Migrate();
-                Assert.Equal(3, db.GetSchemaVersion());
+                Assert.Equal(4, db.GetSchemaVersion());
             }
 
             using (var db = new SqliteDb(path))

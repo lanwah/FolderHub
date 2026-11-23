@@ -1,3 +1,6 @@
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using FolderHub.UseCases.Icons;
 using FolderHub.UseCases.Ipc;
 using FolderHub.UseCases.Persistence;
 
@@ -12,6 +15,7 @@ public sealed class CardModel
     public string? Description { get; set; }
     public string Path { get; set; } = string.Empty;
     public bool IsPathUnavailable { get; set; }
+    public string? Icon { get; set; }
     public double Left { get; set; }
     public double Top { get; set; }
     public bool Locked { get; set; }
@@ -23,9 +27,26 @@ public sealed class CardModel
     public string Title => string.IsNullOrWhiteSpace(Alias) ? DisplayName : Alias!;
     public string Hint => Locked ? "位置已锁定" : "拖动卡片可调整位置";
 
+    public string IconFileName => PackagedIconCatalog.NormalizeFolderIcon(Icon);
+
+    public string IconGlyph => PackagedIconCatalog.GetGlyph(IconFileName);
+
+    public ImageSource? IconImage => TryLoadIcon(IconFileName);
+
+    public Brush IconToneBrush
+    {
+        get
+        {
+            var hex = PackagedIconCatalog.GetToneHex(IconFileName);
+            var color = (Color)ColorConverter.ConvertFromString(hex)!;
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+            return brush;
+        }
+    }
+
     public static CardModel FromUpsert(CardDefinitionUpsertPayload payload, CardPresentationStateSnapshot? state, int index)
     {
-        // 位置由 CardHostController.ApplyRestoredPlacement 统一按 ADR-040 恢复。
         _ = index;
         return new CardModel
         {
@@ -36,10 +57,33 @@ public sealed class CardModel
             Description = payload.Description,
             Path = payload.Path,
             IsPathUnavailable = payload.IsPathUnavailable,
+            Icon = payload.Icon,
             Left = 0,
             Top = 0,
             Locked = state?.Locked ?? false,
             StateVersion = state?.StateVersion ?? 0
         };
+    }
+
+    private static ImageSource? TryLoadIcon(string? iconFileName)
+    {
+        var full = PackagedIconCatalog.TryGetFullPath(iconFileName);
+        if (full is null)
+            return null;
+
+        try
+        {
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.UriSource = new Uri(full, UriKind.Absolute);
+            bitmap.EndInit();
+            bitmap.Freeze();
+            return bitmap;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

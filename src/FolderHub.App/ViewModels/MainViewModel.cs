@@ -236,12 +236,12 @@ public sealed class MainViewModel : ObservableObject
         CommandManager.InvalidateRequerySuggested();
     }
 
-    public bool TryAddCategory(string name, out string error)
+    public bool TryAddCategory(string name, string? icon, out string error)
     {
         error = string.Empty;
         try
         {
-            _session.Catalog.AddCategory(name);
+            _session.Catalog.AddCategory(name, icon);
             PersistCatalog($"已创建分类「{name.Trim()}」");
             return true;
         }
@@ -252,12 +252,13 @@ public sealed class MainViewModel : ObservableObject
         }
     }
 
-    public bool TryRenameCategory(Guid categoryId, string name, out string error)
+    public bool TryRenameCategory(Guid categoryId, string name, string? icon, out string error)
     {
         error = string.Empty;
         try
         {
             _session.Catalog.RenameCategory(categoryId, name);
+            _session.Catalog.SetCategoryIcon(categoryId, icon);
             PersistCatalog($"已重命名分类「{name.Trim()}」");
             return true;
         }
@@ -275,6 +276,7 @@ public sealed class MainViewModel : ObservableObject
         string path,
         string? description,
         IReadOnlyList<Guid> categoryIds,
+        string? icon,
         out string error)
     {
         error = string.Empty;
@@ -295,7 +297,8 @@ public sealed class MainViewModel : ObservableObject
                         displayName,
                         categoryId,
                         alias,
-                        description);
+                        description,
+                        icon);
                     kinds.Add(result.ResultKind);
                 }
 
@@ -313,7 +316,7 @@ public sealed class MainViewModel : ObservableObject
             {
                 // 编辑流：用户显式设定完整分类集合。
                 _session.Catalog.RetargetFolderPath(existingId.Value, path, displayName);
-                _session.Catalog.UpdateFolder(existingId.Value, alias, description);
+                _session.Catalog.UpdateFolder(existingId.Value, alias, description, icon);
                 _session.Catalog.SetFolderCategories(existingId.Value, cats);
                 PersistCatalog("文件夹记录已更新");
             }
@@ -699,7 +702,7 @@ public sealed class MainViewModel : ObservableObject
 
         foreach (var category in _session.Catalog.Categories)
         {
-            Categories.Add(new CategoryListItem(category.Id, category.Name)
+            Categories.Add(new CategoryListItem(category.Id, category.Name, iconFileName: category.Icon)
             {
                 Count = _session.Catalog.GetFoldersInCategory(category.Id).Count
             });
@@ -759,7 +762,8 @@ public sealed class MainViewModel : ObservableObject
                 folder.Path,
                 catsLabel,
                 folder.IsPathUnavailable,
-                isPinned: pinnedFolderIds.Contains(folder.Id)));
+                isPinned: pinnedFolderIds.Contains(folder.Id),
+                icon: folder.Icon));
         }
 
         ResultCountText = $"{Folders.Count} 个项目";
