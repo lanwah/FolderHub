@@ -54,14 +54,9 @@ public sealed class MainViewModel : ObservableObject
             p => _ = TogglePinAsync(ResolveFolder(p)),
             p => ResolveFolder(p) is not null);
         AddCategoryCommand = new RelayCommand(_ => RequestAddCategory?.Invoke());
-        RenameCategoryCommand = new RelayCommand(
-            _ => RequestRenameCategory?.Invoke(SelectedCategory!),
-            _ => SelectedCategory is { IsVirtualAll: false, CategoryId: not null }
-                 && SelectedCategory.CategoryId != _session.Catalog.Uncategorized.Id);
-        DeleteCategoryCommand = new RelayCommand(
-            _ => DeleteSelectedCategory(),
-            _ => SelectedCategory is { IsVirtualAll: false, CategoryId: not null }
-                 && SelectedCategory.CategoryId != _session.Catalog.Uncategorized.Id);
+        // 始终可点：选中「全部/未分类」时给出提示，避免 CanExecute=false 静默无响应。
+        RenameCategoryCommand = new RelayCommand(_ => RenameSelectedCategory());
+        DeleteCategoryCommand = new RelayCommand(_ => DeleteSelectedCategory());
         AddFolderCommand = new RelayCommand(_ => RequestEditFolder?.Invoke(null));
         EditFolderCommand = new RelayCommand(
             p =>
@@ -556,12 +551,27 @@ public sealed class MainViewModel : ObservableObject
         MessageBox.Show(error ?? "无法打开文件夹。", "打开失败", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
+    private void RenameSelectedCategory()
+    {
+        if (!TryGetEditableCategory(out var item, out var error))
+        {
+            MessageBox.Show(error, "无法编辑分类", MessageBoxButton.OK, MessageBoxImage.Information);
+            return;
+        }
+
+        RequestRenameCategory?.Invoke(item);
+    }
+
     private void DeleteSelectedCategory()
     {
-        if (SelectedCategory?.CategoryId is not Guid id)
+        if (!TryGetEditableCategory(out var item, out var error)
+            || item.CategoryId is not Guid id)
+        {
+            MessageBox.Show(error, "无法删除分类", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
+        }
 
-        var name = SelectedCategory.Name;
+        var name = item.Name;
         var confirm = MessageBox.Show(
             $"删除分类「{name}」？\n其下文件夹将保留并在失去其他归属时回到「未分类」。",
             "删除分类",
@@ -579,6 +589,34 @@ public sealed class MainViewModel : ObservableObject
         {
             MessageBox.Show(ex.Message, "无法删除分类", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+    }
+
+    /// <summary>「全部文件夹」与内建「未分类」不可编辑/删除。</summary>
+    private bool TryGetEditableCategory(out CategoryListItem item, out string error)
+    {
+        error = string.Empty;
+        item = null!;
+
+        if (SelectedCategory is null)
+        {
+            error = "请先在左侧选择一个分类。";
+            return false;
+        }
+
+        if (SelectedCategory.IsVirtualAll || SelectedCategory.CategoryId is null)
+        {
+            error = "「全部文件夹」不可编辑，请先在左侧选择一个自定义分类。";
+            return false;
+        }
+
+        if (SelectedCategory.CategoryId == _session.Catalog.Uncategorized.Id)
+        {
+            error = "内建「未分类」不可编辑或删除。";
+            return false;
+        }
+
+        item = SelectedCategory;
+        return true;
     }
 
     private void DeleteFolder(FolderListItem? item)

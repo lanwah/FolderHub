@@ -17,8 +17,9 @@
         PreviewKeyDown="Window_PreviewKeyDown">
   <Window.Resources>
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-    <!-- 网格：双列拉满（对齐设计稿每行 2 卡）；列表：Width=Auto（NaN）单列拉满 -->
-    <sys:Double x:Key="FolderCardHeight">150</sys:Double>
+    <!-- 网格：双列拉满（对齐设计稿每行 2 卡）；列表：Width=Auto（NaN）单列拉满
+         最小高度对齐 design-demo min-height:168；固定 Height 会把说明行 * 压到数 px 并裁字 -->
+    <sys:Double x:Key="FolderCardMinHeight">168</sys:Double>
     <sys:Double x:Key="DoubleAuto">NaN</sys:Double>
     <ContextMenu x:Key="FolderMenu" Style="{StaticResource AppContextMenu}">
       <MenuItem Header="↗　打开文件夹" Click="ContextOpen_Click"/>
@@ -98,7 +99,7 @@
               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <Button Style="{DynamicResource TextIconButton}" Content="＋" ToolTip="新增分类"
                         Command="{Binding AddCategoryCommand}"/>
-                <Button Style="{DynamicResource TextIconButton}" Content="✎" ToolTip="重命名分类"
+                <Button Style="{DynamicResource TextIconButton}" Content="✎" ToolTip="编辑分类"
                         FontSize="14" Command="{Binding RenameCategoryCommand}"/>
                 <Button Style="{DynamicResource TextIconButton}" Content="×" ToolTip="删除分类"
                         FontSize="16" Command="{Binding DeleteCategoryCommand}"/>
@@ -140,25 +141,11 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                       </Grid.ColumnDefinitions>
-                      <Grid Width="18" Height="18" VerticalAlignment="Center">
-                        <Image Source="{Binding IconImage}" Stretch="Uniform"
-                               Visibility="{Binding HasIconImage, Converter={StaticResource BoolToVis}}"/>
-                        <TextBlock Text="{Binding IconGlyph}" FontSize="14"
-                                   TextAlignment="Center" VerticalAlignment="Center"
-                                   FontFamily="Segoe UI Symbol, Segoe UI Emoji, Microsoft YaHei UI"
-                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}">
-                          <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                              <Setter Property="Visibility" Value="Visible"/>
-                              <Style.Triggers>
-                                <DataTrigger Binding="{Binding HasIconImage}" Value="True">
-                                  <Setter Property="Visibility" Value="Collapsed"/>
-                                </DataTrigger>
-                              </Style.Triggers>
-                            </Style>
-                          </TextBlock.Style>
-                        </TextBlock>
-                      </Grid>
+                      <!-- 跟稿：分类侧栏用几何符号（继承 Foreground），不用固定色 PNG，避免错位/选中色丢失 -->
+                      <TextBlock Width="18" Text="{Binding IconGlyph}" FontSize="14"
+                                 TextAlignment="Center" VerticalAlignment="Center"
+                                 FontFamily="Segoe UI Symbol, Segoe UI Emoji, Microsoft YaHei UI"
+                                 Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                       <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="13" VerticalAlignment="Center"
                                  Margin="10,0,0,0"
                                  Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
@@ -257,7 +244,7 @@
             <Grid>
               <ScrollViewer x:Name="FolderScroll"
                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                            Padding="2,2,6,10"
+                            Padding="2,4,6,10"
                             Style="{DynamicResource FolderHubScrollViewer}">
                 <ItemsControl x:Name="FolderItems" ItemsSource="{Binding Folders}"
                               HorizontalAlignment="Stretch"
@@ -307,7 +294,7 @@
                           <Border.Style>
                             <Style TargetType="Border">
                               <Setter Property="Width" Value="{StaticResource DoubleAuto}"/>
-                              <Setter Property="Height" Value="{StaticResource FolderCardHeight}"/>
+                              <Setter Property="MinHeight" Value="{StaticResource FolderCardMinHeight}"/>
                               <Setter Property="HorizontalAlignment" Value="Stretch"/>
                               <Setter Property="BorderBrush" Value="{DynamicResource LineBrush}"/>
                               <Style.Triggers>
@@ -318,20 +305,38 @@
                                   <Setter Property="BorderBrush" Value="{DynamicResource UnavailableBorderBrush}"/>
                                   <Setter Property="Background" Value="{DynamicResource UnavailableBgBrush}"/>
                                 </DataTrigger>
+                                <DataTrigger Binding="{Binding DataContext.IsListMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                  <Setter Property="MinHeight" Value="0"/>
+                                </DataTrigger>
                               </Style.Triggers>
                             </Style>
                           </Border.Style>
-                          <!-- Grid：标题/副标题 Auto 不被挤扁；说明行 * 可收缩（对齐 demo flex + line-clamp） -->
-                          <Grid>
-                            <Grid.RowDefinitions>
-                              <RowDefinition Height="Auto"/>
-                              <RowDefinition Height="Auto"/>
-                              <RowDefinition Height="Auto"/>
-                              <RowDefinition Height="*" MinHeight="0"/>
-                              <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                          <!-- DockPanel：底栏贴底（demo folder-bottom margin-top:auto）；说明最多 2 行 line-clamp -->
+                          <DockPanel LastChildFill="True">
+                            <DockPanel DockPanel.Dock="Bottom" Margin="0,12,0,0" LastChildFill="True">
+                              <Button DockPanel.Dock="Right" Content="{Binding PinLabel}"
+                                      Style="{DynamicResource PinToggleButton}"
+                                      Margin="8,0,0,0" Click="Pin_Click" Tag="{Binding}"/>
+                              <TextBlock Text="{Binding PathStatusLabel}" FontSize="12"
+                                         FontFamily="{DynamicResource CardTextFontFamily}"
+                                         TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                         Opacity="0.72">
+                                <TextBlock.Style>
+                                  <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource InkSoftBrush}"/>
+                                    <Style.Triggers>
+                                      <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource UnavailableInkBrush}"/>
+                                        <Setter Property="Opacity" Value="1"/>
+                                      </DataTrigger>
+                                    </Style.Triggers>
+                                  </Style>
+                                </TextBlock.Style>
+                              </TextBlock>
+                            </DockPanel>
 
-                            <DockPanel Grid.Row="0" LastChildFill="False">
+                            <StackPanel>
+                            <DockPanel LastChildFill="False">
                               <!-- design-demo .folder-icon：40×40 / radius 11；WPF 彩色 emoji 常空白，改用 images PNG -->
                               <Border Width="40" Height="40" CornerRadius="11" ClipToBounds="True"
                                       Background="{Binding IconTone}">
@@ -376,17 +381,26 @@
                               </Button>
                             </DockPanel>
 
-                            <TextBlock Grid.Row="1" Text="{Binding Title}" Margin="0,12,0,0"
+                            <TextBlock Text="{Binding Title}" Margin="0,12,0,0"
                                        FontSize="14" FontWeight="Bold"
                                        FontFamily="{DynamicResource CardTextFontFamily}"
                                        Foreground="{DynamicResource InkBrush}"
                                        TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Grid.Row="2" Text="{Binding Subtitle}" Margin="0,3,0,0"
+                            <TextBlock Text="{Binding Subtitle}" Margin="0,3,0,0"
                                        FontSize="12"
                                        FontFamily="{DynamicResource CardTextFontFamily}"
                                        Foreground="{DynamicResource InkSoftBrush}" Opacity="0.78"
                                        TextTrimming="CharacterEllipsis"/>
-                            <Border Grid.Row="3" Margin="0,8,0,0" ClipToBounds="True">
+                            <Border Margin="0,8,0,0" MaxHeight="36" ClipToBounds="True">
+                              <Border.Style>
+                                <Style TargetType="Border">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DataContext.IsListMode, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Border.Style>
                               <TextBlock Text="{Binding Description}"
                                          FontSize="12" LineHeight="18"
                                          FontFamily="{DynamicResource CardTextFontFamily}"
@@ -394,29 +408,8 @@
                                          TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                          VerticalAlignment="Top"/>
                             </Border>
-
-                            <DockPanel Grid.Row="4" Margin="0,12,0,0" LastChildFill="True">
-                              <Button DockPanel.Dock="Right" Content="{Binding PinLabel}"
-                                      Style="{DynamicResource PinToggleButton}"
-                                      Margin="8,0,0,0" Click="Pin_Click" Tag="{Binding}"/>
-                              <TextBlock Text="{Binding PathStatusLabel}" FontSize="12"
-                                         FontFamily="{DynamicResource CardTextFontFamily}"
-                                         TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
-                                         Opacity="0.72">
-                                <TextBlock.Style>
-                                  <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{DynamicResource InkSoftBrush}"/>
-                                    <Style.Triggers>
-                                      <DataTrigger Binding="{Binding IsPathUnavailable}" Value="True">
-                                        <Setter Property="Foreground" Value="{DynamicResource UnavailableInkBrush}"/>
-                                        <Setter Property="Opacity" Value="1"/>
-                                      </DataTrigger>
-                                    </Style.Triggers>
-                                  </Style>
-                                </TextBlock.Style>
-                              </TextBlock>
-                            </DockPanel>
-                          </Grid>
+                            </StackPanel>
+                          </DockPanel>
                         </Border>
                       </Border>
                     </DataTemplate>

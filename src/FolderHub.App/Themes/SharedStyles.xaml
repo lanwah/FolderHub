@@ -311,6 +311,8 @@
     <Setter Property="Padding" Value="8,5"/>
     <Setter Property="FontSize" Value="11"/>
     <Setter Property="FontWeight" Value="SemiBold"/>
+    <!-- 与卡片正文一致：雅黑优先，避免继承 DM Sans 后中文行盒顶部被裁切 -->
+    <Setter Property="FontFamily" Value="{DynamicResource CardTextFontFamily}"/>
     <Setter Property="Foreground" Value="{DynamicResource InkSoftBrush}"/>
     <Setter Property="Background" Value="{DynamicResource PanelBrush}"/>
     <Setter Property="BorderBrush" Value="{DynamicResource LineStrongBrush}"/>

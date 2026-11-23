@@ -27,6 +27,21 @@ function Save-TwemojiPng {
     Write-Host ("Wrote {0} ({1} bytes)" -f $FileName, (Get-Item $target).Length)
 }
 
+function Get-OpaqueBounds([System.Drawing.Bitmap]$Bitmap) {
+    $minX = $Bitmap.Width; $minY = $Bitmap.Height; $maxX = -1; $maxY = -1
+    for ($y = 0; $y -lt $Bitmap.Height; $y++) {
+        for ($x = 0; $x -lt $Bitmap.Width; $x++) {
+            if ($Bitmap.GetPixel($x, $y).A -eq 0) { continue }
+            if ($x -lt $minX) { $minX = $x }
+            if ($y -lt $minY) { $minY = $y }
+            if ($x -gt $maxX) { $maxX = $x }
+            if ($y -gt $maxY) { $maxY = $y }
+        }
+    }
+    if ($maxX -lt 0) { return $null }
+    return [System.Drawing.Rectangle]::FromLTRB($minX, $minY, $maxX + 1, $maxY + 1)
+}
+
 function Write-SymbolIcon {
     param(
         [string]$Target,
@@ -34,12 +49,6 @@ function Write-SymbolIcon {
         [System.Drawing.Color]$Ink,
         [int]$Size = 128
     )
-
-    $bmp = New-Object System.Drawing.Bitmap $Size, $Size
-    $gfx = [System.Drawing.Graphics]::FromImage($bmp)
-    $gfx.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
-    $gfx.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
-    $gfx.Clear([System.Drawing.Color]::Transparent)
 
     $fontSize = [float]($Size * 0.55)
     try {
@@ -52,11 +61,34 @@ function Write-SymbolIcon {
     $sf.Alignment = [System.Drawing.StringAlignment]::Center
     $sf.LineAlignment = [System.Drawing.StringAlignment]::Center
     $inkBrush = New-Object System.Drawing.SolidBrush $Ink
-    $textRect = New-Object System.Drawing.RectangleF 0, ($Size * 0.02), $Size, $Size
-    $gfx.DrawString($Glyph, $font, $inkBrush, $textRect, $sf)
+
+    # Pass 1: draw on oversized canvas, then recentre by opaque pixel bounds
+    # (GDI+ symbol metrics are often top-heavy; a fixed Y offset made sidebar icons look high.)
+    $padCanvas = $Size * 2
+    $tmp = New-Object System.Drawing.Bitmap $padCanvas, $padCanvas
+    $tg = [System.Drawing.Graphics]::FromImage($tmp)
+    $tg.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+    $tg.TextRenderingHint = [System.Drawing.Text.TextRenderingHint]::AntiAliasGridFit
+    $tg.Clear([System.Drawing.Color]::Transparent)
+    $tg.DrawString($Glyph, $font, $inkBrush, (New-Object System.Drawing.RectangleF 0, 0, $padCanvas, $padCanvas), $sf)
+    $tg.Dispose()
+
+    $bounds = Get-OpaqueBounds $tmp
+    $bmp = New-Object System.Drawing.Bitmap $Size, $Size
+    $gfx = [System.Drawing.Graphics]::FromImage($bmp)
+    $gfx.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+    $gfx.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+    $gfx.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+    $gfx.Clear([System.Drawing.Color]::Transparent)
+
+    if ($null -ne $bounds) {
+        $dest = [int](($Size - $bounds.Width) / 2)
+        $destY = [int](($Size - $bounds.Height) / 2)
+        $gfx.DrawImage($tmp, $dest, $destY, $bounds, [System.Drawing.GraphicsUnit]::Pixel)
+    }
 
     $bmp.Save($Target, [System.Drawing.Imaging.ImageFormat]::Png)
-    $gfx.Dispose(); $font.Dispose(); $inkBrush.Dispose(); $sf.Dispose(); $bmp.Dispose()
+    $gfx.Dispose(); $tmp.Dispose(); $font.Dispose(); $inkBrush.Dispose(); $sf.Dispose(); $bmp.Dispose()
     Write-Host ("Wrote {0} ({1} bytes)" -f (Split-Path $Target -Leaf), (Get-Item $Target).Length)
 }
 

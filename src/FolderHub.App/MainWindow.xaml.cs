@@ -281,11 +281,11 @@ public partial class MainWindow : Window
     {
         if (_vm is null || item.CategoryId is not Guid id)
             return;
-        var dialog = new CategoryEditorDialog("重命名分类", item.Name, item.IconFileName) { Owner = this };
+        var dialog = new CategoryEditorDialog("编辑分类", item.Name, item.IconFileName) { Owner = this };
         if (dialog.ShowDialog() != true)
             return;
         if (!_vm.TryRenameCategory(id, dialog.CategoryName, dialog.SelectedIcon, out var error))
-            MessageBox.Show(this, error, "无法重命名", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, error, "无法编辑分类", MessageBoxButton.OK, MessageBoxImage.Warning);
     }
 
     private void OnEditFolder(Guid? folderId)
