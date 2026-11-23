@@ -1,8 +1,8 @@
 namespace FolderHub.UseCases.Icons;
 
 /// <summary>
-/// design-demo 图标包：文件位于程序目录 <c>images/</c>，持久化存文件名；
-/// 展示用 Glyph（emoji/符号）+ ToneHex 对齐 demo .folder-icon。
+/// design-demo 图标包：文件位于程序目录 <c>images/</c>，持久化存文件名。
+/// 文件夹图标为 Twemoji 彩色 PNG（透明底）；ToneHex 由 UI 圆角色块提供，对齐 demo .folder-icon。
 /// </summary>
 public static class PackagedIconCatalog
 {

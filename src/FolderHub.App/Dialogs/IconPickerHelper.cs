@@ -39,7 +39,8 @@ internal sealed class IconPickerHelper
                 child = new Image
                 {
                     Source = image,
-                    Stretch = Stretch.UniformToFill
+                    Stretch = Stretch.Uniform,
+                    Margin = new Thickness(4)
                 };
             }
             else
@@ -64,7 +65,7 @@ internal sealed class IconPickerHelper
                 Cursor = System.Windows.Input.Cursors.Hand,
                 Tag = fileName,
                 BorderThickness = new Thickness(2),
-                Background = image is null ? tone : Brushes.Transparent,
+                Background = tone,
                 ClipToBounds = true,
                 Child = child
             };

@@ -49,7 +49,7 @@
         <Border x:Name="IconToneBorder" Width="30" Height="30" CornerRadius="9" ClipToBounds="True"
                 Background="{DynamicResource FolderIconToneBrush}" DockPanel.Dock="Left">
           <Grid>
-            <Image x:Name="CustomIconImage" Stretch="UniformToFill" Visibility="Collapsed"/>
+            <Image x:Name="CustomIconImage" Stretch="Uniform" Margin="3" Visibility="Collapsed"/>
             <TextBlock x:Name="IconGlyphText" FontSize="16"
                        FontFamily="Segoe UI Symbol, Segoe UI Emoji, Microsoft YaHei UI"
                        HorizontalAlignment="Center" VerticalAlignment="Center"

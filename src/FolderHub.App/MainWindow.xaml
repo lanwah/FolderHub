@@ -336,7 +336,7 @@
                               <Border Width="40" Height="40" CornerRadius="11" ClipToBounds="True"
                                       Background="{Binding IconTone}">
                                 <Grid>
-                                  <Image Source="{Binding IconImage}" Stretch="UniformToFill"
+                                  <Image Source="{Binding IconImage}" Stretch="Uniform" Margin="4"
                                          Visibility="{Binding HasIconImage, Converter={StaticResource BoolToVis}}"/>
                                   <TextBlock Text="{Binding IconGlyph}" FontSize="20"
                                              FontFamily="Segoe UI Emoji, Segoe UI Symbol, Microsoft YaHei UI"
