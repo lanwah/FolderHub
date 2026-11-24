@@ -34,6 +34,9 @@ public sealed class CategoryListItem : ObservableObject
 
     public bool IsVirtualAll { get; }
 
+    /// <summary>「全部文件夹」与「未分类」不可拖动排序。</summary>
+    public bool IsReorderable { get; init; } = true;
+
     public int Count
     {
         get => _count;

@@ -129,7 +129,7 @@
               </StackPanel>
             </Border>
 
-            <ItemsControl ItemsSource="{Binding Categories}">
+            <ItemsControl x:Name="CategoryList" ItemsSource="{Binding Categories}">
               <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type vm:CategoryListItem}">
                   <Button Style="{DynamicResource CategoryButton}"

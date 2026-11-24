@@ -20,6 +20,8 @@ public partial class MainWindow : Window
     private const double ChromeCornerRadius = 18;
 
     private readonly MainDesktopHost _desktopHost = new();
+    private ItemsControlReorderDragDrop? _categoryReorderDrag;
+    private ItemsControlReorderDragDrop? _folderReorderDrag;
     private MainViewModel? _vm;
     private FolderListItem? _contextFolder;
     private DateTime _lastClickUtc;
@@ -60,6 +62,7 @@ public partial class MainWindow : Window
                 SyncFolderItemsPanel();
         };
         SyncFolderItemsPanel();
+        AttachReorderDrag();
 
         var s = viewModel.CurrentSettings;
         var contentW = Math.Max(720, s.MainWidth);
@@ -126,6 +129,27 @@ public partial class MainWindow : Window
         var dark = UiTheme.IsDark(_vm?.UiTheme ?? AppTheme.Current);
         ThemeToggleBtn.Content = dark ? "☀" : "☾";
         ThemeToggleBtn.ToolTip = dark ? "切换到浅色主题" : "切换到深色主题";
+    }
+
+    private void AttachReorderDrag()
+    {
+        if (_vm is null)
+            return;
+
+        _categoryReorderDrag = new ItemsControlReorderDragDrop(
+            CategoryList,
+            ItemsControlReorderDragDrop.CategoryPayloadFormat,
+            index => _vm.Categories.ElementAtOrDefault(index)?.IsReorderable == true,
+            index => _vm.Categories.ElementAtOrDefault(index)?.IsReorderable == true,
+            (from, to) => _vm.TryReorderCategories(from, to),
+            index => _vm.NormalizeCategoryDropIndex(index));
+
+        _folderReorderDrag = new ItemsControlReorderDragDrop(
+            FolderItems,
+            ItemsControlReorderDragDrop.FolderPayloadFormat,
+            _ => _vm.CanReorderFolders,
+            _ => _vm.CanReorderFolders,
+            (from, to) => _vm.TryReorderFolders(from, to));
     }
 
     /// <summary>列表=单列 StackPanel；网格=双列 UniformGrid。须在代码里换板，Style Trigger 改 ItemsPanel 不生效。</summary>

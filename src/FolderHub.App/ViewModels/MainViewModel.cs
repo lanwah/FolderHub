@@ -186,6 +186,11 @@ public sealed class MainViewModel : ObservableObject
     }
 
     /// <summary>false = 网格（demo 默认），true = 单列紧凑列表。</summary>
+    /// <summary>仅在某一分分类视图且未搜索时可拖动排序文件夹。</summary>
+    public bool CanReorderFolders =>
+        string.IsNullOrWhiteSpace(SearchText)
+        && SelectedCategory is { IsVirtualAll: false, CategoryId: not null };
+
     public bool IsListMode
     {
         get => _isListMode;
@@ -208,6 +213,85 @@ public sealed class MainViewModel : ObservableObject
 
     public IReadOnlyList<Guid> GetFolderCategoryIds(Guid folderId)
         => _session.Catalog.GetCategoriesForFolder(folderId).Select(c => c.Id).ToList();
+
+    public int NormalizeCategoryDropIndex(int index)
+    {
+        if (index < 0 || Categories.Count == 0)
+            return index;
+
+        if (Categories[index].IsReorderable)
+            return index;
+
+        for (var i = index - 1; i >= 0; i--)
+        {
+            if (Categories[i].IsReorderable)
+                return i;
+        }
+
+        for (var i = index + 1; i < Categories.Count; i++)
+        {
+            if (Categories[i].IsReorderable)
+                return i;
+        }
+
+        return index;
+    }
+
+    public bool TryReorderCategories(int fromIndex, int toIndex)
+    {
+        toIndex = NormalizeCategoryDropIndex(toIndex);
+        if (!IsCategoryIndexReorderable(fromIndex) || !IsCategoryIndexReorderable(toIndex) || fromIndex == toIndex)
+            return false;
+
+        try
+        {
+            MoveListItem(Categories, fromIndex, toIndex);
+            var orderedIds = Categories
+                .Where(c => c.CategoryId is Guid)
+                .Select(c => c.CategoryId!.Value)
+                .ToList();
+            _session.Catalog.ReorderCategories(orderedIds);
+            PersistCatalog("分类顺序已更新");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            var selectedId = SelectedCategory?.CategoryId;
+            var wasAll = SelectedCategory?.IsVirtualAll == true;
+            RefreshAll(selectAll: wasAll, preferCategoryId: selectedId);
+            StatusMessage = $"无法更新分类顺序：{ex.Message}";
+            return false;
+        }
+    }
+
+    public bool TryReorderFolders(int fromIndex, int toIndex)
+    {
+        if (!CanReorderFolders
+            || SelectedCategory?.CategoryId is not Guid categoryId
+            || fromIndex < 0
+            || toIndex < 0
+            || fromIndex >= Folders.Count
+            || toIndex >= Folders.Count
+            || fromIndex == toIndex)
+        {
+            return false;
+        }
+
+        try
+        {
+            MoveListItem(Folders, fromIndex, toIndex);
+            var orderedIds = Folders.Select(f => f.Id).ToList();
+            _session.Catalog.ReorderFoldersInCategory(categoryId, orderedIds);
+            PersistCatalog("文件夹顺序已更新");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            RefreshFolders();
+            StatusMessage = $"无法更新文件夹顺序：{ex.Message}";
+            return false;
+        }
+    }
 
     public void SelectCategory(CategoryListItem item)
     {
@@ -734,7 +818,8 @@ public sealed class MainViewModel : ObservableObject
         Categories.Clear();
         var all = new CategoryListItem(null, "全部文件夹", isVirtualAll: true)
         {
-            Count = _session.Catalog.Folders.Count
+            Count = _session.Catalog.Folders.Count,
+            IsReorderable = false
         };
         Categories.Add(all);
 
@@ -742,7 +827,8 @@ public sealed class MainViewModel : ObservableObject
         {
             Categories.Add(new CategoryListItem(category.Id, category.Name, iconFileName: category.Icon)
             {
-                Count = _session.Catalog.GetFoldersInCategory(category.Id).Count
+                Count = _session.Catalog.GetFoldersInCategory(category.Id).Count,
+                IsReorderable = !category.IsUncategorized
             });
         }
 
@@ -830,6 +916,30 @@ public sealed class MainViewModel : ObservableObject
         }
 
         CommandManager.InvalidateRequerySuggested();
+    }
+
+    private static bool IsCategoryIndexReorderable(int index, ObservableCollection<CategoryListItem> categories)
+    {
+        if (index < 0 || index >= categories.Count)
+            return false;
+
+        return categories[index].IsReorderable;
+    }
+
+    private bool IsCategoryIndexReorderable(int index)
+        => IsCategoryIndexReorderable(index, Categories);
+
+    private static void MoveListItem<T>(ObservableCollection<T> items, int fromIndex, int toIndex)
+    {
+        if (fromIndex == toIndex)
+            return;
+
+        var item = items[fromIndex];
+        items.RemoveAt(fromIndex);
+        var insertIndex = toIndex;
+        if (toIndex > fromIndex)
+            insertIndex--;
+        items.Insert(insertIndex, item);
     }
 
     private void ApplySettingsSnapshot(MainSettingsSnapshot settings)
