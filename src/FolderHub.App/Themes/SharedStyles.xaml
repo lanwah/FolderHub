@@ -629,4 +629,17 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+  <Style x:Key="FormCategoryListBox" TargetType="ListBox">
+    <Style.Resources>
+      <Style TargetType="ScrollBar" BasedOn="{StaticResource FolderHubScrollBar}"/>
+      <Style TargetType="ScrollViewer" BasedOn="{StaticResource FolderHubScrollViewer}"/>
+    </Style.Resources>
+    <Setter Property="BorderBrush" Value="{DynamicResource LineStrongBrush}"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="Background" Value="{DynamicResource InputBgBrush}"/>
+    <Setter Property="Foreground" Value="{DynamicResource InkBrush}"/>
+    <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+  </Style>
 </ResourceDictionary>

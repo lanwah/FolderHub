@@ -70,6 +70,7 @@ public sealed class MainViewModel : ObservableObject
             p => DeleteFolder(ResolveFolder(p)),
             p => ResolveFolder(p) is not null);
         OpenSettingsCommand = new RelayCommand(_ => RequestOpenSettings?.Invoke());
+        OpenDonationCommand = new RelayCommand(_ => RequestOpenDonation?.Invoke());
         SetGridViewCommand = new RelayCommand(_ => SetListMode(false));
         SetListViewCommand = new RelayCommand(_ => SetListMode(true));
 
@@ -91,6 +92,7 @@ public sealed class MainViewModel : ObservableObject
     public ICommand EditFolderCommand { get; }
     public ICommand DeleteFolderCommand { get; }
     public ICommand OpenSettingsCommand { get; }
+    public ICommand OpenDonationCommand { get; }
     public ICommand SetGridViewCommand { get; }
     public ICommand SetListViewCommand { get; }
 
@@ -98,6 +100,7 @@ public sealed class MainViewModel : ObservableObject
     public event Action<CategoryListItem>? RequestRenameCategory;
     public event Action<Guid?>? RequestEditFolder;
     public event Action? RequestOpenSettings;
+    public event Action? RequestOpenDonation;
     /// <summary>打开失败且路径不可用时，询问是否进入重新指定（FR-010）。</summary>
     public event Action<Guid, string>? RequestRetargetUnavailablePath;
 

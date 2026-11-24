@@ -73,6 +73,8 @@
             <Button Style="{DynamicResource IconButton}" x:Name="ThemeToggleBtn" Content="☾"
                     ToolTip="切换浅色/深色主题" Click="ThemeToggle_Click"/>
             <Button Style="{DynamicResource IconButton}" Content="—" ToolTip="隐藏主组件" Click="Minimize_Click"/>
+            <Button Style="{DynamicResource IconButton}" Content="☕" ToolTip="Buy me a coffee"
+                    Command="{Binding OpenDonationCommand}"/>
             <Button Style="{DynamicResource IconButton}" Content="⚙" ToolTip="设置"
                     Command="{Binding OpenSettingsCommand}"/>
             <Button Style="{DynamicResource IconButton}" Content="×" ToolTip="隐藏主组件" Tag="close"

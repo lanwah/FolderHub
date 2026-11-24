@@ -50,6 +50,7 @@ public partial class MainWindow : Window
         viewModel.RequestRenameCategory += OnRenameCategory;
         viewModel.RequestEditFolder += OnEditFolder;
         viewModel.RequestOpenSettings += OnOpenSettings;
+        viewModel.RequestOpenDonation += OnOpenDonation;
         viewModel.RequestRetargetUnavailablePath += OnRetargetUnavailablePath;
         viewModel.ApplyMainPinnedVisual += OnApplyMainPinnedVisual;
         viewModel.PropertyChanged += (_, e) =>
@@ -380,6 +381,12 @@ public partial class MainWindow : Window
             dialog.SelectedUiTheme,
             ContentBoundsRect());
         ApplyChrome();
+    }
+
+    private void OnOpenDonation()
+    {
+        var dialog = new DonationDialog { Owner = this };
+        dialog.ShowDialog();
     }
 
     private void FolderCard_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

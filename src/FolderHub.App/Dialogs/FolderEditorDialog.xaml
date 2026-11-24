@@ -56,9 +56,7 @@
 
           <TextBlock Text="所属分类" Style="{DynamicResource FormFieldLabel}"/>
           <ListBox x:Name="CategoryList" Height="110" SelectionMode="Multiple"
-                   BorderBrush="{DynamicResource LineStrongBrush}" BorderThickness="1"
-                   Background="{DynamicResource InputBgBrush}"
-                   Foreground="{DynamicResource InkBrush}"
+                   Style="{DynamicResource FormCategoryListBox}"
                    DisplayMemberPath="Name"/>
           <TextBlock Text="按住 Ctrl 可选择多个分类；分类为平级关系"
                      FontSize="12" Foreground="{DynamicResource MutedBrush}" Margin="0,6,0,0"/>
