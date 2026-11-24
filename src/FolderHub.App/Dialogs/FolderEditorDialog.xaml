@@ -48,7 +48,8 @@
 
           <TextBlock Text="用途说明" Style="{DynamicResource FormFieldLabel}"/>
           <TextBox x:Name="DescBox" Style="{DynamicResource FormTextBox}" Height="72" Margin="0,0,0,14"
-                   TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                   TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                   VerticalContentAlignment="Top"/>
 
           <TextBlock Text="图标" Style="{DynamicResource FormFieldLabel}"/>
           <WrapPanel x:Name="IconPanel" Margin="0,0,0,14"/>
